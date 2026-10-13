@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "title": "Quran Explained",
+    "description": "Quran verses with Korean explanations of their context, word meanings, and a source for every explanation."
+  },
+  "header": {
+    "logo": "Quran Explained",
+    "navLabel": "Main navigation",
+    "home": "Home",
+    "surah": "Surah"
+  },
+  "home": {
+    "title": "Understand the Quran in your language",
+    "intro": "Each verse appears in Arabic with a Korean explanation of its context, an optional English view, the meaning of each word in that verse, and a link to the source of every explanation.",
+    "start": "Start reading",
+    "accountHint": "You need an account to open the surah pages."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "backHome": "Back to home"
+  }
+}

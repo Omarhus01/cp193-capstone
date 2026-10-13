@@ -1,17 +1,19 @@
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 export function SiteNav() {
+  const t = useTranslations("header");
   return (
-    <nav aria-label="Main navigation">
+    <nav aria-label={t("navLabel")}>
       <ul className="flex gap-4 text-sm font-medium text-zinc-700">
         <li>
           <Link href="/" className="hover:text-emerald-800">
-            Home
+            {t("home")}
           </Link>
         </li>
         <li>
           <Link href="/surah/1" className="hover:text-emerald-800">
-            Surah
+            {t("surah")}
           </Link>
         </li>
       </ul>
