@@ -8,6 +8,9 @@
     "navLabel": "주 메뉴",
     "home": "홈",
     "surah": "수라",
+    "searchLabel": "검색",
+    "searchPlaceholder": "구절을 검색하거나 질문하세요",
+    "searchComingSoon": "검색 기능은 곧 제공됩니다",
     "languageLabel": "언어",
     "languages": {
       "en": "English",

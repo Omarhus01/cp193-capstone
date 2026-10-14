@@ -8,6 +8,9 @@
     "navLabel": "Main navigation",
     "home": "Home",
     "surah": "Surah",
+    "searchLabel": "Search",
+    "searchPlaceholder": "Search verses or ask a question",
+    "searchComingSoon": "Search is coming soon",
     "languageLabel": "Language",
     "languages": {
       "en": "English",
