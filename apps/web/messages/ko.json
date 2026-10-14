@@ -7,7 +7,16 @@
     "logo": "꾸란 해설",
     "navLabel": "주 메뉴",
     "home": "홈",
-    "surah": "수라"
+    "surah": "수라",
+    "languageLabel": "언어",
+    "languages": {
+      "en": "English",
+      "ko": "한국어"
+    },
+    "languageShort": {
+      "en": "EN",
+      "ko": "KO"
+    }
   },
   "home": {
     "title": "꾸란을 내 언어로 이해하기",

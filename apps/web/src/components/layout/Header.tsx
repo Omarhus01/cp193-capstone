@@ -1,5 +1,7 @@
 import { useTranslations } from "next-intl";
+import { Suspense } from "react";
 import { Link } from "@/i18n/navigation";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { SiteNav } from "./SiteNav";
 
 export function Header() {
@@ -11,6 +13,12 @@ export function Header() {
           {t("logo")}
         </Link>
         <SiteNav />
+        <div className="ml-auto flex items-center gap-4">
+          {/* Reads the URL, so it streams in after the shell. */}
+          <Suspense fallback={<span className="inline-block w-20" />}>
+            <LanguageSwitcher />
+          </Suspense>
+        </div>
       </div>
     </header>
   );

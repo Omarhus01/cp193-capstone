@@ -7,7 +7,16 @@
     "logo": "Quran Explained",
     "navLabel": "Main navigation",
     "home": "Home",
-    "surah": "Surah"
+    "surah": "Surah",
+    "languageLabel": "Language",
+    "languages": {
+      "en": "English",
+      "ko": "한국어"
+    },
+    "languageShort": {
+      "en": "EN",
+      "ko": "KO"
+    }
   },
   "home": {
     "title": "Understand the Quran in your language",
