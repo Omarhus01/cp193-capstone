@@ -22,6 +22,6 @@ export default async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Skip Next.js internals and files with an extension.
-  matcher: ["/((?!_next|_vercel|.*\\..*).*)"],
+  // Skip Next.js internals, files with an extension, and the email confirmation route.
+  matcher: ["/((?!_next|_vercel|auth/confirm|.*\\..*).*)"],
 };
