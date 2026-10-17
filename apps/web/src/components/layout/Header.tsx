@@ -1,6 +1,7 @@
 import { useTranslations } from "next-intl";
 import { Suspense } from "react";
 import { Link } from "@/i18n/navigation";
+import { AuthControls } from "./AuthControls";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { SearchBar } from "./SearchBar";
 import { SiteNav } from "./SiteNav";
@@ -16,9 +17,12 @@ export function Header() {
         <SiteNav />
         <SearchBar />
         <div className="ml-auto flex items-center gap-4">
-          {/* Reads the URL, so it streams in after the shell. */}
+          {/* Both read request data (URL, session cookie), so they stream in after the shell. */}
           <Suspense fallback={<span className="inline-block w-20" />}>
             <LanguageSwitcher />
+          </Suspense>
+          <Suspense fallback={null}>
+            <AuthControls />
           </Suspense>
         </div>
       </div>

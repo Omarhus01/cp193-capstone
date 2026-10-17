@@ -27,8 +27,33 @@
     "start": "Start reading",
     "accountHint": "You need an account to open the surah pages."
   },
+  "auth": {
+    "login": "Log in",
+    "signup": "Sign up",
+    "logout": "Log out",
+    "loginTitle": "Log in",
+    "signupTitle": "Create an account",
+    "email": "Email",
+    "password": "Password",
+    "passwordHint": "At least 8 characters.",
+    "submitting": "Please wait…",
+    "noAccount": "No account yet?",
+    "haveAccount": "Already have an account?",
+    "checkEmail": "Check your email for a confirmation link, then log in.",
+    "errors": {
+      "invalidEmail": "Enter a valid email address.",
+      "passwordTooShort": "The password must be at least 8 characters.",
+      "invalidCredentials": "The email or password is incorrect.",
+      "emailNotConfirmed": "Confirm your email before logging in.",
+      "signupFailed": "We could not create the account. Try again.",
+      "confirmFailed": "The confirmation link is invalid or has expired."
+    }
+  },
   "notFound": {
     "title": "Page not found",
     "backHome": "Back to home"
+  },
+  "common": {
+    "loading": "Loading…"
   }
 }

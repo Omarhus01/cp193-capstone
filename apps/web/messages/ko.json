@@ -27,8 +27,33 @@
     "start": "읽기 시작",
     "accountHint": "수라 페이지를 보려면 계정이 필요합니다."
   },
+  "auth": {
+    "login": "로그인",
+    "signup": "회원가입",
+    "logout": "로그아웃",
+    "loginTitle": "로그인",
+    "signupTitle": "계정 만들기",
+    "email": "이메일",
+    "password": "비밀번호",
+    "passwordHint": "8자 이상 입력하세요.",
+    "submitting": "잠시만 기다려 주세요…",
+    "noAccount": "아직 계정이 없으신가요?",
+    "haveAccount": "이미 계정이 있으신가요?",
+    "checkEmail": "이메일로 받은 확인 링크를 누른 뒤 로그인하세요.",
+    "errors": {
+      "invalidEmail": "올바른 이메일 주소를 입력하세요.",
+      "passwordTooShort": "비밀번호는 8자 이상이어야 합니다.",
+      "invalidCredentials": "이메일 또는 비밀번호가 올바르지 않습니다.",
+      "emailNotConfirmed": "로그인하기 전에 이메일 인증을 완료하세요.",
+      "signupFailed": "계정을 만들지 못했습니다. 다시 시도하세요.",
+      "confirmFailed": "확인 링크가 올바르지 않거나 만료되었습니다."
+    }
+  },
   "notFound": {
     "title": "페이지를 찾을 수 없습니다",
     "backHome": "홈으로 돌아가기"
+  },
+  "common": {
+    "loading": "불러오는 중…"
   }
 }
