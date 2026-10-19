@@ -49,6 +49,10 @@
       "confirmFailed": "확인 링크가 올바르지 않거나 만료되었습니다."
     }
   },
+  "surah": {
+    "title": "수라 {number}",
+    "placeholder": "이 수라의 구절이 여기에 표시됩니다."
+  },
   "notFound": {
     "title": "페이지를 찾을 수 없습니다",
     "backHome": "홈으로 돌아가기"

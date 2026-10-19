@@ -49,6 +49,10 @@
       "confirmFailed": "The confirmation link is invalid or has expired."
     }
   },
+  "surah": {
+    "title": "Surah {number}",
+    "placeholder": "Verses for this surah will appear here."
+  },
   "notFound": {
     "title": "Page not found",
     "backHome": "Back to home"
