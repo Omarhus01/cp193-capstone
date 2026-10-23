@@ -77,6 +77,7 @@ GitHub Actions is unavailable on the owner's account for now. A husky pre-push h
 - **Next.js 16 differs from older versions.** Read the bundled docs in `node_modules/next/dist/docs/` before writing Next code (see `apps/web/AGENTS.md`). Middleware is now `src/proxy.ts`.
 - **Cache Components is on.** Anything that reads request data (cookies, session, `searchParams`, `useSearchParams`, `usePathname` on dynamic routes) must render inside `<Suspense>`, or the build fails.
 - **No hardcoded UI text.** Add keys to both `messages/en.json` and `messages/ko.json`. A unit test checks that the two files have the same keys, and the next-intl types make an unknown key a type error.
+- **The server locale comes from the route.** `src/i18n/request.ts` reads it with `next/root-params`, never from request headers. Don't add `setRequestLocale` (deprecated). Pass `{ locale }` explicitly to next-intl only outside Server Components.
 - **Arabic always goes through `ArabicText`**, which sets `dir="rtl"`, `lang="ar"` and the Amiri font.
 - **Use the navigation exports from `@/i18n/navigation`** (`Link`, `redirect`, `usePathname`, `useRouter`), not `next/link` or `next/navigation`. They keep the locale.
 - **Auth:**

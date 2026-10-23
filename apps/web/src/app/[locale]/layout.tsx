@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { fontVariables } from "@/app/fonts";
 import { Header } from "@/components/layout/Header";
 import { routing } from "@/i18n/routing";
@@ -25,7 +25,6 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
-  setRequestLocale(locale);
 
   return (
     <html lang={locale} className={`${fontVariables} h-full antialiased`}>

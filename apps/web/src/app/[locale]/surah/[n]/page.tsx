@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import type { Locale } from "@/i18n/locale";
 import { requireUserId } from "@/lib/auth/require-user";
@@ -20,7 +20,6 @@ export default function SurahPage({ params }: SurahPageProps) {
 async function SurahContent({ params }: Pick<SurahPageProps, "params">) {
   const { locale: localeParam, n } = await params;
   const locale = localeParam as Locale;
-  setRequestLocale(locale);
 
   const surahNumber = parseSurahNumber(n);
   if (!surahNumber) {

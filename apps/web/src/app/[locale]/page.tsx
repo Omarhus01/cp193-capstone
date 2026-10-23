@@ -1,15 +1,7 @@
 import { useTranslations } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import type { Locale } from "@/i18n/locale";
 
-export default async function HomePage({ params }: PageProps<"/[locale]">) {
-  const { locale } = await params;
-  setRequestLocale(locale as Locale);
-  return <HomeContent />;
-}
-
-function HomeContent() {
+export default function HomePage() {
   const t = useTranslations("home");
   return (
     <section className="flex max-w-2xl flex-col gap-6">

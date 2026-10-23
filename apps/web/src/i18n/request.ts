@@ -1,9 +1,12 @@
+import { locale as rootLocale } from "next/root-params";
 import { hasLocale } from "next-intl";
 import { getRequestConfig } from "next-intl/server";
 import { routing } from "./routing";
 
-export default getRequestConfig(async ({ requestLocale }) => {
-  const requested = await requestLocale;
+// The locale comes from the [locale] segment of the route being rendered, not from the request
+// headers. A Server Action that redirects to another locale still renders the right language.
+export default getRequestConfig(async ({ locale: explicitLocale }) => {
+  const requested = explicitLocale ?? (await rootLocale());
   const locale = hasLocale(routing.locales, requested) ? requested : routing.defaultLocale;
 
   return {
