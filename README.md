@@ -96,7 +96,16 @@ Before the first end-to-end run, install the browser once:
 npx playwright install chromium
 ```
 
-The end-to-end tests only cover logged-out flows. They run without a Supabase project, because placeholder values are used when `.env.local` is missing.
+Most end-to-end tests cover logged-out flows and run without a Supabase project: when `apps/web/.env.local` is missing, placeholder values are used. With `.env.local`, the test server uses your project.
+
+The tests in `e2e/real-account.spec.ts` log in with a real, confirmed account on that project. They are skipped unless you pass the account in the environment. Never put it in a file.
+
+```bash
+E2E_EMAIL=you@example.com E2E_PASSWORD=... npm run test:e2e        # bash
+$env:E2E_EMAIL="you@example.com"; $env:E2E_PASSWORD="..."; npm run test:e2e   # PowerShell
+```
+
+Those tests run one at a time, because logging out ends every session of the account. A run also logs that account out in any other browser.
 
 ### Pre-push hook
 
