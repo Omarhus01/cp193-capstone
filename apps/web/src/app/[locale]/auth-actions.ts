@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { isLocale, type Locale } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
 import { confirmRedirectUrl } from "@/lib/auth/confirm";
-import { safeNextPath } from "@/lib/auth/paths";
+import { logoutRedirectPath, safeNextPath } from "@/lib/auth/paths";
 import { readCredentials, validateCredentials, type AuthErrorKey } from "@/lib/auth/validation";
 import { createClient } from "@/lib/supabase/server";
 
@@ -82,5 +82,6 @@ export async function signUp(_previous: AuthFormState, formData: FormData): Prom
 export async function logOut(formData: FormData): Promise<void> {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  redirect(`/${readLocale(formData)}`);
+  // Stay on the current page, unless it needs a login.
+  redirect(logoutRedirectPath(formData.get("next"), readLocale(formData)));
 }

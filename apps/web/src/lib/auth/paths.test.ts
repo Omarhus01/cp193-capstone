@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { isProtectedPath, loginRedirectPath, safeNextPath } from "./paths";
+import {
+  authLinkNextPath,
+  isProtectedPath,
+  loginRedirectPath,
+  logoutRedirectPath,
+  safeNextPath,
+} from "./paths";
 
 describe("isProtectedPath", () => {
   it("protects surah pages in every locale", () => {
@@ -47,5 +53,42 @@ describe("safeNextPath", () => {
     expect(safeNextPath("/\\evil.example", "en")).toBe("/en");
     expect(safeNextPath("/en/\\evil.example", "en")).toBe("/en");
     expect(safeNextPath("/\t/evil.example", "en")).toBe("/en");
+  });
+});
+
+describe("authLinkNextPath", () => {
+  const params = (query = "") => new URLSearchParams(query);
+
+  it("returns the current page, query string included", () => {
+    expect(authLinkNextPath("/en", params(), "en")).toBe("/en");
+    expect(authLinkNextPath("/ko/surah/2", params("x=1"), "ko")).toBe("/ko/surah/2?x=1");
+  });
+
+  it("keeps the existing next on the login and signup pages", () => {
+    expect(authLinkNextPath("/en/login", params("next=%2Fen%2Fsurah%2F3"), "en")).toBe(
+      "/en/surah/3",
+    );
+    expect(authLinkNextPath("/ko/signup", params(), "ko")).toBe("/ko");
+  });
+
+  it("drops an unsafe next on the login page", () => {
+    expect(authLinkNextPath("/en/login", params("next=%2F%2Fevil.example"), "en")).toBe("/en");
+  });
+});
+
+describe("logoutRedirectPath", () => {
+  it("stays on a public page", () => {
+    expect(logoutRedirectPath("/ko", "ko")).toBe("/ko");
+    expect(logoutRedirectPath("/en/login?next=%2Fen", "en")).toBe("/en/login?next=%2Fen");
+  });
+
+  it("goes home from a protected page", () => {
+    expect(logoutRedirectPath("/en/surah/1", "en")).toBe("/en");
+    expect(logoutRedirectPath("/ko/surah/2?x=1", "ko")).toBe("/ko");
+  });
+
+  it("goes home when the path is missing or unsafe", () => {
+    expect(logoutRedirectPath(null, "en")).toBe("/en");
+    expect(logoutRedirectPath("https://evil.example", "ko")).toBe("/ko");
   });
 });

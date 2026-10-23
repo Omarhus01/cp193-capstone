@@ -1,23 +1,27 @@
 import { useTranslations } from "next-intl";
-import { AuthForm } from "@/components/auth/AuthForm";
+import { Suspense } from "react";
 import { AuthPageShell } from "@/components/auth/AuthPageShell";
+import { SignupForm } from "@/components/auth/SignupForm";
 import { Link } from "@/i18n/navigation";
 
 export default function SignupPage() {
-  const t = useTranslations("auth");
+  const t = useTranslations();
   return (
     <AuthPageShell
-      title={t("signupTitle")}
+      title={t("auth.signupTitle")}
       footer={
         <>
-          {t("haveAccount")}{" "}
+          {t("auth.haveAccount")}{" "}
           <Link href="/login" className="font-medium text-emerald-700 underline">
-            {t("login")}
+            {t("auth.login")}
           </Link>
         </>
       }
     >
-      <AuthForm mode="signup" />
+      {/* The form reads ?next= from the URL, which is only known at request time. */}
+      <Suspense fallback={<p>{t("common.loading")}</p>}>
+        <SignupForm />
+      </Suspense>
     </AuthPageShell>
   );
 }
