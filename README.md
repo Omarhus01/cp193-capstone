@@ -58,14 +58,19 @@ If you'd rather not use the CLI, paste each migration file into the dashboard's 
 
 1. **Authentication → URL Configuration**
    - Set **Site URL** to `http://localhost:3000` for local work, or to the Vercel URL once deployed.
-   - Add `http://localhost:3000/auth/confirm` and `https://<your-vercel-domain>/auth/confirm` to **Redirect URLs**.
-2. **Authentication → Emails → Confirm signup**: change the link in the template to:
-   ```
-   {{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email&locale={{ .Data.language_pref }}
-   ```
-   The `locale` part sends the user back to the site in the language they signed up in.
+   - Add `http://localhost:3000/auth/confirm**` and `https://<your-vercel-domain>/auth/confirm**` to **Redirect URLs**. The `**` matters: the redirect carries `?locale=…&next=…`, and Supabase sends users to the Site URL instead when the full URL doesn't match.
 
-If you turn **Confirm email** off under **Authentication → Sign In / Providers → Email**, new users are logged in right after signup. In that case you don't need the template change.
+The default **Confirm signup** email works as is. Its `{{ .ConfirmationURL }}` link confirms the address and then redirects to `/auth/confirm?code=…`, where the app exchanges the code for a session (PKCE). Signup sets that redirect target (`emailRedirectTo`), including the user's language and where to go next. The code exchange only works in the browser the user signed up in. If they open the link somewhere else, the address is still confirmed, but they see the login page with a "link invalid" message and need to log in by hand.
+
+**Only once custom SMTP is set up** (Supabase allows template edits only with custom SMTP), you can switch the template to a direct link, which works in any browser. Under **Authentication → Emails → Confirm signup**, change the link to:
+
+```
+{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email&locale={{ .Data.language_pref }}
+```
+
+The `/auth/confirm` route handles both link shapes, so this is optional.
+
+If you turn **Confirm email** off under **Authentication → Sign In / Providers → Email**, new users are logged in right after signup and no email is sent.
 
 ## Run
 
