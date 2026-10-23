@@ -81,7 +81,8 @@ export async function signUp(_previous: AuthFormState, formData: FormData): Prom
 
 export async function logOut(formData: FormData): Promise<void> {
   const supabase = await createClient();
-  await supabase.auth.signOut();
+  // End only this browser's session; the user stays logged in on their other devices.
+  await supabase.auth.signOut({ scope: "local" });
   // Stay on the current page, unless it needs a login.
   redirect(logoutRedirectPath(formData.get("next"), readLocale(formData)));
 }

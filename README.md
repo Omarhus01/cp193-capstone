@@ -105,7 +105,7 @@ E2E_EMAIL=you@example.com E2E_PASSWORD=... npm run test:e2e        # bash
 $env:E2E_EMAIL="you@example.com"; $env:E2E_PASSWORD="..."; npm run test:e2e   # PowerShell
 ```
 
-Those tests run one at a time, because logging out ends every session of the account. A run also logs that account out in any other browser.
+Logging out only ends the current browser's session, so these tests can share one account and run in parallel. A run doesn't log the account out anywhere else.
 
 ### Pre-push hook
 
