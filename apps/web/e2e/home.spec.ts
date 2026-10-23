@@ -17,6 +17,13 @@ for (const { locale, messages } of homePages) {
   });
 }
 
+test("pages opt out of browser translation", async ({ page }) => {
+  await page.goto("/ko");
+
+  await expect(page.locator("html")).toHaveAttribute("translate", "no");
+  await expect(page.locator('meta[name="google"]')).toHaveAttribute("content", "notranslate");
+});
+
 test("the root path redirects to English", async ({ page }) => {
   await page.goto("/");
   await expect(page).toHaveURL(/\/en$/);

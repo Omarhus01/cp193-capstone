@@ -17,7 +17,12 @@ export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Pr
     return {};
   }
   const t = await getTranslations({ locale, namespace: "metadata" });
-  return { title: t("title"), description: t("description") };
+  return {
+    title: t("title"),
+    description: t("description"),
+    // Renders <meta name="google" content="notranslate">. See translate="no" below.
+    other: { google: "notranslate" },
+  };
 }
 
 export default async function LocaleLayout({ children, params }: LayoutProps<"/[locale]">) {
@@ -27,7 +32,9 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
   }
 
   return (
-    <html lang={locale} className={`${fontVariables} h-full antialiased`}>
+    // Page translators rewrite the text React manages, which breaks hydration, and machine
+    // translation can turn 알라 into "God". The site provides its own EN/KO versions instead.
+    <html lang={locale} translate="no" className={`${fontVariables} h-full antialiased`}>
       <body className="flex min-h-full flex-col bg-white text-zinc-900">
         <NextIntlClientProvider>
           <Header />
