@@ -16,9 +16,11 @@
     "test": "npm run test -w apps/web",
     "test:e2e": "npm run test:e2e -w apps/web",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "husky": "^9.1.7",
     "prettier": "^3.9.10",
     "supabase": "^2.121.0"
   }

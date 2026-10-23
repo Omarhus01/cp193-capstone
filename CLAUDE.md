@@ -70,7 +70,7 @@ npm run test:e2e       # Playwright (builds and serves on :3100)
 npx supabase db push   # apply migrations to the linked project
 ```
 
-CI runs format:check, lint, typecheck, and test on every push and PR.
+GitHub Actions is unavailable on the owner's account for now. A husky pre-push hook (`.husky/pre-push`) runs format:check, lint, typecheck, and test locally and blocks the push if any fail. `npm install` sets it up through the `prepare` script. `.github/workflows/ci.yml` runs the same checks on every push and PR and stays in place for when Actions is back. Don't bypass the hook with `--no-verify`.
 
 ## Conventions
 

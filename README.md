@@ -23,6 +23,7 @@ This is sprint 1, step 1: the site shell, English/Korean routing, and email-and-
 | `supabase/migrations/` | Database schema as SQL migrations                                  |
 | `prompts/`             | Prompts for the Q&A model (placeholder)                            |
 | `.github/workflows/`   | CI: format check, lint, typecheck, unit tests on every push and PR |
+| `.husky/`              | Pre-push hook that runs the same checks locally                    |
 
 ## Requirements
 
@@ -91,6 +92,10 @@ npx playwright install chromium
 ```
 
 The end-to-end tests only cover logged-out flows. They run without a Supabase project, because placeholder values are used when `.env.local` is missing.
+
+### Pre-push hook
+
+GitHub Actions is unavailable on the project account for now, so a [husky](https://typicode.github.io/husky/) pre-push hook runs `format:check`, `lint`, `typecheck` and `npm test` before every `git push`. If any of them fails, the push is blocked. `npm install` installs the hook. The workflow in `.github/workflows/ci.yml` runs the same checks and stays in the repo for when Actions is available again.
 
 ## Deploy (Vercel)
 
