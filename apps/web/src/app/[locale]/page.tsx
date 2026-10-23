@@ -1,4 +1,6 @@
 import { useTranslations } from "next-intl";
+import { Suspense } from "react";
+import { AccountHint } from "@/components/home/AccountHint";
 import { Link } from "@/i18n/navigation";
 
 export default function HomePage() {
@@ -14,7 +16,10 @@ export default function HomePage() {
         >
           {t("start")}
         </Link>
-        <p className="text-sm text-zinc-500">{t("accountHint")}</p>
+        {/* Reads the session cookie, so it streams in after the static shell. */}
+        <Suspense fallback={null}>
+          <AccountHint />
+        </Suspense>
       </div>
     </section>
   );
