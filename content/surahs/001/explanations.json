@@ -1,0 +1,20 @@
+{
+  "$schema": "../../schema/explanations.schema.json",
+  "explanations": [
+    {
+      "id": "001-reading-1",
+      "kind": "reading_section",
+      "span": { "from": "1:1", "to": "1:7" },
+      "parts": {
+        "wordMeanings": { "en": null, "ko": null },
+        "background": { "en": null, "ko": null },
+        "context": { "en": null, "ko": null },
+        "connectedVerses": { "en": null, "ko": null }
+      },
+      "citations": [],
+      "contextLinks": [],
+      "status": "draft",
+      "review": []
+    }
+  ]
+}

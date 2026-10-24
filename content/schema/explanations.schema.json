@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "explanations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "A stable id, such as \"001-reading-1\". Never reuse one for something else."
+          },
+          "kind": {
+            "type": "string",
+            "enum": ["phrase_note", "verse_explanation", "reading_section"],
+            "description": "phrase_note: part of one verse (word refs). verse_explanation: one or more whole verses. reading_section: a section of the surah, listed in reading.json."
+          },
+          "span": {
+            "type": "object",
+            "properties": {
+              "from": {
+                "type": "string",
+                "pattern": "^([1-9]\\d{0,2}):([1-9]\\d{0,2})(?::([1-9]\\d{0,2}))?$"
+              },
+              "to": {
+                "type": "string",
+                "pattern": "^([1-9]\\d{0,2}):([1-9]\\d{0,2})(?::([1-9]\\d{0,2}))?$"
+              }
+            },
+            "required": ["from", "to"],
+            "additionalProperties": false,
+            "description": "From and to, inclusive. \"1:2\" is the whole verse; \"1:2:3\" is its third word. A phrase: { \"from\": \"1:2:1\", \"to\": \"1:2:3\" }. Several verses: { \"from\": \"1:2\", \"to\": \"1:4\" }."
+          },
+          "parts": {
+            "type": "object",
+            "properties": {
+              "wordMeanings": {
+                "type": "object",
+                "properties": {
+                  "en": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] },
+                  "ko": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] }
+                },
+                "required": ["en", "ko"],
+                "additionalProperties": false,
+                "description": "English and Korean. null until written."
+              },
+              "background": {
+                "type": "object",
+                "properties": {
+                  "en": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] },
+                  "ko": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] }
+                },
+                "required": ["en", "ko"],
+                "additionalProperties": false,
+                "description": "English and Korean. null until written."
+              },
+              "context": {
+                "type": "object",
+                "properties": {
+                  "en": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] },
+                  "ko": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] }
+                },
+                "required": ["en", "ko"],
+                "additionalProperties": false,
+                "description": "English and Korean. null until written."
+              },
+              "connectedVerses": {
+                "type": "object",
+                "properties": {
+                  "en": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] },
+                  "ko": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] }
+                },
+                "required": ["en", "ko"],
+                "additionalProperties": false,
+                "description": "English and Korean. null until written."
+              }
+            },
+            "required": ["wordMeanings", "background", "context", "connectedVerses"],
+            "additionalProperties": false
+          },
+          "citations": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+              "description": "A stable id, such as \"001-reading-1\". Never reuse one for something else."
+            },
+            "description": "Ids of passages in content/sources/, in the order they are shown."
+          },
+          "contextLinks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "span": {
+                  "type": "object",
+                  "properties": {
+                    "from": {
+                      "type": "string",
+                      "pattern": "^([1-9]\\d{0,2}):([1-9]\\d{0,2})(?::([1-9]\\d{0,2}))?$"
+                    },
+                    "to": {
+                      "type": "string",
+                      "pattern": "^([1-9]\\d{0,2}):([1-9]\\d{0,2})(?::([1-9]\\d{0,2}))?$"
+                    }
+                  },
+                  "required": ["from", "to"],
+                  "additionalProperties": false,
+                  "description": "From and to, inclusive. \"1:2\" is the whole verse; \"1:2:3\" is its third word. A phrase: { \"from\": \"1:2:1\", \"to\": \"1:2:3\" }. Several verses: { \"from\": \"1:2\", \"to\": \"1:4\" }."
+                },
+                "reason": {
+                  "type": "object",
+                  "properties": {
+                    "en": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] },
+                    "ko": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] }
+                  },
+                  "required": ["en", "ko"],
+                  "additionalProperties": false,
+                  "description": "English and Korean. null until written."
+                }
+              },
+              "required": ["span", "reason"],
+              "additionalProperties": false
+            },
+            "description": "Other parts of the text a reader needs for this explanation, and why."
+          },
+          "status": {
+            "type": "string",
+            "enum": ["draft", "en_approved", "ko_drafted", "ko_approved", "published"],
+            "description": "Must be where the review history ends (draft when it's empty)."
+          },
+          "review": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "enum": ["draft", "en_approved", "ko_drafted", "ko_approved", "published"]
+                },
+                "reviewer": { "type": "string", "minLength": 1 },
+                "date": {
+                  "type": "string",
+                  "format": "date",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                },
+                "notes": { "type": "string", "minLength": 1 }
+              },
+              "required": ["status", "reviewer", "date"],
+              "additionalProperties": false,
+              "description": "One review step. Sending an item back to an earlier step needs notes."
+            }
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "span",
+          "parts",
+          "citations",
+          "contextLinks",
+          "status",
+          "review"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["explanations"],
+  "additionalProperties": false
+}

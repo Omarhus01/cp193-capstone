@@ -28,7 +28,8 @@ The full proposal, with the market research, sprint plan, and user-testing plan,
   - 하나님 is banned everywhere. It is the Christian term and changes the meaning of the verse.
   - The Korean terms for إله and رب come from the Islamic terms glossary once the owner's reviewers approve it (#8). Don't invent them.
   - `findBannedTerms` (`src/lib/services/terminology.ts`) flags 하나님 and capitalized "God" used as a name. Lowercase "god" passes. A unit test runs it over the message files.
-- **Never write Quran verses, translations, explanations, or word meanings.** The project owner provides and validates all religious content. It lives in `content/` from step 2 on. Don't generate placeholder verses either.
+- **Never write Quran verses, translations, explanations, or word meanings.** The project owner provides and validates all religious content in `content/`. Don't generate placeholder verses, explanations or meanings either. The Quran text comes only from Tanzil, through `npm run content:import-tanzil`, and is never edited by hand.
+- **Only published content reaches readers.** Explanations, word meanings and surah briefs go draft → en_approved → ko_drafted → ko_approved → published, one step at a time ([ADR 0011](docs/decisions/0011-content-in-git-seeded-into-supabase.md), `content/README.md`).
 
 ## Stack (fixed for all sprints)
 
@@ -50,9 +51,11 @@ apps/web/                 Next.js site (npm workspace)
   e2e/                    Playwright specs
   src/proxy.ts            Next 16 "proxy" (formerly middleware): locale routing, session refresh, protected-route redirect
   src/i18n/               next-intl routing, navigation, request config, locale helpers
-  src/lib/services/       business logic: auth/ (paths, validation, accounts, requireUserId), surah, terminology
-  src/lib/data/           all database access: auth, session (the only importers of lib/supabase)
-  src/lib/supabase/       browser, server and proxy client factories, env reading
+  src/lib/services/       business logic: auth/ (paths, validation, accounts, requireUserId), surah, terminology,
+                          review (review steps), content/ (content file schema, loading, validation, seed payload)
+  src/lib/data/           all database access: auth, session, content (the only importers of lib/supabase)
+  src/lib/supabase/       browser, server, proxy and public (cookie-less, for published content) client factories
+  scripts/                content tooling run with tsx: import-tanzil, write-content-schema, seed-content
   src/lib/domain/         domain types shared by every layer
   src/lib/ai/             RetrievalProvider interface and its mock
   src/architecture.test.ts  checks the ESLint layer rules
@@ -61,7 +64,7 @@ apps/web/                 Next.js site (npm workspace)
   src/components/         layout/ (header pieces), auth/ (forms), text/ArabicText
 services/ai/              placeholder (sprint 2)
 experiments/              placeholder
-content/                  verse JSON (step 2), provided by the owner
+content/                  Quran text (Tanzil), explanations, word meanings, sources as JSON; see content/README.md
 supabase/migrations/      SQL migrations
 prompts/                  model prompts (placeholder)
 docs/proposal.pdf         project proposal
@@ -80,6 +83,8 @@ npm run typecheck      # next typegen && tsc --noEmit
 npm test               # Vitest
 npm run test:e2e       # Playwright (builds and serves on :3100)
 npx supabase db push   # apply migrations to the linked project
+npm run content:seed   # load content/ into Supabase (needs SUPABASE_SERVICE_ROLE_KEY in the shell)
+npm run content:schema # rewrite content/schema/ after changing the Zod schemas
 ```
 
 `.github/workflows/ci.yml` runs format:check, lint, typecheck, and test on every push and PR. Its job, `Format, lint, typecheck, unit tests`, is a required check on `main`. A husky pre-push hook (`.husky/pre-push`) runs the same checks locally as a safety net and blocks the push if any fail. `npm install` sets it up through the `prepare` script. Don't bypass the hook with `--no-verify`.
@@ -111,7 +116,7 @@ Each layer imports only from the layers below it ([ADR 0009](docs/decisions/0009
 app/ (routes, pages, server actions) → components/ → lib/services/ → lib/data/ → lib/supabase/ → Supabase
 ```
 
-- **`lib/data`** holds all database access. It is the only code that imports `@/lib/supabase/*` or `@supabase/*`, and it returns plain results, not Supabase objects. `src/proxy.ts` is infrastructure and calls `lib/data/session` directly.
+- **`lib/data`** holds all database access. It is the only code that imports `@/lib/supabase/*` or `@supabase/*`, and it returns plain results, not Supabase objects. `src/proxy.ts` is infrastructure and calls `lib/data/session` directly. The one exception outside `src` is `scripts/seed-content.mts`, which writes content with the service role key through the `seed_content` database function ([ADR 0011](docs/decisions/0011-content-in-git-seeded-into-supabase.md)).
 - **`lib/services`** holds the business logic. Pages and components use it and never import `lib/data` or `lib/ai`. Components may import server actions from `app/`.
 - **`lib/ai`**: AI features go through interfaces here. `RetrievalProvider` answers with citations or declines. The mock serves prepared answers now, and the real provider (#10) plugs in later without page changes.
 - **`lib/domain`**: domain types live here, in one place, and every layer may import them. It imports no other layer.
@@ -129,5 +134,6 @@ app/ (routes, pages, server actions) → components/ → lib/services/ → lib/d
   - Server code checks the session with `getCurrentUserId()` (`@/lib/services/auth/accounts`) or `requireUserId()` (`@/lib/services/auth/require-user`), which use `getClaims()` and so verify the JWT.
   - Pages check the session themselves and don't rely on the proxy alone.
   - Redirect targets from user input go through `safeNextPath`.
+- **Content:** explanations attach to spans, not verses, and verse numbering follows the Hafs mushaf as in Tanzil ([ADR 0012](docs/decisions/0012-explanations-attach-to-spans.md)). Public content is read with `createPublicClient()` and filtered on `status = 'published'` on top of RLS.
 - **Database:** every table has row level security enabled with explicit policies. Change the schema only through a new migration file. Never edit an applied migration.
 - **Code style:** keep components small and clearly named. Other people read this code. Put pure logic in `src/lib/services/`, with a colocated `*.test.ts`.

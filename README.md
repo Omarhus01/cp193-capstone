@@ -10,22 +10,22 @@ A platform that explains the Quran to Korean-speaking learners who don't read Ar
 
 The project proposal is in [`docs/proposal.pdf`](docs/proposal.pdf).
 
-This is sprint 1, step 1: the site shell, English/Korean routing, and email-and-password accounts. It has no verse content yet.
+Sprint 1 so far: the site shell, English/Korean routing, email-and-password accounts, and the content model (Quran text, explanations, review steps, sources) with Al-Fatiha's text. Explanations arrive as the owner writes and reviews them.
 
 ## Repository layout
 
-| Path                   | What it holds                                                      |
-| ---------------------- | ------------------------------------------------------------------ |
-| `apps/web/`            | Next.js site (App Router, TypeScript, Tailwind, next-intl)         |
-| `services/ai/`         | Python FastAPI service for the Q&A panel (sprint 2, empty for now) |
-| `experiments/`         | Model and retrieval trials (empty for now)                         |
-| `content/`             | Verse JSON (arrives in step 2)                                     |
-| `supabase/migrations/` | Database schema as SQL migrations                                  |
-| `prompts/`             | Prompts for the Q&A model (placeholder)                            |
-| `.github/workflows/`   | CI: format check, lint, typecheck, unit tests on every push and PR |
-| `.husky/`              | Pre-push hook that runs the same checks locally                    |
-| `docs/decisions/`      | Architecture decision records (ADRs)                               |
-| `CONTRIBUTING.md`      | Issue → branch → pull request workflow and definition of done      |
+| Path                   | What it holds                                                              |
+| ---------------------- | -------------------------------------------------------------------------- |
+| `apps/web/`            | Next.js site (App Router, TypeScript, Tailwind, next-intl)                 |
+| `services/ai/`         | Python FastAPI service for the Q&A panel (sprint 2, empty for now)         |
+| `experiments/`         | Model and retrieval trials (empty for now)                                 |
+| `content/`             | Quran text, explanations and sources as JSON ([README](content/README.md)) |
+| `supabase/migrations/` | Database schema as SQL migrations                                          |
+| `prompts/`             | Prompts for the Q&A model (placeholder)                                    |
+| `.github/workflows/`   | CI: format check, lint, typecheck, unit tests on every push and PR         |
+| `.husky/`              | Pre-push hook that runs the same checks locally                            |
+| `docs/decisions/`      | Architecture decision records (ADRs)                                       |
+| `CONTRIBUTING.md`      | Issue → branch → pull request workflow and definition of done              |
 
 ## Requirements
 
@@ -55,6 +55,17 @@ npx supabase db push
 ```
 
 If you'd rather not use the CLI, paste each migration file into the dashboard's **SQL Editor** and run it.
+
+### Content
+
+Load `content/` into the database after applying the migrations, and again after every content change. The seed needs the project's service role key (**Project Settings → API**). Pass it in the shell, never in a file:
+
+```bash
+SUPABASE_SERVICE_ROLE_KEY=... npm run content:seed                       # bash
+$env:SUPABASE_SERVICE_ROLE_KEY="..."; npm run content:seed               # PowerShell
+```
+
+[`content/README.md`](content/README.md) explains the files, the review steps, and how to try migrations and the seed on a local Supabase in Docker first.
 
 ### Auth settings (Supabase dashboard)
 

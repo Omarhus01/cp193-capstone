@@ -17,7 +17,10 @@
     "test:e2e": "npm run test:e2e -w apps/web",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "content:schema": "npm run content:schema -w apps/web",
+    "content:import-tanzil": "npm run content:import-tanzil -w apps/web --",
+    "content:seed": "npm run content:seed -w apps/web"
   },
   "devDependencies": {
     "husky": "^9.1.7",

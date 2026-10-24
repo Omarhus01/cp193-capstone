@@ -1,0 +1,4 @@
+{
+  "$schema": "../../schema/reading.schema.json",
+  "sections": ["001-reading-1"]
+}

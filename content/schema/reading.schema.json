@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+        "description": "A stable id, such as \"001-reading-1\". Never reuse one for something else."
+      },
+      "description": "Ids of reading_section explanations. Together they cover the surah from its first verse to its last, with no gaps or overlaps."
+    }
+  },
+  "required": ["sections"],
+  "additionalProperties": false
+}
