@@ -24,6 +24,8 @@ This is sprint 1, step 1: the site shell, English/Korean routing, and email-and-
 | `prompts/`             | Prompts for the Q&A model (placeholder)                            |
 | `.github/workflows/`   | CI: format check, lint, typecheck, unit tests on every push and PR |
 | `.husky/`              | Pre-push hook that runs the same checks locally                    |
+| `docs/decisions/`      | Architecture decision records (ADRs)                               |
+| `CONTRIBUTING.md`      | Issue → branch → pull request workflow and definition of done      |
 
 ## Requirements
 
@@ -107,9 +109,11 @@ $env:E2E_EMAIL="you@example.com"; $env:E2E_PASSWORD="..."; npm run test:e2e   # 
 
 Logging out only ends the current browser's session, so these tests can share one account and run in parallel. A run doesn't log the account out anywhere else.
 
-### Pre-push hook
+### CI and the pre-push hook
 
-GitHub Actions is unavailable on the project account for now, so a [husky](https://typicode.github.io/husky/) pre-push hook runs `format:check`, `lint`, `typecheck` and `npm test` before every `git push`. If any of them fails, the push is blocked. `npm install` installs the hook. The workflow in `.github/workflows/ci.yml` runs the same checks and stays in the repo for when Actions is available again.
+`.github/workflows/ci.yml` runs `format:check`, `lint`, `typecheck` and `npm test` on every push and pull request. `main` is protected: changes arrive only through a pull request, and the CI job must pass first. See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow.
+
+A [husky](https://typicode.github.io/husky/) pre-push hook runs the same checks before every `git push` and blocks the push if any of them fails, so problems show up before CI. `npm install` installs the hook.
 
 ## Deploy (Vercel)
 

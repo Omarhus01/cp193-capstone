@@ -1,0 +1,46 @@
+# Architecture decision records
+
+Each file records one decision: why it was needed, what was chosen, what else was considered, and what follows from it. Write one whenever a pull request makes a decision someone might later ask "why?" about (see the definition of done in [`CONTRIBUTING.md`](../../CONTRIBUTING.md)).
+
+Records are not rewritten when a decision changes. Add a new record and set the old one's status to `Superseded by NNNN`. Small clarifications, such as a note that a constraint went away, can go under the old record's Consequences.
+
+| #                                                  | Decision                                                            | Status   |
+| -------------------------------------------------- | ------------------------------------------------------------------- | -------- |
+| [0001](0001-nextjs-supabase-stack.md)              | Next.js and Supabase as the stack                                   | Accepted |
+| [0002](0002-npm-workspaces-monorepo.md)            | One repository with npm workspaces                                  | Accepted |
+| [0003](0003-next-intl-locale-routing.md)           | next-intl with `/en` and `/ko` routes, locale read from the route   | Accepted |
+| [0004](0004-proxy-auth-with-cache-components.md)   | Session refresh in the proxy, session checks in pages, under Cache Components | Accepted |
+| [0005](0005-translate-no.md)                       | Opt pages out of browser translation                                | Accepted |
+| [0006](0006-local-logout.md)                       | Log out of the current browser only                                 | Accepted |
+| [0007](0007-husky-pre-push-hook.md)                | Run the CI checks in a husky pre-push hook                          | Accepted |
+| [0008](0008-terms-follow-the-arabic-word.md)       | Islamic terms follow the Arabic word (الله → Allah, never 하나님)   | Accepted |
+| [0009](0009-layered-architecture.md)               | Layered architecture with a data layer and AI provider interfaces   | Accepted |
+| [0010](0010-github-workflow.md)                    | Issue branches, pull requests with merge commits, protected `main`  | Accepted |
+
+## Template
+
+Copy this into `NNNN-short-name.md`, using the next free number.
+
+```markdown
+# NNNN. Title
+
+- Status: Proposed | Accepted | Superseded by NNNN
+- Date: YYYY-MM-DD
+- Issue: #N
+
+## Context
+
+What problem or constraint forced a decision.
+
+## Decision
+
+What we chose, stated plainly.
+
+## Alternatives
+
+What else we considered, and why we didn't choose it.
+
+## Consequences
+
+What follows, good and bad: what becomes easier, what becomes harder, what we now have to keep doing.
+```
