@@ -2,8 +2,8 @@ import createIntlMiddleware from "next-intl/middleware";
 import { NextResponse, type NextRequest } from "next/server";
 import { stripLocale } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
-import { isProtectedPath, loginRedirectPath } from "@/lib/auth/paths";
-import { updateSession } from "@/lib/supabase/proxy";
+import { isProtectedPath, loginRedirectPath } from "@/lib/services/auth/paths";
+import { refreshSession } from "@/lib/data/session";
 
 const handleI18nRouting = createIntlMiddleware(routing);
 
@@ -19,7 +19,7 @@ export default async function proxy(request: NextRequest) {
     return response;
   }
 
-  const { isLoggedIn } = await updateSession(request, response);
+  const { isLoggedIn } = await refreshSession(request, response);
 
   const { pathname, search } = request.nextUrl;
   const { locale } = stripLocale(pathname);

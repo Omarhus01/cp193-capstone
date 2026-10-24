@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import type { Locale } from "@/i18n/locale";
-import { getCurrentUserId } from "@/lib/supabase/server";
+import { getCurrentUserId } from "@/lib/data/auth";
 import { loginRedirectPath } from "./paths";
 
 /**

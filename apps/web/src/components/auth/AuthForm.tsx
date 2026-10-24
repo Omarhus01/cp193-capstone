@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useActionState } from "react";
 import { logIn, signUp, type AuthFormState } from "@/app/[locale]/auth-actions";
-import { MIN_PASSWORD_LENGTH, type AuthErrorKey } from "@/lib/auth/validation";
+import { MIN_PASSWORD_LENGTH, type AuthErrorKey } from "@/lib/services/auth/validation";
 import { FormError } from "./FormError";
 
 type AuthFormProps = {

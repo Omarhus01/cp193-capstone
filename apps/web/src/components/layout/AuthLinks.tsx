@@ -4,7 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 // next/navigation's usePathname keeps the locale prefix, which safeNextPath requires.
 import { usePathname, useSearchParams } from "next/navigation";
 import { Link } from "@/i18n/navigation";
-import { authLinkNextPath } from "@/lib/auth/paths";
+import { authLinkNextPath } from "@/lib/services/auth/paths";
 
 /** Log in / Sign up links that bring the user back to the current page. Reads the URL. */
 export function AuthLinks() {

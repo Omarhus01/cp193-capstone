@@ -21,7 +21,13 @@ The full proposal, with the market research, sprint plan, and user-testing plan,
 
 ## Content rules (non-negotiable)
 
-- **Always write "Allah", never "God".** In Korean UI text use 알라, never 하나님. 하나님 is the Christian term and changes the meaning of the verse (proposal §2.1). A unit test enforces this for the message files.
+- **Islamic terms follow the Arabic word** ([ADR 0008](docs/decisions/0008-terms-follow-the-arabic-word.md), proposal §2.1):
+  - الله is a name: always "Allah" in English and 알라 in Korean, never "God" or 하나님.
+  - إله means god or deity, so "god" is correct (لا إله إلا الله = "there is no god but Allah").
+  - رب means Lord (وهو رب العرش العظيم = "He is the Lord of the Mighty Throne").
+  - 하나님 is banned everywhere. It is the Christian term and changes the meaning of the verse.
+  - The Korean terms for إله and رب come from the Islamic terms glossary once the owner's reviewers approve it (#8). Don't invent them.
+  - `findBannedTerms` (`src/lib/services/terminology.ts`) flags 하나님 and capitalized "God" used as a name. Lowercase "god" passes. A unit test runs it over the message files.
 - **Never write Quran verses, translations, explanations, or word meanings.** The project owner provides and validates all religious content. It lives in `content/` from step 2 on. Don't generate placeholder verses either.
 
 ## Stack (fixed for all sprints)
@@ -31,7 +37,7 @@ The full proposal, with the market research, sprint plan, and user-testing plan,
 - **AI (sprint 2):** a Python FastAPI service in `services/ai/`
 - **Hosting:** Vercel (root directory `apps/web`)
 - **Tests:** Vitest for unit tests, Playwright for end-to-end tests
-- **CI:** GitHub Actions
+- **CI:** GitHub Actions, a required check on `main`
 - **Formatting:** Prettier
 
 Ask before adding any dependency that isn't already in a package.json.
@@ -44,8 +50,12 @@ apps/web/                 Next.js site (npm workspace)
   e2e/                    Playwright specs
   src/proxy.ts            Next 16 "proxy" (formerly middleware): locale routing, session refresh, protected-route redirect
   src/i18n/               next-intl routing, navigation, request config, locale helpers
-  src/lib/auth/           path rules, credential validation, requireUserId
-  src/lib/supabase/       browser, server and proxy clients, env reading
+  src/lib/services/       business logic: auth/ (paths, validation, accounts, requireUserId), surah, terminology
+  src/lib/data/           all database access: auth, session (the only importers of lib/supabase)
+  src/lib/supabase/       browser, server and proxy client factories, env reading
+  src/lib/domain/         domain types shared by every layer
+  src/lib/ai/             RetrievalProvider interface and its mock
+  src/architecture.test.ts  checks the ESLint layer rules
   src/app/[locale]/       pages: home, login, signup, surah/[n] (protected), auth server actions
   src/app/auth/confirm/   email confirmation route (outside the locale prefix)
   src/components/         layout/ (header pieces), auth/ (forms), text/ArabicText
@@ -55,6 +65,8 @@ content/                  verse JSON (step 2), provided by the owner
 supabase/migrations/      SQL migrations
 prompts/                  model prompts (placeholder)
 docs/proposal.pdf         project proposal
+docs/decisions/           architecture decision records (ADRs)
+CONTRIBUTING.md           workflow and definition of done
 ```
 
 ## Commands (from the repo root)
@@ -70,7 +82,40 @@ npm run test:e2e       # Playwright (builds and serves on :3100)
 npx supabase db push   # apply migrations to the linked project
 ```
 
-GitHub Actions is unavailable on the owner's account for now. A husky pre-push hook (`.husky/pre-push`) runs format:check, lint, typecheck, and test locally and blocks the push if any fail. `npm install` sets it up through the `prepare` script. `.github/workflows/ci.yml` runs the same checks on every push and PR and stays in place for when Actions is back. Don't bypass the hook with `--no-verify`.
+`.github/workflows/ci.yml` runs format:check, lint, typecheck, and test on every push and PR. Its job, `Format, lint, typecheck, unit tests`, is a required check on `main`. A husky pre-push hook (`.husky/pre-push`) runs the same checks locally as a safety net and blocks the push if any fail. `npm install` sets it up through the `prepare` script. Don't bypass the hook with `--no-verify`.
+
+## Workflow
+
+Details are in [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
+- Work starts from a GitHub issue on the board "CP193 Capstone" (Backlog → Ready → In progress → In review → Done), with milestones `Sprint 1` and `Sprint 2`.
+- One branch per issue: `feat/<issue>-<short-name>`, `fix/…` or `chore/…`.
+- Changes reach `main` only through a pull request that says `Closes #<issue>` and uses `.github/pull_request_template.md`. `main` is protected: a PR and a passing CI check are required, admins included.
+- Merge with a merge commit (`gh pr merge --merge`), never squash or rebase, so each commit stays in the history. Commit messages follow the existing Conventional Commits style.
+
+## Definition of done
+
+- Acceptance criteria met.
+- Unit and e2e tests added and passing.
+- en and ko strings both present.
+- No Supabase calls outside `src/lib/data`.
+- ADR written in `docs/decisions/` if a decision was made.
+- PR merged, with a merge commit.
+- Issue closed.
+
+## Architecture
+
+Each layer imports only from the layers below it ([ADR 0009](docs/decisions/0009-layered-architecture.md)):
+
+```
+app/ (routes, pages, server actions) → components/ → lib/services/ → lib/data/ → lib/supabase/ → Supabase
+```
+
+- **`lib/data`** holds all database access. It is the only code that imports `@/lib/supabase/*` or `@supabase/*`, and it returns plain results, not Supabase objects. `src/proxy.ts` is infrastructure and calls `lib/data/session` directly.
+- **`lib/services`** holds the business logic. Pages and components use it and never import `lib/data` or `lib/ai`. Components may import server actions from `app/`.
+- **`lib/ai`**: AI features go through interfaces here. `RetrievalProvider` answers with citations or declines. The mock serves prepared answers now, and the real provider (#10) plugs in later without page changes.
+- **`lib/domain`**: domain types live here, in one place, and every layer may import them. It imports no other layer.
+- **Enforced:** `no-restricted-imports` blocks in `apps/web/eslint.config.mjs`, checked by `src/architecture.test.ts`. Use the `@/` alias for imports across layers.
 
 ## Conventions
 
@@ -81,8 +126,8 @@ GitHub Actions is unavailable on the owner's account for now. A husky pre-push h
 - **Arabic always goes through `ArabicText`**, which sets `dir="rtl"`, `lang="ar"` and the Amiri font.
 - **Use the navigation exports from `@/i18n/navigation`** (`Link`, `redirect`, `usePathname`, `useRouter`), not `next/link` or `next/navigation`. They keep the locale.
 - **Auth:**
-  - Server code checks the session with `getCurrentUserId()` or `requireUserId()`, which use `getClaims()` and so verify the JWT.
+  - Server code checks the session with `getCurrentUserId()` (`@/lib/services/auth/accounts`) or `requireUserId()` (`@/lib/services/auth/require-user`), which use `getClaims()` and so verify the JWT.
   - Pages check the session themselves and don't rely on the proxy alone.
   - Redirect targets from user input go through `safeNextPath`.
 - **Database:** every table has row level security enabled with explicit policies. Change the schema only through a new migration file. Never edit an applied migration.
-- **Code style:** keep components small and clearly named. Other people read this code. Put pure logic in `src/lib/`, with a colocated `*.test.ts`.
+- **Code style:** keep components small and clearly named. Other people read this code. Put pure logic in `src/lib/services/`, with a colocated `*.test.ts`.

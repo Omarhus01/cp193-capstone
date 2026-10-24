@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import type { AuthErrorKey } from "@/lib/auth/validation";
+import type { AuthErrorKey } from "@/lib/services/auth/validation";
 
 export function FormError({ errorKey }: { errorKey: AuthErrorKey | null }) {
   const t = useTranslations("auth.errors");

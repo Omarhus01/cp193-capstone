@@ -1,4 +1,4 @@
-import { getCurrentUserId } from "@/lib/supabase/server";
+import { getCurrentUserId } from "@/lib/services/auth/accounts";
 import { AuthLinks } from "./AuthLinks";
 import { LogoutButton } from "./LogoutButton";
 
