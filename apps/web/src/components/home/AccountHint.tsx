@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { getCurrentUserId } from "@/lib/supabase/server";
+import { getCurrentUserId } from "@/lib/services/auth/accounts";
 
 /** Tells logged-out users that the surah pages need an account. Render inside <Suspense>. */
 export async function AccountHint() {

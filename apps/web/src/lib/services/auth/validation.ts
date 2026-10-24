@@ -1,3 +1,5 @@
+import type { Credentials } from "@/lib/domain/auth";
+
 export const MIN_PASSWORD_LENGTH = 8;
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -10,8 +12,6 @@ export type AuthErrorKey =
   | "emailNotConfirmed"
   | "signupFailed"
   | "confirmFailed";
-
-export type Credentials = { email: string; password: string };
 
 export function readCredentials(formData: FormData): Credentials {
   return {

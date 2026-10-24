@@ -1,4 +1,4 @@
-import type { EmailOtpType } from "@supabase/supabase-js";
+import type { EmailConfirmation, EmailOtpType } from "@/lib/data/auth";
 import { isLocale, type Locale } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
 import { safeNextPath } from "./paths";
@@ -19,8 +19,7 @@ const EMAIL_OTP_TYPES: readonly EmailOtpType[] = [
  * redirects with a PKCE `code`. A custom email template can link here directly with
  * `token_hash` and `type` instead.
  */
-export type ConfirmCredential =
-  { kind: "code"; code: string } | { kind: "otp"; tokenHash: string; type: EmailOtpType };
+export type ConfirmCredential = EmailConfirmation;
 
 export type ConfirmParams = {
   locale: Locale;

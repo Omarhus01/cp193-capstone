@@ -4,14 +4,13 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { isLocale, type Locale } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
-import { confirmRedirectUrl } from "@/lib/services/auth/confirm";
+import { createAccount, logInWithPassword, logOutThisBrowser } from "@/lib/services/auth/accounts";
 import { logoutRedirectPath, safeNextPath } from "@/lib/services/auth/paths";
 import {
   readCredentials,
   validateCredentials,
   type AuthErrorKey,
 } from "@/lib/services/auth/validation";
-import { createClient } from "@/lib/supabase/server";
 
 export type AuthFormState = {
   error: AuthErrorKey | null;
@@ -43,11 +42,9 @@ export async function logIn(_previous: AuthFormState, formData: FormData): Promi
     return { error: invalid, notice: null };
   }
 
-  const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword(credentials);
+  const error = await logInWithPassword(credentials);
   if (error) {
-    const key = error.code === "email_not_confirmed" ? "emailNotConfirmed" : "invalidCredentials";
-    return { error: key, notice: null };
+    return { error, notice: null };
   }
 
   redirect(safeNextPath(formData.get("next"), locale));
@@ -62,31 +59,26 @@ export async function signUp(_previous: AuthFormState, formData: FormData): Prom
   }
 
   const next = safeNextPath(formData.get("next"), locale);
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.signUp({
-    ...credentials,
-    options: {
-      // Read by the database trigger that creates the user's profiles row.
-      data: { language_pref: locale },
-      // Where the confirmation email link lands (src/app/auth/confirm/route.ts).
-      emailRedirectTo: confirmRedirectUrl(await requestOrigin(), locale, next),
-    },
+  const result = await createAccount({
+    credentials,
+    locale,
+    origin: await requestOrigin(),
+    next,
   });
-  if (error) {
-    return { error: "signupFailed", notice: null };
+  if (result.error) {
+    return { error: result.error, notice: null };
   }
 
   // With email confirmation turned off, Supabase logs the user in right away.
-  if (data.session) {
+  if (result.loggedIn) {
     redirect(next);
   }
   return { error: null, notice: "checkEmail" };
 }
 
 export async function logOut(formData: FormData): Promise<void> {
-  const supabase = await createClient();
   // End only this browser's session; the user stays logged in on their other devices.
-  await supabase.auth.signOut({ scope: "local" });
+  await logOutThisBrowser();
   // Stay on the current page, unless it needs a login.
   redirect(logoutRedirectPath(formData.get("next"), readLocale(formData)));
 }
