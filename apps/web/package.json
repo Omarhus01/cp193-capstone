@@ -11,7 +11,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "content:schema": "tsx scripts/write-content-schema.mts"
+    "content:schema": "tsx scripts/write-content-schema.mts",
+    "content:import-tanzil": "tsx scripts/import-tanzil.mts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

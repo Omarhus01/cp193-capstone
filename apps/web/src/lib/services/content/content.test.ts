@@ -1,7 +1,21 @@
 import { describe, expect, it } from "vitest";
-import type { ContentBundle, ContentError } from "./load";
+import { loadContent, type ContentBundle, type ContentError } from "./load";
 import { explanation, testBundle } from "./test-bundle";
 import { validateContent } from "./validate";
+
+describe("content/", () => {
+  it("passes the schema and every check", () => {
+    const { bundle, errors } = loadContent();
+    expect([...errors, ...validateContent(bundle)]).toEqual([]);
+    expect(bundle.surahs.map((s) => s.number)).toContain(1);
+  });
+
+  it("keeps Al-Fatiha's Basmala as verse 1:1, as in Tanzil", () => {
+    const fatiha = loadContent().bundle.surahs.find((s) => s.number === 1);
+    expect(fatiha?.text.surah).toMatchObject({ verseCount: 7, basmala: null });
+    expect(fatiha?.text.verses[0].ayah).toBe(1);
+  });
+});
 
 /** Validates a copy of the test bundle after `change`, and returns the messages. */
 function errorsAfter(change: (bundle: ContentBundle) => void): ContentError[] {

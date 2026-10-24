@@ -18,7 +18,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky",
-    "content:schema": "npm run content:schema -w apps/web"
+    "content:schema": "npm run content:schema -w apps/web",
+    "content:import-tanzil": "npm run content:import-tanzil -w apps/web --"
   },
   "devDependencies": {
     "husky": "^9.1.7",
