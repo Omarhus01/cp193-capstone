@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import en from "../../messages/en.json";
 import ko from "../../messages/ko.json";
+import { findBannedTerms } from "@/lib/services/terminology";
 import { isLocale, stripLocale } from "./locale";
 
 describe("isLocale", () => {
@@ -48,8 +49,8 @@ describe("message files", () => {
     expect(messageKeys(ko).sort()).toEqual(messageKeys(en).sort());
   });
 
-  it("never use 하나님 or God for Allah", () => {
-    expect(JSON.stringify(ko)).not.toContain("하나님");
-    expect(JSON.stringify(en)).not.toMatch(/\bGod\b/);
+  it("never use 하나님, or God as a name", () => {
+    expect(findBannedTerms(JSON.stringify(ko))).toEqual([]);
+    expect(findBannedTerms(JSON.stringify(en))).toEqual([]);
   });
 });
