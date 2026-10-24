@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "source": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+          "description": "A stable id, such as \"001-reading-1\". Never reuse one for something else."
+        },
+        "titleAr": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] },
+        "titleEn": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] },
+        "author": { "type": "string", "minLength": 1 },
+        "edition": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] },
+        "type": {
+          "type": "string",
+          "enum": ["tafsir", "asbab_al_nuzul", "word_dictionary", "hadith"]
+        }
+      },
+      "required": ["id", "titleAr", "titleEn", "author", "edition", "type"],
+      "additionalProperties": false
+    },
+    "passages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "A stable id, such as \"001-reading-1\". Never reuse one for something else."
+          },
+          "volume": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] },
+          "page": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] },
+          "verse": {
+            "anyOf": [
+              { "type": "string", "pattern": "^[1-9]\\d{0,2}:[1-9]\\d{0,2}$" },
+              { "type": "null" }
+            ],
+            "description": "For sources arranged by verse, when there is no page to cite."
+          },
+          "textAr": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] },
+          "summary": {
+            "type": "object",
+            "properties": {
+              "en": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] },
+              "ko": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] }
+            },
+            "required": ["en", "ko"],
+            "additionalProperties": false,
+            "description": "English and Korean. null until written."
+          }
+        },
+        "required": ["id", "volume", "page", "verse", "textAr", "summary"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["source", "passages"],
+  "additionalProperties": false
+}

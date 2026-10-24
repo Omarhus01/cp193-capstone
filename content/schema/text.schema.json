@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "attribution": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Tanzil's copyright notice, verbatim. Its terms require it in every derived file."
+    },
+    "surah": {
+      "type": "object",
+      "properties": {
+        "number": { "type": "integer", "minimum": 1, "maximum": 114 },
+        "nameAr": { "type": "string", "minLength": 1 },
+        "revelationPlace": { "type": "string", "enum": ["meccan", "medinan"] },
+        "verseCount": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "basmala": {
+          "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }],
+          "description": "Shown before verse 1. null for Al-Fatiha (where it is 1:1) and 9."
+        }
+      },
+      "required": ["number", "nameAr", "revelationPlace", "verseCount", "basmala"],
+      "additionalProperties": false
+    },
+    "verses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ayah": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+          "text": { "type": "string", "minLength": 1 }
+        },
+        "required": ["ayah", "text"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["attribution", "surah", "verses"],
+  "additionalProperties": false
+}

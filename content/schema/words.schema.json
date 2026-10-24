@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "attribution": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Tanzil's copyright notice, verbatim. Its terms require it in every derived file."
+    },
+    "verses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ayah": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+          "words": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "position": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+                "text": { "type": "string", "minLength": 1 },
+                "root": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] }
+              },
+              "required": ["position", "text", "root"],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": ["ayah", "words"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["attribution", "verses"],
+  "additionalProperties": false
+}
