@@ -16,6 +16,8 @@ Records are not rewritten when a decision changes. Add a new record and set the 
 | [0008](0008-terms-follow-the-arabic-word.md)       | Islamic terms follow the Arabic word (الله → Allah, never 하나님)   | Accepted |
 | [0009](0009-layered-architecture.md)               | Layered architecture with a data layer and AI provider interfaces   | Accepted |
 | [0010](0010-github-workflow.md)                    | Issue branches, pull requests with merge commits, protected `main`  | Accepted |
+| [0011](0011-content-in-git-seeded-into-supabase.md) | Content as JSON in git, seeded into Supabase; review status in the files | Accepted |
+| [0012](0012-explanations-attach-to-spans.md)       | Explanations attach to spans; Hafs numbering; pause marks aren't words | Accepted |
 
 ## Template
 
