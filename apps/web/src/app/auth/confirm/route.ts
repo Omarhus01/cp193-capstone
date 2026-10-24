@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { readConfirmParams } from "@/lib/auth/confirm";
+import { readConfirmParams } from "@/lib/services/auth/confirm";
 import { createClient } from "@/lib/supabase/server";
 
 /**

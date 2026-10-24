@@ -4,9 +4,13 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { isLocale, type Locale } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
-import { confirmRedirectUrl } from "@/lib/auth/confirm";
-import { logoutRedirectPath, safeNextPath } from "@/lib/auth/paths";
-import { readCredentials, validateCredentials, type AuthErrorKey } from "@/lib/auth/validation";
+import { confirmRedirectUrl } from "@/lib/services/auth/confirm";
+import { logoutRedirectPath, safeNextPath } from "@/lib/services/auth/paths";
+import {
+  readCredentials,
+  validateCredentials,
+  type AuthErrorKey,
+} from "@/lib/services/auth/validation";
 import { createClient } from "@/lib/supabase/server";
 
 export type AuthFormState = {

@@ -2,7 +2,7 @@ import createIntlMiddleware from "next-intl/middleware";
 import { NextResponse, type NextRequest } from "next/server";
 import { stripLocale } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
-import { isProtectedPath, loginRedirectPath } from "@/lib/auth/paths";
+import { isProtectedPath, loginRedirectPath } from "@/lib/services/auth/paths";
 import { updateSession } from "@/lib/supabase/proxy";
 
 const handleI18nRouting = createIntlMiddleware(routing);

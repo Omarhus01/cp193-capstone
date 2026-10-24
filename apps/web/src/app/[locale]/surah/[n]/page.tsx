@@ -2,8 +2,8 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import type { Locale } from "@/i18n/locale";
-import { requireUserId } from "@/lib/auth/require-user";
-import { parseSurahNumber } from "@/lib/surah";
+import { requireUserId } from "@/lib/services/auth/require-user";
+import { parseSurahNumber } from "@/lib/services/surah";
 
 type SurahPageProps = PageProps<"/[locale]/surah/[n]">;
 
