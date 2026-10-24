@@ -6,7 +6,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 
 /**
- * EN/KO links that keep the user on the same page, query string included, in the other language.
+ * English/한국어 links that keep the user on the same page, query string included, in that language.
  * Reads the URL, so render it inside <Suspense>.
  */
 export function LanguageSwitcher() {

@@ -2,6 +2,14 @@ import { expect, test } from "@playwright/test";
 import en from "../messages/en.json";
 import ko from "../messages/ko.json";
 
+test("the switcher names each language in that language", async ({ page }) => {
+  await page.goto("/en");
+
+  const switcher = page.getByRole("navigation", { name: en.header.languageLabel });
+  await expect(switcher.getByRole("link", { name: en.header.languages.en })).toHaveText("English");
+  await expect(switcher.getByRole("link", { name: en.header.languages.ko })).toHaveText("한국어");
+});
+
 test("switching to Korean keeps the current page", async ({ page }) => {
   await page.goto("/en/login");
 
