@@ -7,8 +7,8 @@
       "words": [
         { "position": 1, "text": "بِسْمِ", "root": null },
         { "position": 2, "text": "ٱللَّهِ", "root": null },
-        { "position": 3, "text": "ٱلرَّحْمَـٰنِ", "root": null },
-        { "position": 4, "text": "ٱلرَّحِيمِ", "root": null }
+        { "position": 3, "text": "ٱلرَّحْمَـٰنِ", "root": "ر ح م" },
+        { "position": 4, "text": "ٱلرَّحِيمِ", "root": "ر ح م" }
       ]
     },
     {
@@ -16,15 +16,15 @@
       "words": [
         { "position": 1, "text": "ٱلْحَمْدُ", "root": null },
         { "position": 2, "text": "لِلَّهِ", "root": null },
-        { "position": 3, "text": "رَبِّ", "root": null },
-        { "position": 4, "text": "ٱلْعَـٰلَمِينَ", "root": null }
+        { "position": 3, "text": "رَبِّ", "root": "ر ب ب" },
+        { "position": 4, "text": "ٱلْعَـٰلَمِينَ", "root": "ع ل م" }
       ]
     },
     {
       "ayah": 3,
       "words": [
-        { "position": 1, "text": "ٱلرَّحْمَـٰنِ", "root": null },
-        { "position": 2, "text": "ٱلرَّحِيمِ", "root": null }
+        { "position": 1, "text": "ٱلرَّحْمَـٰنِ", "root": "ر ح م" },
+        { "position": 2, "text": "ٱلرَّحِيمِ", "root": "ر ح م" }
       ]
     },
     {
@@ -32,14 +32,14 @@
       "words": [
         { "position": 1, "text": "مَـٰلِكِ", "root": null },
         { "position": 2, "text": "يَوْمِ", "root": null },
-        { "position": 3, "text": "ٱلدِّينِ", "root": null }
+        { "position": 3, "text": "ٱلدِّينِ", "root": "د ي ن" }
       ]
     },
     {
       "ayah": 5,
       "words": [
         { "position": 1, "text": "إِيَّاكَ", "root": null },
-        { "position": 2, "text": "نَعْبُدُ", "root": null },
+        { "position": 2, "text": "نَعْبُدُ", "root": "ع ب د" },
         { "position": 3, "text": "وَإِيَّاكَ", "root": null },
         { "position": 4, "text": "نَسْتَعِينُ", "root": null }
       ]
@@ -47,7 +47,7 @@
     {
       "ayah": 6,
       "words": [
-        { "position": 1, "text": "ٱهْدِنَا", "root": null },
+        { "position": 1, "text": "ٱهْدِنَا", "root": "ه د ي" },
         { "position": 2, "text": "ٱلصِّرَٰطَ", "root": null },
         { "position": 3, "text": "ٱلْمُسْتَقِيمَ", "root": null }
       ]
@@ -63,7 +63,7 @@
         { "position": 6, "text": "ٱلْمَغْضُوبِ", "root": null },
         { "position": 7, "text": "عَلَيْهِمْ", "root": null },
         { "position": 8, "text": "وَلَا", "root": null },
-        { "position": 9, "text": "ٱلضَّآلِّينَ", "root": null }
+        { "position": 9, "text": "ٱلضَّآلِّينَ", "root": "ض ل ل" }
       ]
     }
   ]

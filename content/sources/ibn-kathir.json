@@ -1,0 +1,29 @@
+{
+  "$schema": "../schema/source.schema.json",
+  "source": {
+    "id": "ibn-kathir",
+    "titleAr": "تفسير القرآن العظيم",
+    "titleEn": "Tafsīr al-Qurʾān al-ʿAẓīm",
+    "author": "Ibn Kathīr",
+    "edition": null,
+    "type": "tafsir"
+  },
+  "passages": [
+    {
+      "id": "ibn-kathir-1-101-111",
+      "volume": "1",
+      "page": "101–111",
+      "verse": null,
+      "textAr": null,
+      "summary": { "en": null, "ko": null }
+    },
+    {
+      "id": "ibn-kathir-1-139-149",
+      "volume": "1",
+      "page": "139–149",
+      "verse": null,
+      "textAr": null,
+      "summary": { "en": null, "ko": null }
+    }
+  ]
+}

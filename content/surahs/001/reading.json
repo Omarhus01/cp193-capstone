@@ -1,4 +1,4 @@
 {
   "$schema": "../../schema/reading.schema.json",
-  "sections": ["001-reading-1"]
+  "sections": ["001-reading-1", "001-reading-2", "001-reading-3", "001-reading-4"]
 }

@@ -1,0 +1,21 @@
+{
+  "$schema": "../schema/source.schema.json",
+  "source": {
+    "id": "qasimi",
+    "titleAr": "محاسن التأويل",
+    "titleEn": "Maḥāsin al-Taʾwīl",
+    "author": "al-Qāsimī",
+    "edition": null,
+    "type": "tafsir"
+  },
+  "passages": [
+    {
+      "id": "qasimi-1-228-230",
+      "volume": "1",
+      "page": "228–230",
+      "verse": null,
+      "textAr": null,
+      "summary": { "en": null, "ko": null }
+    }
+  ]
+}
