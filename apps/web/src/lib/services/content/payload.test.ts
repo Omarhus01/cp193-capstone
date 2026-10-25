@@ -33,8 +33,8 @@ describe("toSeedPayload", () => {
   it("numbers reading sections and review steps in order", () => {
     const payload = toSeedPayload(testBundle());
     expect(payload.reading_sections).toEqual([
-      { surah: 1, position: 1, explanation_id: "s1-reading-1" },
-      { surah: 1, position: 2, explanation_id: "s1-reading-2" },
+      { surah: 1, position: 1, explanation_id: "s1-reading-1", span_id: "1:1-1:2" },
+      { surah: 1, position: 2, explanation_id: "s1-reading-2", span_id: "1:3-1:4" },
     ]);
     expect(
       payload.explanation_reviews.filter((r) => r.explanation_id === "s1-note").map((r) => r.step),
