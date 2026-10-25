@@ -10,7 +10,7 @@ A platform that explains the Quran to Korean-speaking learners who don't read Ar
 
 The project proposal is in [`docs/proposal.pdf`](docs/proposal.pdf).
 
-Sprint 1 so far: the site shell, English/Korean routing, email-and-password accounts, and the content model (Quran text, explanations, review steps, sources) with Al-Fatiha's text. Explanations arrive as the owner writes and reviews them.
+Sprint 1 so far: the site shell, English/Korean routing, email-and-password accounts, the content model (Quran text, explanations, review steps, sources) with Al-Fatiha's text, and the surah page with reading sections, word meanings, and English and pronunciation toggles. Explanations arrive as the owner writes and reviews them.
 
 ## Repository layout
 
@@ -119,6 +119,15 @@ $env:E2E_EMAIL="you@example.com"; $env:E2E_PASSWORD="..."; npm run test:e2e   # 
 ```
 
 Logging out only ends the current browser's session, so these tests can share one account and run in parallel. A run doesn't log the account out anywhere else.
+
+The tests in `e2e/surah-page.spec.ts` need content. They seed fixtures into a local Supabase in Docker, log in with an account they create there, and put `content/` back afterwards. They are skipped unless `E2E_LOCAL_SUPABASE=1` and the Supabase URL is local. Set the local URL and keys in the shell, so the test server uses the local database instead of `.env.local`:
+
+```bash
+npx supabase start
+npx supabase status -o env   # API_URL, ANON_KEY, SERVICE_ROLE_KEY
+NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321 NEXT_PUBLIC_SUPABASE_ANON_KEY=... \
+  SUPABASE_SERVICE_ROLE_KEY=... E2E_LOCAL_SUPABASE=1 npm run test:e2e
+```
 
 ### CI and the pre-push hook
 

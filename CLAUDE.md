@@ -52,7 +52,8 @@ apps/web/                 Next.js site (npm workspace)
   src/proxy.ts            Next 16 "proxy" (formerly middleware): locale routing, session refresh, protected-route redirect
   src/i18n/               next-intl routing, navigation, request config, locale helpers
   src/lib/services/       business logic: auth/ (paths, validation, accounts, requireUserId), surah, terminology,
-                          review (review steps), content/ (content file schema, loading, validation, seed payload)
+                          review (review steps and tracks), content/ (content file schema, loading, validation,
+                          seed payload), reading/ (surah page view, reading preferences)
   src/lib/data/           all database access: auth, session, content (the only importers of lib/supabase)
   src/lib/supabase/       browser, server, proxy and public (cookie-less, for published content) client factories
   scripts/                content tooling run with tsx: import-tanzil, write-content-schema, seed-content
@@ -61,13 +62,18 @@ apps/web/                 Next.js site (npm workspace)
   src/architecture.test.ts  checks the ESLint layer rules
   src/app/[locale]/       pages: home, login, signup, surah/[n] (protected), auth server actions
   src/app/auth/confirm/   email confirmation route (outside the locale prefix)
-  src/components/         layout/ (header pieces), auth/ (forms), text/ArabicText
+  src/components/         layout/ (top bar, phone menu, footer, PageLayout with sidebar and aside slots),
+                          surah/ (surah page: sections, word popover, toggles, Q&A shell), auth/ (forms),
+                          text/ArabicText
+  e2e/fixtures/           content seeded by the surah page e2e tests (placeholder text only)
 services/ai/              placeholder (sprint 2)
 experiments/              placeholder
 content/                  Quran text (Tanzil), explanations, word meanings, sources as JSON; see content/README.md
 supabase/migrations/      SQL migrations
 prompts/                  model prompts (placeholder)
 docs/proposal.pdf         project proposal
+docs/design/              approved page designs (surah page, desktop and phone)
+docs/content-drafts/      the owner's content drafts under review (not loaded by the site)
 docs/decisions/           architecture decision records (ADRs)
 CONTRIBUTING.md           workflow and definition of done
 ```
@@ -134,6 +140,9 @@ app/ (routes, pages, server actions) → components/ → lib/services/ → lib/d
   - Server code checks the session with `getCurrentUserId()` (`@/lib/services/auth/accounts`) or `requireUserId()` (`@/lib/services/auth/require-user`), which use `getClaims()` and so verify the JWT.
   - Pages check the session themselves and don't rely on the proxy alone.
   - Redirect targets from user input go through `safeNextPath`.
-- **Content:** explanations attach to spans, not verses, and verse numbering follows the Hafs mushaf as in Tanzil ([ADR 0012](docs/decisions/0012-explanations-attach-to-spans.md)). Public content is read with `createPublicClient()` and filtered on `status = 'published'` on top of RLS.
+- **Content:** explanations attach to spans, not verses, and verse numbering follows the Hafs mushaf as in Tanzil ([ADR 0012](docs/decisions/0012-explanations-attach-to-spans.md)). Public content is read with `createPublicClient()` and filtered on `status = 'published'` on top of RLS. The functions in `lib/data/content.ts` are cached with `"use cache"` and `cacheTag("content")` ([ADR 0014](docs/decisions/0014-page-layout-preferences-and-caching.md)).
+- **Tanzil credit:** every page that shows Quran text must credit the Tanzil Project with a link to tanzil.net. The global `SiteFooter` does this; don't remove it.
+- **Layout:** pages with columns use `PageLayout` (`sidebar` and `aside` props). The right column shows on wide screens only, so a page puts its phone version inline.
+- **e2e with content:** tests that need content seed fixtures into a local Supabase (`e2e/local-supabase.ts`), and are skipped unless `E2E_LOCAL_SUPABASE=1` with a local URL. Never point them at the hosted project.
 - **Database:** every table has row level security enabled with explicit policies. Change the schema only through a new migration file. Never edit an applied migration.
 - **Code style:** keep components small and clearly named. Other people read this code. Put pure logic in `src/lib/services/`, with a colocated `*.test.ts`.
