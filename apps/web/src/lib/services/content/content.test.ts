@@ -10,6 +10,13 @@ describe("content/", () => {
     expect(bundle.surahs.map((s) => s.number)).toContain(1);
   });
 
+  it("has Tanzil's metadata for all 114 surahs", () => {
+    const { metadata } = loadContent().bundle;
+    expect(metadata).toHaveLength(114);
+    expect(metadata[1]).toMatchObject({ number: 2, verseCount: 286 });
+    expect(metadata.reduce((total, surah) => total + surah.verseCount, 0)).toBe(6236);
+  });
+
   it("keeps Al-Fatiha's Basmala as verse 1:1, as in Tanzil", () => {
     const fatiha = loadContent().bundle.surahs.find((s) => s.number === 1);
     expect(fatiha?.text.surah).toMatchObject({ verseCount: 7, basmala: null });
@@ -269,6 +276,15 @@ describe("validateContent", () => {
         b.surahs[0].words.verses[0].words.pop();
       });
       expect(messages(errors)).toContainEqual(expect.stringContaining("aren't the verse text"));
+    });
+
+    it("rejects a surah text that doesn't match Tanzil's metadata", () => {
+      const errors = errorsAfter((b) => {
+        b.metadata[1].verseCount = 5;
+      });
+      expect(messages(errors)).toContainEqual(
+        expect.stringContaining("surahs/002/text.json surah: doesn't match quran-metadata.json"),
+      );
     });
 
     it("rejects a verse count that doesn't match the verses", () => {

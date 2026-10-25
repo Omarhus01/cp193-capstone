@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "attribution": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Tanzil's copyright and license for the metadata, kept as its license asks."
+    },
+    "surahs": {
+      "minItems": 114,
+      "maxItems": 114,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "number": { "type": "integer", "minimum": 1, "maximum": 114 },
+          "nameAr": { "type": "string", "minLength": 1 },
+          "revelationPlace": { "type": "string", "enum": ["meccan", "medinan"] },
+          "verseCount": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }
+        },
+        "required": ["number", "nameAr", "revelationPlace", "verseCount"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["attribution", "surahs"],
+  "additionalProperties": false
+}

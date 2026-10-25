@@ -56,6 +56,29 @@ const attribution = text.meta({
   description: "Tanzil's copyright notice, verbatim. Its terms require it in every derived file.",
 });
 
+const revelationPlace = z.enum(["meccan", "medinan"]);
+
+/**
+ * quran-metadata.json: every surah's name, revelation place and verse count, from Tanzil's
+ * metadata. Verse references are checked against it. Generated; never edited by hand.
+ */
+export const quranMetadataFileSchema = z.strictObject({
+  $schema,
+  attribution: text.meta({
+    description: "Tanzil's copyright and license for the metadata, kept as its license asks.",
+  }),
+  surahs: z
+    .array(
+      z.strictObject({
+        number: z.int().min(1).max(114),
+        nameAr: text,
+        revelationPlace,
+        verseCount: z.int().min(1),
+      }),
+    )
+    .length(114),
+});
+
 /** text.json: the surah's Quran text, imported from Tanzil. Never edited by hand. */
 export const textFileSchema = z.strictObject({
   $schema,
@@ -63,7 +86,7 @@ export const textFileSchema = z.strictObject({
   surah: z.strictObject({
     number: z.int().min(1).max(114),
     nameAr: text,
-    revelationPlace: z.enum(["meccan", "medinan"]),
+    revelationPlace,
     verseCount: z.int().min(1),
     basmala: text
       .nullable()
@@ -180,6 +203,8 @@ export const sourceFileSchema = z.strictObject({
   ),
 });
 
+export type QuranMetadataFile = z.infer<typeof quranMetadataFileSchema>;
+export type SurahMetadata = QuranMetadataFile["surahs"][number];
 export type TextFile = z.infer<typeof textFileSchema>;
 export type WordsFile = z.infer<typeof wordsFileSchema>;
 export type SurahFile = z.infer<typeof surahFileSchema>;
@@ -194,6 +219,7 @@ export type SourceFile = z.infer<typeof sourceFileSchema>;
 
 /** Each schema and the name of its file in content/schema/. */
 export const CONTENT_SCHEMAS = {
+  "quran-metadata.schema.json": quranMetadataFileSchema,
   "text.schema.json": textFileSchema,
   "words.schema.json": wordsFileSchema,
   "surah.schema.json": surahFileSchema,

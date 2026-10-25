@@ -1,6 +1,7 @@
 import type { ReviewStatus } from "@/lib/domain/content";
 import type { ReviewEntry } from "@/lib/services/review";
 import type { ContentBundle, SurahFiles } from "./load";
+import type { SurahMetadata } from "./schema";
 import type { ExplanationEntry, TransliterationEntry, WordMeaningEntry } from "./schema";
 
 // A small valid bundle for tests. Its "verses" are made-up Arabic letter strings, not Quran text,
@@ -111,6 +112,22 @@ export function transliteration(
 }
 
 /**
+ * Metadata for all 114 surahs, like quran-metadata.json, matching the given surahs' text. The
+ * others get 10 verses, so references to surahs that aren't imported can be tested.
+ */
+export function testMetadata(surahs: readonly SurahFiles[]): SurahMetadata[] {
+  return Array.from({ length: 114 }, (_, i) => {
+    const text = surahs.find((surah) => surah.number === i + 1)?.text.surah;
+    return {
+      number: i + 1,
+      nameAr: text?.nameAr ?? "اختبار",
+      revelationPlace: text?.revelationPlace ?? "meccan",
+      verseCount: text?.verseCount ?? 10,
+    };
+  });
+}
+
+/**
  * Surah 1 with 4 verses and surah 2 with 3, one source with two passages, two reading sections
  * covering surah 1, a phrase note with a context link into surah 2, a published word meaning,
  * a published brief, a draft verse explanation, and transliterations of 1:1 (published in both
@@ -140,6 +157,7 @@ export function testBundle(): ContentBundle {
     brief: { ...both("brief"), status: "published", review: publishedHistory() },
   };
   return {
+    metadata: testMetadata([first, second]),
     surahs: [first, second],
     sources: [
       {

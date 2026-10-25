@@ -21,6 +21,14 @@ export function validateContent(bundle: ContentBundle): ContentError[] {
   const report = (file: string, path: string, message: string) =>
     errors.push({ file, path, message });
 
+  // Every surah's verse count from Tanzil's metadata, imported or not.
+  const metadata = new Map(bundle.metadata.map((surah) => [surah.number, surah]));
+  bundle.metadata.forEach((surah, i) => {
+    if (surah.number !== i + 1) {
+      report("quran-metadata.json", `surahs[${i}].number`, `is ${surah.number}; expected ${i + 1}`);
+    }
+  });
+
   // Word count of every verse, keyed "surah:ayah".
   const wordCounts = new Map<string, number>();
   const verseCounts = new Map<number, number>();
@@ -39,6 +47,15 @@ export function validateContent(bundle: ContentBundle): ContentError[] {
       );
     }
     verseCounts.set(number, text.surah.verseCount);
+    const meta = metadata.get(number);
+    if (
+      meta &&
+      (meta.verseCount !== text.surah.verseCount ||
+        meta.nameAr !== text.surah.nameAr ||
+        meta.revelationPlace !== text.surah.revelationPlace)
+    ) {
+      report(textFile, "surah", "doesn't match quran-metadata.json; import both from Tanzil again");
+    }
     text.verses.forEach((verse, i) => {
       if (verse.ayah !== i + 1) {
         report(textFile, `verses[${i}].ayah`, `is ${verse.ayah}; verses are numbered 1, 2, 3, …`);

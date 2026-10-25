@@ -1,6 +1,7 @@
 import type { ContentBundle, SurahFiles } from "../../src/lib/services/content/load";
 import {
   explanation,
+  testMetadata,
   transliteration,
   wordMeaning,
 } from "../../src/lib/services/content/test-bundle";
@@ -109,6 +110,7 @@ export function fixtureBundle(): ContentBundle {
   ];
 
   return {
+    metadata: testMetadata([first, second]),
     surahs: [first, second],
     sources: [
       {
