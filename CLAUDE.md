@@ -36,7 +36,7 @@ The full proposal, with the market research, sprint plan, and user-testing plan,
 - **Web:** Next.js 16 (App Router, TypeScript strict), Tailwind CSS 4, next-intl with locale routes `/en` and `/ko` (default `en`)
 - **Backend:** Supabase for auth and Postgres, through `@supabase/ssr`. The schema lives in `supabase/migrations/`.
 - **AI (sprint 2):** a Python FastAPI service in `services/ai/`
-- **Hosting:** Vercel (root directory `apps/web`)
+- **Hosting:** Vercel (root directory `apps/web`, production from `main`, no previews). Setup and release order: [`docs/deploy.md`](docs/deploy.md), [ADR 0017](docs/decisions/0017-vercel-hosting-and-release-order.md)
 - **Tests:** Vitest for unit tests, Playwright for end-to-end tests
 - **CI:** GitHub Actions, a required check on `main`
 - **Formatting:** Prettier
@@ -93,6 +93,7 @@ npm run test:e2e       # Playwright (builds and serves on :3100)
 npx supabase db push   # apply migrations to the linked project
 npm run content:seed   # load content/ into Supabase (needs SUPABASE_SERVICE_ROLE_KEY in the shell)
 npm run content:schema # rewrite content/schema/ after changing the Zod schemas
+E2E_BASE_URL=https://<domain> npm run test:smoke   # read-only smoke run against a deployed site
 npm run content:import-tanzil-metadata -- <quran-data.xml>  # rewrite content/quran-metadata.json
 ```
 
@@ -148,5 +149,7 @@ app/ (routes, pages, server actions) → components/ → lib/services/ → lib/d
 - **Layout:** pages with columns use `PageLayout` (`sidebar` and `aside` props). The right column shows on wide screens only, so a page puts its phone version inline.
 - **e2e with content:** tests that need content seed fixtures into a local Supabase (`e2e/local-supabase.ts`), and are skipped unless `E2E_LOCAL_SUPABASE=1` with a local URL. Never point them at the hosted project.
 - **Drafts never touch the cache:** published content is read in `lib/data/content.ts` (anon client, `"use cache"`); testers' drafts only through `lib/data/content-preview.ts` (session client, never cached). Don't add `"use cache"` to the preview path or a session client to the cached one; `content-cache.test.ts` checks both. The tester list (`public.tester`) is changed only with SQL by the owner (README, "Tester accounts").
-- **Database:** every table has row level security enabled with explicit policies. Change the schema only through a new migration file. Never edit an applied migration.
+- **Database:** every table has row level security enabled with explicit policies. Change the schema only through a new migration file. Never edit an applied migration. The database changes before the code (db push, seed, then merge), so a migration must keep working with the code already on `main`.
+- **Secrets:** the deployed site holds only `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`. The service role key is never read by app code (`src/deploy.test.ts`) and never goes to Vercel.
+- **Test data stays local:** helpers that write data (`e2e/local-supabase.ts`) refuse a non-local Supabase URL, and before signing up or logging in through the app they check the server's `/health` (`assertLocalTestServer`). Use them in any new script that writes test data; never sign up test accounts through a server you haven't checked.
 - **Code style:** keep components small and clearly named. Other people read this code. Put pure logic in `src/lib/services/`, with a colocated `*.test.ts`.
