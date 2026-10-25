@@ -69,28 +69,35 @@ export function SurahReader({
     document.cookie = preferenceCookie(key, value);
   }, []);
 
-  // The current section is the first one crossing a band near the top of the window.
+  // The current section is the last one whose top has passed a line a quarter down the window,
+  // or the last section once the page is scrolled to the bottom.
   useEffect(() => {
-    const sections = wrapper.current?.querySelectorAll<HTMLElement>("[data-section]") ?? [];
-    const visible = new Set<number>();
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          const position = Number((entry.target as HTMLElement).dataset.section);
-          if (entry.isIntersecting) {
-            visible.add(position);
-          } else {
-            visible.delete(position);
-          }
-        }
-        if (visible.size > 0) {
-          setCurrentSection(Math.min(...visible));
-        }
-      },
-      { rootMargin: "-20% 0px -70% 0px" },
-    );
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
+    const sections = [...(wrapper.current?.querySelectorAll<HTMLElement>("[data-section]") ?? [])];
+    if (sections.length === 0) {
+      return;
+    }
+    let frame = 0;
+    function update() {
+      frame = 0;
+      const line = window.innerHeight / 4;
+      const atBottom =
+        window.scrollY > 0 &&
+        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+      const passed = sections.filter((section) => section.getBoundingClientRect().top <= line);
+      const current = atBottom ? sections.at(-1) : (passed.at(-1) ?? sections[0]);
+      setCurrentSection(Number(current?.dataset.section));
+    }
+    function schedule() {
+      frame ||= requestAnimationFrame(update);
+    }
+    update();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
   }, []);
 
   const reader = useMemo(
