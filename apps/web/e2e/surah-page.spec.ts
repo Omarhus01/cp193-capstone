@@ -5,6 +5,7 @@ import { FIXTURE_NARRATOR, fixtureBundle } from "./fixtures/content";
 import {
   createTestUser,
   deleteTestUser,
+  assertLocalTestServer,
   LOCAL_SUPABASE_SKIP_REASON,
   localSupabaseEnabled,
   makeTester,
@@ -22,6 +23,8 @@ let tester: TestUser;
 
 test.beforeAll(async () => {
   test.skip(!localSupabaseEnabled, LOCAL_SUPABASE_SKIP_REASON);
+  // The tests log in through the app: its server must use the same local Supabase.
+  await assertLocalTestServer(test.info().project.use.baseURL);
   await seedContent(fixtureBundle());
   user = await createTestUser();
   tester = await createTestUser();
