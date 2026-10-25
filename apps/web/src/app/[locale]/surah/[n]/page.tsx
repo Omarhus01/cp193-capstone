@@ -9,15 +9,20 @@ import { ReadingSectionCard } from "@/components/surah/ReadingSectionCard";
 import { ReadingSectionNav } from "@/components/surah/ReadingSectionNav";
 import { SurahHeader } from "@/components/surah/SurahHeader";
 import { SurahReader } from "@/components/surah/SurahReader";
+import { TesterBanner } from "@/components/surah/TesterBanner";
 import type { Locale } from "@/i18n/locale";
 import { requireUserId } from "@/lib/services/auth/require-user";
 import { parsePreferences } from "@/lib/services/reading/preferences";
 import { loadSurahPage } from "@/lib/services/reading/surah-page";
+import { isCurrentUserTester } from "@/lib/services/reading/tester";
 import { parseSurahNumber } from "@/lib/services/surah";
 
 type SurahPageProps = PageProps<"/[locale]/surah/[n]">;
 
-/** A surah's verses in reading sections, with their explanations. Logged-in users only. */
+/**
+ * A surah's verses in reading sections, with their explanations. Logged-in users only. Testers
+ * also see content in review, marked as drafts, read without the shared cache (ADR 0016).
+ */
 export default function SurahPage({ params }: SurahPageProps) {
   // The surah number, the session and the reader's preferences are only known at request time.
   return (
@@ -37,8 +42,9 @@ async function SurahContent({ params }: Pick<SurahPageProps, "params">) {
   }
   await requireUserId(locale, `/${locale}/surah/${n}`);
 
+  const tester = await isCurrentUserTester();
   const [view, cookieStore, t] = await Promise.all([
-    loadSurahPage(surahNumber),
+    loadSurahPage(surahNumber, { preview: tester }),
     cookies(),
     getTranslations("surah"),
   ]);
@@ -58,6 +64,7 @@ async function SurahContent({ params }: Pick<SurahPageProps, "params">) {
       initialPreferences={parsePreferences((name) => cookieStore.get(name)?.value)}
       firstSection={sections[0]?.position ?? 1}
     >
+      {tester ? <TesterBanner /> : null}
       <PageLayout
         sidebar={
           <ReadingSectionNav

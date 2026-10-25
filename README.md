@@ -67,6 +67,30 @@ $env:SUPABASE_SERVICE_ROLE_KEY="..."; npm run content:seed               # Power
 
 [`content/README.md`](content/README.md) explains the files, the review steps, and how to try migrations and the seed on a local Supabase in Docker first.
 
+### Tester accounts
+
+Testers see content that is still in review on the surah pages: explanations, briefs and word meanings from `en_approved` on, and draft transliterations. A banner and "Draft" badges mark it. Everyone else sees published content only ([ADR 0016](docs/decisions/0016-tester-preview.md)).
+
+Only the database owner can change who is a tester. Run these in the Supabase dashboard's **SQL Editor**:
+
+```sql
+-- Make an account a tester:
+insert into public.tester (user_id, note)
+select id, 'tester' from auth.users where email = 'someone@example.com'
+on conflict (user_id) do nothing;
+
+-- Remove it:
+delete from public.tester
+where user_id = (select id from auth.users where email = 'someone@example.com');
+
+-- List the testers:
+select u.email, t.added_on, t.note
+from public.tester t join auth.users u on u.id = t.user_id
+order by t.added_on;
+```
+
+A change takes effect on the tester's next page load. Keep the account used by `e2e/real-account.spec.ts` off the list: that spec checks it sees no drafts.
+
 ### Auth settings (Supabase dashboard)
 
 1. **Authentication → URL Configuration**

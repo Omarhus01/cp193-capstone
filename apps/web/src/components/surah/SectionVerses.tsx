@@ -10,6 +10,7 @@ import {
   type VerseView,
   type WordDetail,
 } from "@/lib/services/reading/surah-view";
+import { DraftBadge } from "./DraftBadge";
 import { useReader } from "./SurahReader";
 import { WordPopover } from "./WordPopover";
 
@@ -40,6 +41,7 @@ export function SectionVerses({ verses, words }: SectionVersesProps) {
 
   const open = openWord && words[openWord.key] ? openWord : null;
   const pronounced = verses.filter((verse) => verse.transliteration[locale]);
+  const pronunciationDraft = pronounced.some((verse) => verse.transliterationDraft[locale]);
 
   const close = useCallback(
     (returnFocus: boolean) => {
@@ -151,6 +153,11 @@ export function SectionVerses({ verses, words }: SectionVersesProps) {
             locale === "en" ? "italic" : ""
           }`}
         >
+          {pronunciationDraft ? (
+            <>
+              <DraftBadge />{" "}
+            </>
+          ) : null}
           <span className="sr-only">{t("pronunciation")}: </span>
           {pronounced.map((verse) => (
             <Fragment key={verse.ayah}>

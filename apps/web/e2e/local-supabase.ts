@@ -63,6 +63,14 @@ export async function createTestUser(): Promise<TestUser> {
   return { id: data.user.id, email, password };
 }
 
+/** Puts the account on the tester list (ADR 0016), as the service role. */
+export async function makeTester(user: TestUser) {
+  const { error } = await serviceClient().from("tester").insert({ user_id: user.id });
+  if (error) {
+    throw new Error(`Couldn't make the test user a tester: ${error.message}`);
+  }
+}
+
 export async function deleteTestUser(user: TestUser) {
   await serviceClient().auth.admin.deleteUser(user.id);
 }
