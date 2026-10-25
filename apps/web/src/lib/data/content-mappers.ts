@@ -4,6 +4,7 @@ import type {
   Localized,
   Passage,
   RevelationPlace,
+  RootWordMeaning,
   SourceType,
   Span,
   Surah,
@@ -11,8 +12,8 @@ import type {
   WordMeaning,
 } from "@/lib/domain/content";
 
-// Rows as the queries in content.ts select them (tables in
-// supabase/migrations/…_create_content.sql), and their mapping to domain types.
+// Rows as the queries in content.ts select them (tables in supabase/migrations/), and their
+// mapping to domain types.
 
 export type SpanRow = {
   id: string;
@@ -39,6 +40,7 @@ export type VerseRow = {
   ayah: number;
   text_ar: string;
   word: { position: number; text_ar: string; root: string | null }[];
+  verse_transliteration: { language: "en" | "ko"; text: string | null; status: string }[];
 };
 
 type Ordered = { sort_order: number };
@@ -66,6 +68,10 @@ export type WordMeaningRow = {
   meaning_en: string | null;
   meaning_ko: string | null;
   word_meaning_citation: (Ordered & { passage_id: string })[];
+};
+
+export type RootWordMeaningRow = WordMeaningRow & {
+  word: { text_ar: string; root: string; verse: { text_ar: string } };
 };
 
 export type PassageRow = {
@@ -125,6 +131,10 @@ export function toSurah(row: SurahRow): Surah {
 }
 
 export function toVerse(row: VerseRow): Verse {
+  // Row level security returns published transliterations only; check again here.
+  const transliteration = (language: "en" | "ko") =>
+    row.verse_transliteration.find((t) => t.language === language && t.status === "published")
+      ?.text ?? null;
   return {
     surah: row.surah,
     ayah: row.ayah,
@@ -132,6 +142,7 @@ export function toVerse(row: VerseRow): Verse {
     words: [...row.word]
       .sort((a, b) => a.position - b.position)
       .map((word) => ({ position: word.position, textAr: word.text_ar, root: word.root })),
+    transliteration: localized(transliteration("en"), transliteration("ko")),
   };
 }
 
@@ -159,6 +170,15 @@ export function toWordMeaning(row: WordMeaningRow): WordMeaning {
     word: { surah: row.surah, ayah: row.ayah, word: row.position },
     meaning: localized(row.meaning_en, row.meaning_ko),
     passageIds: byOrder(row.word_meaning_citation).map((citation) => citation.passage_id),
+  };
+}
+
+export function toRootWordMeaning(row: RootWordMeaningRow): RootWordMeaning {
+  return {
+    ...toWordMeaning(row),
+    root: row.word.root,
+    wordAr: row.word.text_ar,
+    verseAr: row.word.verse.text_ar,
   };
 }
 

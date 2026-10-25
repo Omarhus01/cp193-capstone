@@ -3,6 +3,7 @@ import {
   spanKeys,
   toExplanation,
   toPassage,
+  toRootWordMeaning,
   toVerse,
   type ExplanationRow,
   type SpanRow,
@@ -103,8 +104,46 @@ describe("toVerse", () => {
         { position: 2, text_ar: "ثجح", root: null },
         { position: 1, text_ar: "ابت", root: null },
       ],
+      verse_transliteration: [],
     });
     expect(verse.words.map((w) => w.position)).toEqual([1, 2]);
+    expect(verse.transliteration).toEqual({ en: null, ko: null });
+  });
+
+  it("keeps only published transliterations, by language", () => {
+    const verse = toVerse({
+      surah: 1,
+      ayah: 1,
+      text_ar: "ابت",
+      word: [{ position: 1, text_ar: "ابت", root: null }],
+      verse_transliteration: [
+        { language: "ko", text: "[ko]", status: "published" },
+        { language: "en", text: "[en draft]", status: "draft" },
+      ],
+    });
+    expect(verse.transliteration).toEqual({ en: null, ko: "[ko]" });
+  });
+});
+
+describe("toRootWordMeaning", () => {
+  it("adds the word, its root and its verse to the meaning", () => {
+    const meaning = toRootWordMeaning({
+      surah: 2,
+      ayah: 3,
+      position: 4,
+      meaning_en: "[en]",
+      meaning_ko: "[ko]",
+      word_meaning_citation: [{ passage_id: "p", sort_order: 0 }],
+      word: { text_ar: "ابت", root: "ا ب ت", verse: { text_ar: "ثجح ابت" } },
+    });
+    expect(meaning).toEqual({
+      word: { surah: 2, ayah: 3, word: 4 },
+      meaning: { en: "[en]", ko: "[ko]" },
+      passageIds: ["p"],
+      root: "ا ب ت",
+      wordAr: "ابت",
+      verseAr: "ثجح ابت",
+    });
   });
 });
 

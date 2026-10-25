@@ -33,7 +33,12 @@ export type Surah = {
 
 export type Word = { position: number; textAr: string; root: string | null };
 
-export type Verse = VerseRef & { textAr: string; words: Word[] };
+export type Verse = VerseRef & {
+  textAr: string;
+  words: Word[];
+  /** How the verse is pronounced: Latin letters (en) and Hangul (ko). Null until published. */
+  transliteration: Localized;
+};
 
 export type SourceType = "tafsir" | "asbab_al_nuzul" | "word_dictionary" | "hadith";
 
@@ -89,7 +94,18 @@ export type WordMeaning = {
   passageIds: string[];
 };
 
-export type ReadingSectionSummary = { position: number; span: Span };
+/** A word meaning found through the word's root, with the word and its verse for context. */
+export type RootWordMeaning = WordMeaning & { root: string; wordAr: string; verseAr: string };
+
+/**
+ * A reading section of a surah. Where the sections start and end is public; the explanation is
+ * null until it is published (ADR 0013).
+ */
+export type ReadingSectionSummary = {
+  position: number;
+  span: Span;
+  explanation: Explanation | null;
+};
 
 export type ReadingSection = {
   surah: number;
@@ -104,5 +120,6 @@ export type SurahContent = {
   brief: Localized | null;
   verses: Verse[];
   wordMeanings: WordMeaning[];
+  /** Every section in reading order, published or not. */
   readingSections: ReadingSectionSummary[];
 };
