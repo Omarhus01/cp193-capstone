@@ -135,6 +135,37 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
     await seed(toSeedPayload(dbBundle()));
   });
 
+  it("moves sections to new verse ranges on a re-seed, and deletes the old spans", async () => {
+    // As when a placeholder section over a whole surah is split into its real sections (#22).
+    const moved = dbBundle();
+    const [first] = moved.surahs;
+    first.explanations.find((e) => e.id === "s1-reading-1")!.span = { from: "1:1", to: "1:1" };
+    first.explanations.find((e) => e.id === "s1-reading-2")!.span = { from: "1:2", to: "1:4" };
+    await seed(toSeedPayload(moved));
+
+    const sections = await service
+      .from("reading_section")
+      .select("position, explanation_id, span_id")
+      .eq("surah", 1)
+      .order("position");
+    expect(sections.data).toEqual([
+      { position: 1, explanation_id: "s1-reading-1", span_id: "1:1-1:1" },
+      { position: 2, explanation_id: "s1-reading-2", span_id: "1:2-1:4" },
+    ]);
+    const explanation = await service
+      .from("explanation")
+      .select("span_id")
+      .eq("id", "s1-reading-1");
+    expect(explanation.data).toEqual([{ span_id: "1:1-1:1" }]);
+    const oldSpans = await service.from("span").select("id").in("id", ["1:1-1:2", "1:3-1:4"]);
+    expect(oldSpans.data).toEqual([]);
+
+    // And back again.
+    await seed(toSeedPayload(dbBundle()));
+    const restored = await service.from("explanation").select("span_id").eq("id", "s1-reading-1");
+    expect(restored.data).toEqual([{ span_id: "1:1-1:2" }]);
+  });
+
   it("refuses a payload with a missing table, and changes nothing", async () => {
     const before = await snapshot();
     const broken = Object.fromEntries(

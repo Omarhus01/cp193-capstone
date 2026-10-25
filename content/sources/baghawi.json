@@ -1,0 +1,21 @@
+{
+  "$schema": "../schema/source.schema.json",
+  "source": {
+    "id": "baghawi",
+    "titleAr": "معالم التنزيل",
+    "titleEn": "Maʿālim al-Tanzīl",
+    "author": "al-Baghawī",
+    "edition": null,
+    "type": "tafsir"
+  },
+  "passages": [
+    {
+      "id": "baghawi-1-70",
+      "volume": "1",
+      "page": "70",
+      "verse": null,
+      "textAr": null,
+      "summary": { "en": null, "ko": null }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "../schema/source.schema.json",
+  "source": {
+    "id": "ibn-uthaymin",
+    "titleAr": "تفسير العثيمين: الفاتحة والبقرة",
+    "titleEn": "Tafsīr al-Fātiḥah wa-l-Baqarah",
+    "author": "Ibn ʿUthaymīn",
+    "edition": null,
+    "type": "tafsir"
+  },
+  "passages": [
+    {
+      "id": "ibn-uthaymin-9-24",
+      "volume": null,
+      "page": "9–24",
+      "verse": null,
+      "textAr": null,
+      "summary": { "en": null, "ko": null }
+    }
+  ]
+}

@@ -241,16 +241,16 @@ In a hadith qudsi, Allah divides it between Himself and His servant: the verses 
 
 Eight words get a popover on the site. Every other word stays plain. Add or remove words here.
 
-| Word | Verse | Root | In this verse (EN) | 이 구절에서 (KO 초안) | Elsewhere | Sources |
-| --- | --- | --- | --- | --- | --- | --- |
-| رَبِّ | 1:2 | ر ب ب | The one who creates, owns and manages all things | 창조하시고, 소유하시며, 모든 일을 다스리시는 분 | None listed | Ibn ʿUthaymīn; al-Qurṭubī |
-| ٱلْعَٰلَمِينَ | 1:2 | ع ل م | Everything other than Allah | 알라를 제외한 모든 존재 | 26:165: people ("from among al-ʿālamīn") | Ibn ʿUthaymīn; al-Qurṭubī |
-| ٱلرَّحْمَٰنِ | 1:1, 1:3 | ر ح م | The One whose mercy is vast; a name only Allah carries | 자비가 넓으신 분. 오직 알라만이 지니시는 이름 | 17:110: named beside "Allah" | Ibn ʿUthaymīn; al-Qurṭubī |
-| ٱلرَّحِيمِ | 1:1, 1:3 | ر ح م | The One who brings His mercy to whom He wills | 원하시는 이에게 자비를 베푸시는 분 | 33:43: "merciful to the believers" | Ibn ʿUthaymīn; al-Qurṭubī |
-| ٱلدِّينِ | 1:4 | د ي ن | Recompense, the reckoning of deeds | 보상, 곧 행위에 대한 셈과 응보 | 109:6: religion, deeds | Ibn ʿUthaymīn; al-Qāsimī, vol. 1, pp. 228–230 |
-| نَعْبُدُ | 1:5 | ع ب د | We humble ourselves before You with complete humility and obey | 완전한 겸손으로 당신 앞에 저희를 낮추고 순종합니다 | Arabic usage: a road worn smooth is *muʿabbad* | Ibn ʿUthaymīn; al-Ṭabarī via al-Qāsimī; al-Jazāʾirī |
-| ٱهْدِنَا | 1:6 | ه د ي | Show us the way and enable us to follow it | 길을 보여 주시고 그 길을 따르게 해 주소서 | 37:23: "lead them to the path of Hellfire" (to lead, even to punishment) | Ibn ʿUthaymīn; al-Rāghib via al-Qāsimī |
-| ٱلضَّآلِّينَ | 1:7 | ض ل ل | Those who strayed from the path of truth | 진리의 길에서 벗어난 이들 | 32:10: to vanish, be lost ("when we are lost in the earth") | al-Qurṭubī; Ibn Kathīr |
+| Word | Verse | Root | In this verse (EN) | 이 구절에서 (KO 초안) | Elsewhere | Elsewhere (KO 초안) | Sources |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| رَبِّ | 1:2 | ر ب ب | The one who creates, owns and manages all things | 창조하시고, 소유하시며, 모든 일을 다스리시는 분 | None listed |  | Ibn ʿUthaymīn; al-Qurṭubī |
+| ٱلْعَٰلَمِينَ | 1:2 | ع ل م | Everything other than Allah | 알라를 제외한 모든 존재 | 26:165: people ("from among al-ʿālamīn") | 26:165: 사람들 ("알알라민 가운데에서") | Ibn ʿUthaymīn; al-Qurṭubī |
+| ٱلرَّحْمَٰنِ | 1:1, 1:3 | ر ح م | The One whose mercy is vast; a name only Allah carries | 자비가 넓으신 분. 오직 알라만이 지니시는 이름 | 17:110: named beside "Allah" | 17:110: "알라"라는 이름과 나란히 불림 | Ibn ʿUthaymīn; al-Qurṭubī |
+| ٱلرَّحِيمِ | 1:1, 1:3 | ر ح م | The One who brings His mercy to whom He wills | 원하시는 이에게 자비를 베푸시는 분 | 33:43: "merciful to the believers" | 33:43: "믿는 이들에게 자비로우신" | Ibn ʿUthaymīn; al-Qurṭubī |
+| ٱلدِّينِ | 1:4 | د ي ن | Recompense, the reckoning of deeds | 보상, 곧 행위에 대한 셈과 응보 | 109:6: religion, deeds | 109:6: 종교, 행위 | Ibn ʿUthaymīn; al-Qāsimī, vol. 1, pp. 228–230 |
+| نَعْبُدُ | 1:5 | ع ب د | We humble ourselves before You with complete humility and obey | 완전한 겸손으로 당신 앞에 저희를 낮추고 순종합니다 | Arabic usage: a road worn smooth is *muʿabbad* | 아랍어 용례: 발길에 닳아 반들반들해진 길을 "무압바드"라고 부름 | Ibn ʿUthaymīn; al-Ṭabarī via al-Qāsimī; al-Jazāʾirī |
+| ٱهْدِنَا | 1:6 | ه د ي | Show us the way and enable us to follow it | 길을 보여 주시고 그 길을 따르게 해 주소서 | 37:23: "lead them to the path of Hellfire" (to lead, even to punishment) | 37:23: "그들을 지옥 불의 길로 인도하라" (벌로 이끄는 경우에도 쓰임) | Ibn ʿUthaymīn; al-Rāghib via al-Qāsimī |
+| ٱلضَّآلِّينَ | 1:7 | ض ل ل | Those who strayed from the path of truth | 진리의 길에서 벗어난 이들 | 32:10: to vanish, be lost ("when we are lost in the earth") | 32:10: 사라지다, 없어지다 ("우리가 땅속에서 사라졌을 때") | al-Qurṭubī; Ibn Kathīr |
 
 ## Fixed Q&A
 

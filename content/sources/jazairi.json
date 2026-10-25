@@ -1,0 +1,21 @@
+{
+  "$schema": "../schema/source.schema.json",
+  "source": {
+    "id": "jazairi",
+    "titleAr": "أيسر التفاسير",
+    "titleEn": "Aysar al-Tafāsīr",
+    "author": "al-Jazāʾirī",
+    "edition": null,
+    "type": "tafsir"
+  },
+  "passages": [
+    {
+      "id": "jazairi-1-14-17",
+      "volume": "1",
+      "page": "14–17",
+      "verse": null,
+      "textAr": null,
+      "summary": { "en": null, "ko": null }
+    }
+  ]
+}
