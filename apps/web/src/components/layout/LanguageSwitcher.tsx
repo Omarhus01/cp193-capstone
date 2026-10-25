@@ -17,7 +17,7 @@ export function LanguageSwitcher() {
 
   return (
     <nav aria-label={t("languageLabel")}>
-      <ul className="flex gap-1 text-sm">
+      <ul className="inline-flex gap-0.5 rounded-lg bg-page p-0.5 text-sm">
         {routing.locales.map((locale) => {
           const isCurrent = locale === currentLocale;
           return (
@@ -29,8 +29,10 @@ export function LanguageSwitcher() {
                 lang={locale}
                 aria-label={t(`languages.${locale}`)}
                 aria-current={isCurrent ? "page" : undefined}
-                className={`rounded px-2 py-1 font-medium ${
-                  isCurrent ? "bg-emerald-700 text-white" : "text-zinc-700 hover:bg-zinc-100"
+                className={`block rounded-md px-3 py-1 ${
+                  isCurrent
+                    ? "bg-white font-semibold text-ink shadow-sm"
+                    : "text-ink-muted hover:text-ink"
                 }`}
               >
                 {t(`languageShort.${locale}`)}

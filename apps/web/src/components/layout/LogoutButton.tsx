@@ -16,7 +16,7 @@ export function LogoutButton() {
     <form action={logOut}>
       <input type="hidden" name="locale" value={locale} />
       <input type="hidden" name="next" value={search ? `${pathname}?${search}` : pathname} />
-      <button type="submit" className="text-sm font-medium text-zinc-700 hover:text-emerald-800">
+      <button type="submit" className="text-sm font-medium text-ink hover:text-brand">
         {t("logout")}
       </button>
     </form>

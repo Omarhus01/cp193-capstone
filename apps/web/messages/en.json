@@ -7,7 +7,7 @@
     "logo": "Quran Explained",
     "navLabel": "Main navigation",
     "home": "Home",
-    "surah": "Surah",
+    "surah": "Surahs",
     "searchLabel": "Search",
     "searchPlaceholder": "Search verses or ask a question",
     "searchComingSoon": "Search is coming soon",
@@ -19,7 +19,10 @@
     "languageShort": {
       "en": "English",
       "ko": "한국어"
-    }
+    },
+    "account": "Account",
+    "menu": "Menu",
+    "closeMenu": "Close menu"
   },
   "home": {
     "title": "Understand the Quran in your language",
@@ -52,6 +55,9 @@
   "surah": {
     "title": "Surah {number}",
     "placeholder": "Verses for this surah will appear here."
+  },
+  "footer": {
+    "quranText": "Arabic Quran text: <link>Tanzil Project (tanzil.net)</link>. Every explanation shows its sources."
   },
   "notFound": {
     "title": "Page not found",

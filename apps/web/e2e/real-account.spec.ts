@@ -19,6 +19,17 @@ async function submitLogin(page: Page, messages: Messages) {
   await page.getByRole("main").getByRole("button", { name: messages.auth.login }).click();
 }
 
+/** The Account button in the top bar, shown only to a logged-in user. */
+function accountButton(page: Page, messages: Messages) {
+  return page.getByRole("banner").getByRole("button", { name: messages.header.account });
+}
+
+/** Logs out through the Account menu in the top bar. */
+async function logOut(page: Page, messages: Messages) {
+  await accountButton(page, messages).click();
+  await page.getByRole("banner").getByRole("button", { name: messages.auth.logout }).click();
+}
+
 /**
  * Marks the browser's Supabase session as expired, so its next request has to use the refresh
  * token. The session cookie holds "base64-" + the session JSON, possibly split into chunks
@@ -62,7 +73,7 @@ test.describe("with a real account", () => {
       await expect(page).toHaveURL(/\/en$/, AFTER_LOGIN);
     }
 
-    await laptopPage.getByRole("banner").getByRole("button", { name: en.auth.logout }).click();
+    await logOut(laptopPage, en);
     await expect(
       laptopPage.getByRole("banner").getByRole("link", { name: en.auth.login }),
     ).toBeVisible();
@@ -72,9 +83,7 @@ test.describe("with a real account", () => {
     await expireSession(phone);
     await phonePage.goto("/en/surah/1");
     await expect(phonePage).toHaveURL(/\/en\/surah\/1$/);
-    await expect(
-      phonePage.getByRole("banner").getByRole("button", { name: en.auth.logout }),
-    ).toBeVisible();
+    await expect(accountButton(phonePage, en)).toBeVisible();
 
     await Promise.all([laptop.close(), phone.close()]);
   });
@@ -89,10 +98,9 @@ test.describe("with a real account", () => {
 
     // Back on the page the user came from.
     await expect(page).toHaveURL(/\/ko$/, AFTER_LOGIN);
-    const logout = page.getByRole("banner").getByRole("button", { name: ko.auth.logout });
-    await expect(logout).toBeVisible();
+    await expect(accountButton(page, ko)).toBeVisible();
 
-    await logout.click();
+    await logOut(page, ko);
     await expect(page.getByRole("banner").getByRole("link", { name: ko.auth.login })).toBeVisible();
     await expect(page).toHaveURL(/\/ko$/);
   });
@@ -102,7 +110,7 @@ test.describe("with a real account", () => {
     await submitLogin(page, en);
     await expect(page).toHaveURL(/\/en\/surah\/1$/, AFTER_LOGIN);
 
-    await page.getByRole("banner").getByRole("button", { name: en.auth.logout }).click();
+    await logOut(page, en);
     await expect(page).toHaveURL(/\/en$/);
     await expect(page.getByRole("banner").getByRole("link", { name: en.auth.login })).toBeVisible();
   });
@@ -113,9 +121,7 @@ test.describe("with a real account", () => {
     await expect(page).toHaveURL(/\/en$/, AFTER_LOGIN);
 
     // Wait until the session-dependent parts have streamed in before checking the hint is absent.
-    await expect(
-      page.getByRole("banner").getByRole("button", { name: en.auth.logout }),
-    ).toBeVisible();
+    await expect(accountButton(page, en)).toBeVisible();
     await page.waitForLoadState("networkidle");
     await expect(page.getByRole("link", { name: en.home.start })).toBeVisible();
     await expect(page.getByText(en.home.accountHint)).toHaveCount(0);

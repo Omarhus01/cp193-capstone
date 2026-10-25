@@ -4,6 +4,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { fontVariables } from "@/app/fonts";
 import { Header } from "@/components/layout/Header";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
@@ -35,10 +36,11 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
     // Page translators rewrite the text React manages, which breaks hydration, and machine
     // translation can turn 알라 into "God". The site provides its own EN/KO versions instead.
     <html lang={locale} translate="no" className={`${fontVariables} h-full antialiased`}>
-      <body className="flex min-h-full flex-col bg-white text-zinc-900">
+      <body className="flex min-h-full flex-col bg-page text-ink">
         <NextIntlClientProvider>
           <Header />
-          <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-10">{children}</main>
+          <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 lg:px-6">{children}</main>
+          <SiteFooter />
         </NextIntlClientProvider>
       </body>
     </html>
