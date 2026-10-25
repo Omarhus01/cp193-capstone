@@ -265,6 +265,8 @@ describe("buildSurahPageView", () => {
       { kind: "word", position: 1, textAr: "خدذ", hasMeaning: true },
     ]);
     expect(Object.keys(view.words)).toEqual(["1:2:1"]);
+    expect(Object.keys(view.sections[0].words)).toEqual(["1:2:1"]);
+    expect(view.sections[1].words).toEqual({});
     expect(view.words["1:2:1"]).toMatchObject({
       textAr: "خدذ",
       root: "خ د ذ",

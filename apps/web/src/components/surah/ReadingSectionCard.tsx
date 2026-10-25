@@ -35,7 +35,7 @@ export function ReadingSectionCard({ section, locale }: ReadingSectionCardProps)
         </div>
       </div>
 
-      <SectionVerses verses={section.verses} />
+      <SectionVerses verses={section.verses} words={section.words} />
 
       {explanation ? (
         <>

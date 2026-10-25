@@ -62,6 +62,8 @@ export type SectionView = {
   verses: VerseView[];
   /** Whether its explanation is published. When false, the section list says it is in review. */
   published: boolean;
+  /** The section's words that have a published meaning, for their popovers. */
+  words: Record<string, WordDetail>;
   /** Null when there is nothing to show yet: the page says the explanation is coming soon. */
   explanation: ExplanationView | null;
 };
@@ -205,6 +207,7 @@ export function buildSurahPageView(
         transliteration: verse.transliteration,
       })),
       published: section.explanation !== null,
+      words: {},
       explanation: section.explanation ? explanationView(section.explanation, passagesById) : null,
     };
   });
@@ -236,6 +239,13 @@ export function buildSurahPageView(
           })),
       };
     }
+  }
+
+  for (const section of sectionViews) {
+    const ayahs = new Set(section.verses.map((verse) => verse.ayah));
+    section.words = Object.fromEntries(
+      Object.entries(words).filter(([, word]) => ayahs.has(word.ref.ayah)),
+    );
   }
 
   return { surah: content.surah, brief: content.brief, sections: sectionViews, words };
