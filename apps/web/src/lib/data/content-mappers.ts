@@ -1,10 +1,11 @@
 import type {
+  Citation,
+  ContentItem,
   Explanation,
   ExplanationKind,
   Localized,
   Passage,
   RevelationPlace,
-  RootWordMeaning,
   SourceType,
   Span,
   Surah,
@@ -45,20 +46,33 @@ export type VerseRow = {
 
 type Ordered = { sort_order: number };
 
+export type CitationRow = Ordered & { passage_id: string; quoting: string | null };
+
+export type ItemRow = Ordered & {
+  text_en: string | null;
+  text_ko: string | null;
+  verse_surah: number | null;
+  verse_ayah: number | null;
+};
+
+export type ExplanationItemRow = ItemRow & {
+  part: "word_meanings" | "background" | "context" | "connected_verses";
+  explanation_item_citation: CitationRow[];
+};
+
 export type ExplanationRow = {
   id: string;
   kind: ExplanationKind;
-  word_meanings_en: string | null;
-  word_meanings_ko: string | null;
-  background_en: string | null;
-  background_ko: string | null;
-  context_en: string | null;
-  context_ko: string | null;
-  connected_verses_en: string | null;
-  connected_verses_ko: string | null;
   span: SpanRow;
   explanation_citation: (Ordered & { passage_id: string })[];
+  explanation_item: ExplanationItemRow[];
   context_link: (Ordered & { reason_en: string | null; reason_ko: string | null; span: SpanRow })[];
+};
+
+export type BriefItemRow = Ordered & {
+  text_en: string | null;
+  text_ko: string | null;
+  surah_brief_item_citation: CitationRow[];
 };
 
 export type WordMeaningRow = {
@@ -67,11 +81,13 @@ export type WordMeaningRow = {
   position: number;
   meaning_en: string | null;
   meaning_ko: string | null;
-  word_meaning_citation: (Ordered & { passage_id: string })[];
-};
-
-export type RootWordMeaningRow = WordMeaningRow & {
-  word: { text_ar: string; root: string; verse: { text_ar: string } };
+  word_meaning_citation: CitationRow[];
+  word_meaning_elsewhere: (Ordered & {
+    verse_surah: number | null;
+    verse_ayah: number | null;
+    text_en: string | null;
+    text_ko: string | null;
+  })[];
 };
 
 export type PassageRow = {
@@ -111,6 +127,13 @@ function byOrder<T extends Ordered>(rows: T[]): T[] {
 
 const localized = (en: string | null, ko: string | null): Localized => ({ en, ko });
 
+const verseRef = (surah: number | null, ayah: number | null) =>
+  surah !== null && ayah !== null ? { surah, ayah } : null;
+
+function toCitations(rows: CitationRow[]): Citation[] {
+  return byOrder(rows).map((row) => ({ passageId: row.passage_id, quoting: row.quoting }));
+}
+
 export function toSpan(row: SpanRow): Span {
   return {
     start: { surah: row.start_surah, ayah: row.start_ayah, word: row.start_word },
@@ -147,15 +170,24 @@ export function toVerse(row: VerseRow): Verse {
 }
 
 export function toExplanation(row: ExplanationRow): Explanation {
+  const items = (part: ExplanationItemRow["part"]) =>
+    byOrder(row.explanation_item.filter((item) => item.part === part));
+  const toItem = (item: ExplanationItemRow): ContentItem => ({
+    text: localized(item.text_en, item.text_ko),
+    citations: toCitations(item.explanation_item_citation),
+  });
   return {
     id: row.id,
     kind: row.kind,
     span: toSpan(row.span),
     parts: {
-      wordMeanings: localized(row.word_meanings_en, row.word_meanings_ko),
-      background: localized(row.background_en, row.background_ko),
-      context: localized(row.context_en, row.context_ko),
-      connectedVerses: localized(row.connected_verses_en, row.connected_verses_ko),
+      wordMeanings: items("word_meanings").map(toItem),
+      background: items("background").map(toItem),
+      context: items("context").map(toItem),
+      relatedVerses: items("connected_verses").flatMap((item) => {
+        const verse = verseRef(item.verse_surah, item.verse_ayah);
+        return verse ? [{ ...toItem(item), verse }] : [];
+      }),
     },
     contextLinks: byOrder(row.context_link).map((link) => ({
       span: toSpan(link.span),
@@ -165,20 +197,22 @@ export function toExplanation(row: ExplanationRow): Explanation {
   };
 }
 
+export function toBrief(rows: BriefItemRow[]): ContentItem[] {
+  return byOrder(rows).map((row) => ({
+    text: localized(row.text_en, row.text_ko),
+    citations: toCitations(row.surah_brief_item_citation),
+  }));
+}
+
 export function toWordMeaning(row: WordMeaningRow): WordMeaning {
   return {
     word: { surah: row.surah, ayah: row.ayah, word: row.position },
     meaning: localized(row.meaning_en, row.meaning_ko),
-    passageIds: byOrder(row.word_meaning_citation).map((citation) => citation.passage_id),
-  };
-}
-
-export function toRootWordMeaning(row: RootWordMeaningRow): RootWordMeaning {
-  return {
-    ...toWordMeaning(row),
-    root: row.word.root,
-    wordAr: row.word.text_ar,
-    verseAr: row.word.verse.text_ar,
+    citations: toCitations(row.word_meaning_citation),
+    elsewhere: byOrder(row.word_meaning_elsewhere).map((note) => ({
+      verse: verseRef(note.verse_surah, note.verse_ayah),
+      text: localized(note.text_en, note.text_ko),
+    })),
   };
 }
 
@@ -196,10 +230,7 @@ export function toPassage(row: PassageRow): Passage {
     },
     volume: row.volume,
     page: row.page,
-    verse:
-      row.verse_surah !== null && row.verse_ayah !== null
-        ? { surah: row.verse_surah, ayah: row.verse_ayah }
-        : null,
+    verse: verseRef(row.verse_surah, row.verse_ayah),
     textAr: row.text_ar,
     summary: localized(row.summary_en, row.summary_ko),
   };

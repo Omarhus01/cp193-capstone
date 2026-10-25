@@ -65,12 +65,24 @@ export type Passage = {
 
 export type ExplanationKind = "phrase_note" | "verse_explanation" | "reading_section";
 
-/** The four parts of an explanation (proposal §1.1). */
+/** A cited passage, and who the passage quotes or narrates from ("Muslim"), if anyone. */
+export type Citation = { passageId: string; quoting: string | null };
+
+/** One point of an explanation, or one paragraph of a brief, with the sources behind it. */
+export type ContentItem = { text: Localized; citations: Citation[] };
+
+/** A verse an explanation relates to, and why. The verse may be in a surah that isn't imported. */
+export type RelatedVerse = ContentItem & { verse: VerseRef };
+
+/**
+ * The four parts of an explanation (proposal §1.1), each a list of points with their own sources
+ * (ADR 0015). `context` is shown as "Meaning"; `wordMeanings` is never shown on the page.
+ */
 export type ExplanationParts = {
-  wordMeanings: Localized;
-  background: Localized;
-  context: Localized;
-  connectedVerses: Localized;
+  wordMeanings: ContentItem[];
+  background: ContentItem[];
+  context: ContentItem[];
+  relatedVerses: RelatedVerse[];
 };
 
 /** Another part of the text a reader needs in order to understand an explanation. */
@@ -83,19 +95,23 @@ export type Explanation = {
   span: Span;
   parts: ExplanationParts;
   contextLinks: ContextLink[];
-  /** The passages it cites, in order. */
+  /** Every passage its points cite, each once, in the order its parts first cite them. */
   passageIds: string[];
 };
+
+/** What a word means elsewhere: in another verse, or (without a verse) in Arabic usage. */
+export type ElsewhereNote = { verse: VerseRef | null; text: Localized };
 
 /** What a word means in its verse. */
 export type WordMeaning = {
   word: VerseRef & { word: number };
   meaning: Localized;
-  passageIds: string[];
+  citations: Citation[];
+  elsewhere: ElsewhereNote[];
 };
 
-/** A word meaning found through the word's root, with the word and its verse for context. */
-export type RootWordMeaning = WordMeaning & { root: string; wordAr: string; verseAr: string };
+/** A verse's Arabic text, for showing a referenced verse. */
+export type VerseText = VerseRef & { textAr: string };
 
 /**
  * A reading section of a surah. Where the sections start and end is public; the explanation is
@@ -117,7 +133,8 @@ export type ReadingSection = {
 /** Everything a surah page needs that doesn't depend on what the reader selects. */
 export type SurahContent = {
   surah: Surah;
-  brief: Localized | null;
+  /** The published brief's paragraphs, or null. */
+  brief: ContentItem[] | null;
   verses: Verse[];
   wordMeanings: WordMeaning[];
   /** Every section in reading order, published or not. */

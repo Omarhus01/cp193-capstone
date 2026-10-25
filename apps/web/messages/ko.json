@@ -79,9 +79,12 @@
     "comingSoonTitle": "해설 준비 중",
     "comingSoonBody": "이 구간의 해설은 아직 검토 중입니다. 아랍어와 한국어 검토가 끝나면 여기에 표시됩니다.",
     "passage": {
-      "volumePage": "{title}, {volume}권 {page}쪽",
-      "page": "{title}, {page}쪽",
-      "verse": "{title}, {verse} 해설"
+      "volumePage": "{author}, {title}, {volume}권 {page}쪽",
+      "volumePages": "{author}, {title}, {volume}권 {page}쪽",
+      "page": "{author}, {title}, {page}쪽",
+      "pages": "{author}, {title}, {page}쪽",
+      "verse": "{author}, {title}, {verse} 해설",
+      "via": "{label}에 인용된 {quoting}"
     },
     "word": {
       "inThisVerse": "이 구절에서",

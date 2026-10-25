@@ -1,8 +1,8 @@
-import { getPassages, getSurahContent, getWordMeaningsByRoot } from "@/lib/data/content";
+import { getPassages, getSurahContent, getVerseTexts } from "@/lib/data/content";
 import {
   buildSurahPageView,
   citedPassageIds,
-  rootsWithMeanings,
+  referencedVerses,
   type SurahPageView,
 } from "./surah-view";
 
@@ -12,9 +12,9 @@ export async function loadSurahPage(surah: number): Promise<SurahPageView | null
   if (!content) {
     return null;
   }
-  const [passages, rootMeanings] = await Promise.all([
+  const [passages, verseTexts] = await Promise.all([
     getPassages(citedPassageIds(content)),
-    getWordMeaningsByRoot(rootsWithMeanings(content)),
+    getVerseTexts(referencedVerses(content)),
   ]);
-  return buildSurahPageView(content, passages, rootMeanings);
+  return buildSurahPageView(content, passages, verseTexts);
 }

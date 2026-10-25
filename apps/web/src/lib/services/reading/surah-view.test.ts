@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
 import type {
+  ContentItem,
   Explanation,
   Passage,
-  RootWordMeaning,
   SurahContent,
   Verse,
+  VerseText,
 } from "@/lib/domain/content";
 import {
   buildSurahPageView,
@@ -12,7 +13,7 @@ import {
   explanationView,
   formatRange,
   passageLabel,
-  rootsWithMeanings,
+  referencedVerses,
   toArabicDigits,
   verseTokens,
 } from "./surah-view";
@@ -36,7 +37,12 @@ const span = (from: number, to: number) => ({
   end: { surah: 1, ayah: to, word: null },
 });
 
-const empty = { en: null, ko: null };
+const cite = (passageId: string, quoting: string | null = null) => ({ passageId, quoting });
+
+const point = (label: string, ...citations: ReturnType<typeof cite>[]): ContentItem => ({
+  text: { en: `[${label}]`, ko: `[${label} ko]` },
+  citations,
+});
 
 function explanation(overrides: Partial<Explanation> = {}): Explanation {
   return {
@@ -44,13 +50,13 @@ function explanation(overrides: Partial<Explanation> = {}): Explanation {
     kind: "reading_section",
     span: span(1, 1),
     parts: {
-      wordMeanings: { en: "[word meanings]", ko: "[단어]" },
-      background: empty,
-      context: { en: "[meaning]", ko: "[의미]" },
-      connectedVerses: empty,
+      wordMeanings: [point("word meanings", cite("p1"))],
+      background: [],
+      context: [point("meaning", cite("p1"))],
+      relatedVerses: [],
     },
     contextLinks: [],
-    passageIds: [],
+    passageIds: ["p1"],
     ...overrides,
   };
 }
@@ -70,7 +76,7 @@ function passage(id: string, overrides: Partial<Passage> = {}): Passage {
     page: "10",
     verse: null,
     textAr: null,
-    summary: empty,
+    summary: { en: null, ko: null },
     ...overrides,
   };
 }
@@ -93,44 +99,44 @@ function content(): SurahContent {
       verseCount: 3,
       basmalaAr: null,
     },
-    brief: null,
+    brief: [point("brief 1", cite("p2")), point("brief 2", cite("p3"), cite("p2"))],
     verses,
     wordMeanings: [
       {
         word: { surah: 1, ayah: 2, word: 1 },
         meaning: { en: "[meaning of 1:2:1]", ko: "[1:2:1 뜻]" },
-        passageIds: ["p2"],
+        citations: [cite("p2", "[narrator]")],
+        elsewhere: [
+          { verse: { surah: 5, ayah: 7 }, text: { en: "[in 5:7]", ko: "[5:7]" } },
+          { verse: { surah: 1, ayah: 3 }, text: { en: "[in 1:3]", ko: "[1:3]" } },
+          { verse: null, text: { en: "[usage]", ko: "[용례]" } },
+        ],
       },
     ],
     readingSections: [
       {
         position: 1,
         span: span(1, 2),
-        explanation: explanation({ span: span(1, 2), passageIds: ["p2", "p1"] }),
+        explanation: explanation({
+          span: span(1, 2),
+          parts: {
+            wordMeanings: [],
+            background: [point("background", cite("p1"))],
+            context: [point("meaning a", cite("p2"), cite("p1", "[narrator]"))],
+            relatedVerses: [
+              { verse: { surah: 4, ayah: 69 }, ...point("why 4:69", cite("p3")) },
+              { verse: { surah: 1, ayah: 3 }, ...point("why 1:3") },
+            ],
+          },
+          passageIds: ["p1", "p2", "p3"],
+        }),
       },
       { position: 2, span: span(3, 3), explanation: null },
     ],
   };
 }
 
-const rootMeanings: RootWordMeaning[] = [
-  {
-    word: { surah: 1, ayah: 2, word: 1 },
-    meaning: { en: "[meaning of 1:2:1]", ko: "[1:2:1 뜻]" },
-    passageIds: ["p2"],
-    root: "خ د ذ",
-    wordAr: "خدذ",
-    verseAr: `خدذ ${MARK} رزس شصض`,
-  },
-  {
-    word: { surah: 5, ayah: 7, word: 3 },
-    meaning: { en: "[meaning of 5:7:3]", ko: "[5:7:3 뜻]" },
-    passageIds: [],
-    root: "خ د ذ",
-    wordAr: "خدذي",
-    verseAr: "ابت خدذي",
-  },
-];
+const verseTexts: VerseText[] = [{ surah: 1, ayah: 3, textAr: "طظع" }];
 
 describe("formatRange", () => {
   it("names one verse, several verses, and a range across surahs", () => {
@@ -170,28 +176,11 @@ describe("verseTokens", () => {
 });
 
 describe("explanationView", () => {
-  const passages = new Map([
-    ["p1", passage("p1")],
-    ["p2", passage("p2")],
-  ]);
+  const passages = new Map(["p1", "p2", "p3"].map((id) => [id, passage(id)]));
 
   it("shows meaning (context), background and related verses, never the word meanings part", () => {
-    const view = explanationView(
-      explanation({
-        parts: {
-          wordMeanings: { en: "[word meanings]", ko: "[단어]" },
-          background: { en: "[background]", ko: "[배경]" },
-          context: { en: "[meaning]", ko: "[의미]" },
-          connectedVerses: { en: "[related]", ko: "[관련]" },
-        },
-      }),
-      passages,
-    );
-    expect(view).toMatchObject({
-      meaning: { en: "[meaning]" },
-      background: { en: "[background]" },
-      relatedVerses: { en: "[related]" },
-    });
+    const view = explanationView(explanation(), passages);
+    expect(view?.meaning.map((item) => item.text.en)).toEqual(["[meaning]"]);
     expect(JSON.stringify(view)).not.toContain("[word meanings]");
   });
 
@@ -199,10 +188,10 @@ describe("explanationView", () => {
     const view = explanationView(
       explanation({
         parts: {
-          wordMeanings: { en: "[word meanings]", ko: "[단어]" },
-          background: empty,
-          context: empty,
-          connectedVerses: empty,
+          wordMeanings: [point("word meanings", cite("p1"))],
+          background: [],
+          context: [],
+          relatedVerses: [],
         },
       }),
       passages,
@@ -210,34 +199,47 @@ describe("explanationView", () => {
     expect(view).toBeNull();
   });
 
-  it("numbers the citations in order and links related verses to their anchor", () => {
+  it("numbers each passage where it is first cited, in the order the parts are shown", () => {
+    const section = content().readingSections[0].explanation!;
+    const view = explanationView(section, passages)!;
+    const numbers = (sources: { number: number; passage: Passage; quoting: string | null }[]) =>
+      sources.map((s) => [s.number, s.passage.id, s.quoting]);
+    // Meaning comes first on the page, so its passages are 1 and 2.
+    expect(numbers(view.meaning[0].sources)).toEqual([
+      [1, "p2", null],
+      [2, "p1", "[narrator]"],
+    ]);
+    expect(numbers(view.background[0].sources)).toEqual([[2, "p1", null]]);
+    expect(numbers(view.relatedVerses[0].sources)).toEqual([[3, "p3", null]]);
+  });
+
+  it("leaves out a citation of a passage readers can't see", () => {
     const view = explanationView(
-      explanation({
-        passageIds: ["p2", "missing", "p1"],
-        contextLinks: [
-          {
-            span: {
-              start: { surah: 4, ayah: 69, word: null },
-              end: { surah: 4, ayah: 70, word: null },
-            },
-            reason: { en: "[why]", ko: "[이유]" },
-          },
-        ],
-      }),
+      explanation({ parts: { ...explanation().parts, context: [point("x", cite("hidden"))] } }),
       passages,
     );
-    expect(view?.citations.map((c) => [c.number, c.passage.id])).toEqual([
-      [1, "p2"],
-      [2, "p1"],
-    ]);
-    expect(view?.relatedVerseLinks).toEqual([
-      { label: "4:69–70", surah: 4, anchor: "verse-4-69", reason: { en: "[why]", ko: "[이유]" } },
+    expect(view?.meaning[0].sources).toEqual([]);
+  });
+
+  it("links a related verse only once that verse is imported", () => {
+    const view = explanationView(
+      content().readingSections[0].explanation!,
+      passages,
+      new Set(["1:3"]),
+    )!;
+    expect(view.relatedVerses.map((r) => r.verse)).toEqual([
+      { label: "4:69", surah: 4, anchor: "verse-4-69", available: false },
+      { label: "1:3", surah: 1, anchor: "verse-1-3", available: true },
     ]);
   });
 });
 
 describe("buildSurahPageView", () => {
-  const view = buildSurahPageView(content(), [passage("p1"), passage("p2")], rootMeanings);
+  const view = buildSurahPageView(
+    content(),
+    ["p1", "p2", "p3"].map((id) => passage(id)),
+    verseTexts,
+  );
 
   it("lists every reading section, published or not, with its verses", () => {
     expect(view.sections.map((s) => [s.position, s.total, s.label, s.anchor, s.published])).toEqual(
@@ -255,11 +257,21 @@ describe("buildSurahPageView", () => {
     expect(view.sections[1].explanation).toBeNull();
   });
 
+  it("numbers the brief's sources within the brief", () => {
+    expect(view.brief?.map((p) => p.sources.map((s) => [s.number, s.passage.id]))).toEqual([
+      [[1, "p2"]],
+      [
+        [2, "p3"],
+        [1, "p2"],
+      ],
+    ]);
+  });
+
   it("keeps each verse's published transliteration", () => {
     expect(view.sections[0].verses[1].transliteration).toEqual({ en: "[latin 1:2]", ko: null });
   });
 
-  it("marks the words that have a meaning and describes them for the popover", () => {
+  it("describes the words that have a meaning for the popover", () => {
     const tokens = view.sections[0].verses[1].tokens;
     expect(tokens.filter((t) => t.kind === "word" && t.hasMeaning)).toEqual([
       { kind: "word", position: 1, textAr: "خدذ", hasMeaning: true },
@@ -271,19 +283,23 @@ describe("buildSurahPageView", () => {
       textAr: "خدذ",
       root: "خ د ذ",
       meaning: { en: "[meaning of 1:2:1]" },
-      sources: [{ id: "p2" }],
+      sources: [{ number: 1, passage: { id: "p2" }, quoting: "[narrator]" }],
     });
   });
 
-  it("lists the root's meanings elsewhere, without the word itself", () => {
+  it("shows the owner's elsewhere notes, with the verse's Arabic once that verse is imported", () => {
     expect(view.words["1:2:1"].elsewhere).toEqual([
       {
-        ref: { surah: 5, ayah: 7, word: 3 },
-        label: "5:7",
-        anchor: "verse-5-7",
-        verseAr: "ابت خدذي",
-        meaning: { en: "[meaning of 5:7:3]", ko: "[5:7:3 뜻]" },
+        verse: { label: "5:7", surah: 5, anchor: "verse-5-7", available: false },
+        verseAr: null,
+        text: { en: "[in 5:7]", ko: "[5:7]" },
       },
+      {
+        verse: { label: "1:3", surah: 1, anchor: "verse-1-3", available: true },
+        verseAr: "طظع",
+        text: { en: "[in 1:3]", ko: "[1:3]" },
+      },
+      { verse: null, verseAr: null, text: { en: "[usage]", ko: "[용례]" } },
     ]);
   });
 
@@ -299,28 +315,37 @@ describe("buildSurahPageView", () => {
 });
 
 describe("what the page loads", () => {
-  it("asks for every cited passage once, sorted", () => {
-    expect(citedPassageIds(content())).toEqual(["p1", "p2"]);
+  it("asks for every passage cited by explanations, word meanings and the brief, once, sorted", () => {
+    expect(citedPassageIds(content())).toEqual(["p1", "p2", "p3"]);
   });
 
-  it("asks for the roots of words with a meaning", () => {
-    expect(rootsWithMeanings(content())).toEqual(["خ د ذ"]);
+  it("asks for every verse it refers to, once, in text order", () => {
+    expect(referencedVerses(content())).toEqual([
+      { surah: 1, ayah: 3 },
+      { surah: 4, ayah: 69 },
+      { surah: 5, ayah: 7 },
+    ]);
   });
 });
 
 describe("passageLabel", () => {
-  it("names a passage by volume and page, by page, or by verse", () => {
+  it("names a passage by author and title, then volume and page(s), or verse", () => {
+    const book = { author: "[Author]", title: "[Source title]" };
     expect(passageLabel(passage("a", { volume: "1", page: "70" }))).toEqual({
       key: "volumePage",
-      values: { title: "[Source title]", volume: "1", page: "70" },
+      values: { ...book, volume: "1", page: "70" },
     });
-    expect(passageLabel(passage("b", { page: "12" }))).toEqual({
-      key: "page",
-      values: { title: "[Source title]", page: "12" },
+    expect(passageLabel(passage("b", { volume: "1", page: "101–111" }))).toEqual({
+      key: "volumePages",
+      values: { ...book, volume: "1", page: "101–111" },
     });
-    expect(passageLabel(passage("c", { page: null, verse: { surah: 1, ayah: 4 } }))).toEqual({
+    expect(passageLabel(passage("c", { page: "9–24" }))).toEqual({
+      key: "pages",
+      values: { ...book, page: "9–24" },
+    });
+    expect(passageLabel(passage("d", { page: null, verse: { surah: 1, ayah: 4 } }))).toEqual({
       key: "verse",
-      values: { title: "[Source title]", verse: "1:4" },
+      values: { ...book, verse: "1:4" },
     });
   });
 });
