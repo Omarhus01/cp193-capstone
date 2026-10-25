@@ -20,6 +20,7 @@ Records are not rewritten when a decision changes. Add a new record and set the 
 | [0012](0012-explanations-attach-to-spans.md)       | Explanations attach to spans; Hafs numbering; pause marks aren't words | Accepted |
 | [0013](0013-public-reading-structure-and-transliteration.md) | Reading structure is public; transliteration is reviewed per language | Accepted |
 | [0014](0014-page-layout-preferences-and-caching.md) | Page layout slots, reading preferences in cookies, cached published content | Accepted |
+| [0015](0015-explanation-items-and-verse-references.md) | Explanations are items with their own citations; related verses are references | Accepted |
 
 ## Template
 

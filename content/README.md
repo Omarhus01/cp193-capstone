@@ -9,10 +9,11 @@ The project owner provides and validates all religious content. Never add explan
 ```
 content/
   schema/                  JSON Schema of each file (generated, see "Changing the schema")
+  quran-metadata.json      every surah's name, revelation place and verse count, from Tanzil. Generated.
   surahs/001/
     text.json              Quran text from Tanzil. Generated; never edit it.
     words.json             the words of each verse. Generated; the owner fills in `root`.
-    surah.json             names (en, ko) and the surah brief. Owner.
+    surah.json             names (en, ko) and the surah brief, paragraph by paragraph. Owner.
     explanations.json      explanations: phrase notes, verse explanations, reading sections. Owner.
     reading.json           the order of the reading sections. Owner.
     word-meanings.json     what words mean in their verse. Owner. Optional.
@@ -74,21 +75,61 @@ Where reading sections start and end is public: the surah page lists every secti
   "kind": "phrase_note",
   "span": { "from": "2:26:5", "to": "2:26:6" },
   "parts": {
-    "wordMeanings": { "en": "…", "ko": "…" },
-    "background": { "en": null, "ko": null },
-    "context": { "en": "…", "ko": "…" },
-    "connectedVerses": { "en": null, "ko": null }
+    "wordMeanings": [],
+    "background": [],
+    "context": [
+      { "en": "…", "ko": "…", "citations": ["ibn-kathir-1-101-111"] },
+      {
+        "en": "…",
+        "ko": "…",
+        "citations": [{ "passage": "ibn-kathir-1-101-111", "quoting": "Muslim" }, "qurtubi-on-2-26"]
+      }
+    ],
+    "connectedVerses": [{ "verse": "2:60", "en": "…", "ko": "…", "citations": ["…"] }]
   },
-  "citations": ["tabari-1-200"],
-  "contextLinks": [
-    { "span": { "from": "2:60", "to": "2:60" }, "reason": { "en": "…", "ko": "…" } }
-  ],
+  "contextLinks": [],
   "status": "draft",
   "review": []
 }
 ```
 
-The four parts follow the proposal: word meanings, historical background, context, and connected verses. A part that doesn't apply stays `null`. Ids are lowercase words joined by hyphens and are never reused. Citations are passage ids from `content/sources/`.
+The four parts follow the proposal: word meanings, historical background, context (shown as "Meaning"), and connected verses (shown as "Related verses"). Each part is a list of points, and each point lists its own citations, which the page shows as Source links at the end of the point ([ADR 0015](../docs/decisions/0015-explanation-items-and-verse-references.md)). A part that doesn't apply is an empty list. The word meanings part is never shown on the page; word meanings are in the word popover.
+
+- **Citations** are passage ids from `content/sources/`. When the passage quotes or narrates from someone, write `{ "passage": "…", "quoting": "Muslim" }`. The page then names the source "Muslim, via Ibn Kathīr, …", so a hadith's attribution is never lost.
+- **Text** may use `**bold**`, `*italic*`, and a blank line between paragraphs. Nothing else is formatted, and HTML is shown as text.
+- **Ids** are lowercase words joined by hyphens and are never reused.
+- **Context links** (`contextLinks`) link to a span of imported text. Related verses are the usual way to point to other verses.
+
+### Verse references
+
+Related verses, and the "Elsewhere" notes of word meanings, name a verse as `"surah:ayah"`. The verse doesn't have to be imported: validation checks it against `quran-metadata.json`, Tanzil's verse counts for all 114 surahs. The page shows the reference as text, and as a link once that surah is imported.
+
+`quran-metadata.json` is generated from Tanzil's metadata and keeps its license notice. To write it again:
+
+```bash
+npm run content:import-tanzil-metadata -- <path>/quran-data.xml
+```
+
+### The brief and word meanings
+
+`surah.json`'s brief is a list of paragraphs, each with its citations:
+
+```json
+"brief": { "items": [{ "en": "…", "ko": "…", "citations": ["…"] }], "status": "draft", "review": [] }
+```
+
+A word meaning has its meaning in this verse, its citations, and `elsewhere`: what the word means elsewhere, each with a verse, or `"verse": null` for a note on Arabic usage.
+
+```json
+{
+  "word": "1:4:3",
+  "meaning": { "en": "…", "ko": "…" },
+  "citations": ["…"],
+  "elsewhere": [{ "verse": "109:6", "en": "…", "ko": "…" }],
+  "status": "draft",
+  "review": []
+}
+```
 
 ## Transliterations
 
@@ -142,8 +183,9 @@ The validation test fails when:
 
 - a step is skipped, or `status` doesn't match where the history ends
 - the dates of the steps go backwards
-- the English is approved with no English text, or from `ko_drafted` on, an English part has no Korean
-- a published item has no citation
+- the English is approved with no English text, or from `ko_drafted` on, an English point, elsewhere note or reason has no Korean
+- a point of a published explanation or brief has no citation, or a published word meaning has none
+- a verse reference names a verse that doesn't exist, or a citation names a passage that doesn't
 - any text uses 하나님, or "God" as a name (CLAUDE.md, Content rules)
 
 The history is seeded into private tables; readers never see reviewer names or notes.
