@@ -1,4 +1,5 @@
 import type { ContentBundle, SurahFiles } from "../../src/lib/services/content/load";
+import type { ItemEntry } from "../../src/lib/services/content/schema";
 import {
   explanation,
   testMetadata,
@@ -55,13 +56,24 @@ function surahFiles(number: number, verseCount: number): SurahFiles {
 
 const both = (label: string) => ({ en: `[${label} en]`, ko: `[${label} ko]` });
 
+/** A point with its sources. */
+const point = (label: string, citations: ItemEntry["citations"]): ItemEntry => ({
+  ...both(label),
+  citations,
+});
+
+/** The name the fixture's quoting citations give. */
+export const FIXTURE_NARRATOR = "[Fixture narrator]";
+
 /**
  * Surah 1 (5 verses) in three reading sections:
- * - 1:1–2, published, with every part, two citations and a link to 2:1
+ * - 1:1–2, published: two meaning points (the first with **bold**, *italic*, and two sources, one
+ *   of them quoting), a background point, a word meanings part (never shown), and related verses
+ *   2:1 (imported, so a link) and 40:6 (not imported, so text)
  * - 1:3, a draft: "explanation coming soon"
- * - 1:4–5, published, with a meaning only
- * Word meanings: 1:1:1 and 2:1:1 share a root; 1:2:2 has none. Transliterations: 1:1 in both
- * languages, 1:4 in Korean only, 1:2 a Latin draft (hidden).
+ * - 1:4–5, published, with one meaning point
+ * Word meanings: 1:1:1 with elsewhere notes (2:1, and one without a verse); 1:2:2 with none.
+ * Transliterations: 1:1 in both languages, 1:4 in Korean only, 1:2 a Latin draft (hidden).
  */
 export function fixtureBundle(): ContentBundle {
   const first = surahFiles(1, 5);
@@ -69,17 +81,28 @@ export function fixtureBundle(): ContentBundle {
 
   const full = explanation("fx-reading-1", "reading_section", "1:1", "1:2");
   full.parts = {
-    wordMeanings: both("word meanings part"),
-    background: both("background 1"),
-    context: both("meaning 1"),
-    connectedVerses: both("related 1"),
+    wordMeanings: [point("word meanings part", ["fx-passage-1"])],
+    background: [point("background 1", ["fx-passage-1"])],
+    context: [
+      {
+        en: "[meaning 1a en] with **bold** and *italic*",
+        ko: "[meaning 1a ko] with **bold** and *italic*",
+        citations: ["fx-passage-1", { passage: "fx-passage-2", quoting: FIXTURE_NARRATOR }],
+      },
+      point("meaning 1b", ["fx-passage-2"]),
+    ],
+    connectedVerses: [
+      { verse: "2:1", ...point("why 2:1", ["fx-passage-1"]) },
+      { verse: "40:6", ...point("why 40:6", ["fx-passage-2"]) },
+    ],
   };
-  full.citations = ["fx-passage-1", "fx-passage-2"];
-  full.contextLinks = [{ span: { from: "2:1", to: "2:1" }, reason: both("why 2:1") }];
 
   const short = explanation("fx-reading-3", "reading_section", "1:4", "1:5");
-  short.parts = { ...short.parts, background: { en: null, ko: null }, context: both("meaning 3") };
-  short.citations = ["fx-passage-1"];
+  short.parts = {
+    ...short.parts,
+    background: [],
+    context: [point("meaning 3", ["fx-passage-1"])],
+  };
 
   first.explanations = [
     full,
@@ -88,7 +111,15 @@ export function fixtureBundle(): ContentBundle {
   ];
   first.readingSections = ["fx-reading-1", "fx-reading-2", "fx-reading-3"];
   first.wordMeanings = [
-    { ...wordMeaning("1:1:1"), meaning: both("meaning of 1:1:1"), citations: ["fx-passage-1"] },
+    {
+      ...wordMeaning("1:1:1"),
+      meaning: both("meaning of 1:1:1"),
+      citations: ["fx-passage-1", { passage: "fx-passage-2", quoting: FIXTURE_NARRATOR }],
+      elsewhere: [
+        { verse: "2:1", ...both("elsewhere in 2:1") },
+        { verse: null, ...both("usage note") },
+      ],
+    },
     { ...wordMeaning("1:2:2"), meaning: both("meaning of 1:2:2"), citations: ["fx-passage-2"] },
   ];
   first.transliterations = [
@@ -100,7 +131,10 @@ export function fixtureBundle(): ContentBundle {
   first.surah = {
     names: first.surah.names,
     brief: {
-      ...both("brief"),
+      items: [
+        point("brief 1", ["fx-passage-1"]),
+        point("brief 2", [{ passage: "fx-passage-2", quoting: FIXTURE_NARRATOR }]),
+      ],
       status: "published",
       review: full.review.map((entry) => ({ ...entry })),
     },

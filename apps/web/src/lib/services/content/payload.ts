@@ -1,6 +1,7 @@
 import type { Span } from "@/lib/domain/content";
 import type { ReviewEntry } from "@/lib/services/review";
 import type { ContentBundle } from "./load";
+import { readCitation, type CitationEntry, type ItemEntry } from "./schema";
 import { parseRef, parseSpan, spanId, type SpanRefs } from "./spans";
 
 // The argument of the seed_content database function (supabase/migrations/, last replaced in
@@ -29,7 +30,29 @@ export type SeedPayload = {
   word_meaning_reviews: Row[];
   verse_transliterations: Row[];
   verse_transliteration_reviews: Row[];
+  explanation_items: Row[];
+  explanation_item_citations: Row[];
+  surah_brief_items: Row[];
+  surah_brief_item_citations: Row[];
+  word_meaning_elsewhere: Row[];
 };
+
+/** The database's name for each part of an explanation (enum explanation_part). */
+const PARTS = {
+  context: "context",
+  background: "background",
+  connectedVerses: "connected_verses",
+  wordMeanings: "word_meanings",
+} as const;
+
+function citationRows(key: Row, citations: CitationEntry[]): Row[] {
+  return citations.map(readCitation).map(({ passage, quoting }, sortOrder) => ({
+    ...key,
+    sort_order: sortOrder,
+    passage_id: passage,
+    quoting,
+  }));
+}
 
 function reviewRows(key: Row, review: ReviewEntry[]): Row[] {
   return review.map((entry, step) => ({
@@ -78,6 +101,11 @@ export function toSeedPayload(bundle: ContentBundle): SeedPayload {
     word_meaning_reviews: [],
     verse_transliterations: [],
     verse_transliteration_reviews: [],
+    explanation_items: [],
+    explanation_item_citations: [],
+    surah_brief_items: [],
+    surah_brief_item_citations: [],
+    word_meaning_elsewhere: [],
   };
 
   const spans = new Map<string, Span>();
@@ -148,17 +176,28 @@ export function toSeedPayload(bundle: ContentBundle): SeedPayload {
         id,
         span_id: addSpan(explanation.span),
         kind: explanation.kind,
-        word_meanings_en: parts.wordMeanings.en,
-        word_meanings_ko: parts.wordMeanings.ko,
-        background_en: parts.background.en,
-        background_ko: parts.background.ko,
-        context_en: parts.context.en,
-        context_ko: parts.context.ko,
-        connected_verses_en: parts.connectedVerses.en,
-        connected_verses_ko: parts.connectedVerses.ko,
         status: explanation.status,
       });
-      explanation.citations.forEach((passageId, sortOrder) =>
+      // The explanation's passages, each once, in the order its parts first cite them.
+      const passages = new Set<string>();
+      for (const [part, dbPart] of Object.entries(PARTS) as [keyof typeof PARTS, string][]) {
+        parts[part].forEach((item: ItemEntry & { verse?: string }, i) => {
+          const verse = item.verse ? parseRef(item.verse) : null;
+          payload.explanation_items.push({
+            explanation_id: id,
+            part: dbPart,
+            sort_order: i,
+            text_en: item.en,
+            text_ko: item.ko,
+            verse_surah: verse?.surah ?? null,
+            verse_ayah: verse?.ayah ?? null,
+          });
+          const key = { explanation_id: id, part: dbPart, item_order: i };
+          payload.explanation_item_citations.push(...citationRows(key, item.citations));
+          item.citations.forEach((citation) => passages.add(readCitation(citation).passage));
+        });
+      }
+      [...passages].forEach((passageId, sortOrder) =>
         payload.explanation_citations.push({
           explanation_id: id,
           passage_id: passageId,
@@ -204,13 +243,18 @@ export function toSeedPayload(bundle: ContentBundle): SeedPayload {
         meaning_ko: meaning.meaning.ko,
         status: meaning.status,
       });
-      meaning.citations.forEach((passageId, sortOrder) =>
-        payload.word_meaning_citations.push({
+      payload.word_meaning_citations.push(...citationRows(key, meaning.citations));
+      meaning.elsewhere.forEach((other, sortOrder) => {
+        const verse = other.verse ? parseRef(other.verse) : null;
+        payload.word_meaning_elsewhere.push({
           ...key,
-          passage_id: passageId,
           sort_order: sortOrder,
-        }),
-      );
+          verse_surah: verse?.surah ?? null,
+          verse_ayah: verse?.ayah ?? null,
+          text_en: other.en,
+          text_ko: other.ko,
+        });
+      });
       payload.word_meaning_reviews.push(...reviewRows(key, meaning.review));
     }
 
@@ -226,11 +270,17 @@ export function toSeedPayload(bundle: ContentBundle): SeedPayload {
 
     const brief = surah.surah.brief;
     if (brief) {
-      payload.surah_briefs.push({
-        surah: number,
-        brief_en: brief.en,
-        brief_ko: brief.ko,
-        status: brief.status,
+      payload.surah_briefs.push({ surah: number, status: brief.status });
+      brief.items.forEach((item, i) => {
+        payload.surah_brief_items.push({
+          surah: number,
+          sort_order: i,
+          text_en: item.en,
+          text_ko: item.ko,
+        });
+        payload.surah_brief_item_citations.push(
+          ...citationRows({ surah: number, item_order: i }, item.citations),
+        );
       });
       payload.surah_brief_reviews.push(...reviewRows({ surah: number }, brief.review));
     }
@@ -265,6 +315,13 @@ export function toSeedPayload(bundle: ContentBundle): SeedPayload {
   payload.word_meaning_citations.sort(byKeys("surah", "ayah", "position", "sort_order"));
   payload.word_meaning_reviews.sort(byKeys("surah", "ayah", "position", "step"));
   payload.verse_transliterations.sort(byKeys("surah", "ayah", "language"));
+  payload.explanation_items.sort(byKeys("explanation_id", "part", "sort_order"));
+  payload.explanation_item_citations.sort(
+    byKeys("explanation_id", "part", "item_order", "sort_order"),
+  );
+  payload.surah_brief_items.sort(byKeys("surah", "sort_order"));
+  payload.surah_brief_item_citations.sort(byKeys("surah", "item_order", "sort_order"));
+  payload.word_meaning_elsewhere.sort(byKeys("surah", "ayah", "position", "sort_order"));
   payload.verse_transliteration_reviews.sort(byKeys("surah", "ayah", "language", "step"));
   return payload;
 }

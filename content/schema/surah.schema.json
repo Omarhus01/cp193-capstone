@@ -16,8 +16,49 @@
     "brief": {
       "type": "object",
       "properties": {
-        "en": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] },
-        "ko": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "en": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] },
+              "ko": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] },
+              "citations": {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                      "description": "A stable id, such as \"001-reading-1\". Never reuse one for something else."
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "passage": {
+                          "type": "string",
+                          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                          "description": "A stable id, such as \"001-reading-1\". Never reuse one for something else."
+                        },
+                        "quoting": {
+                          "type": "string",
+                          "minLength": 1,
+                          "description": "Who the passage quotes or narrates from, as the draft names them: \"Muslim\"."
+                        }
+                      },
+                      "required": ["passage", "quoting"],
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                "description": "Passages in content/sources/ behind this text, in order: a passage id, or { \"passage\": id, \"quoting\": \"Muslim\" } when the passage quotes or narrates from someone."
+              }
+            },
+            "required": ["en", "ko", "citations"],
+            "additionalProperties": false
+          },
+          "description": "The brief's paragraphs, each with its sources."
+        },
         "status": {
           "type": "string",
           "enum": ["draft", "en_approved", "ko_drafted", "ko_approved", "published"],
@@ -46,7 +87,7 @@
           }
         }
       },
-      "required": ["en", "ko", "status", "review"],
+      "required": ["items", "status", "review"],
       "additionalProperties": false
     }
   },
