@@ -6,7 +6,11 @@ import type { ItemView } from "@/lib/services/reading/surah-view";
 import { LocalizedText } from "./LocalizedText";
 import { SourceChips } from "./SourceLink";
 
-type SurahHeaderProps = { surah: Surah; brief: ItemView[] | null; locale: Locale };
+type SurahHeaderProps = {
+  surah: Surah;
+  brief: { draft: boolean; items: ItemView[] } | null;
+  locale: Locale;
+};
 
 /** The surah's names, where it was revealed, its length, and its brief once published. */
 export function SurahHeader({ surah, brief, locale }: SurahHeaderProps) {
@@ -39,9 +43,9 @@ export function SurahHeader({ surah, brief, locale }: SurahHeaderProps) {
           </li>
         ))}
       </ul>
-      {brief && brief.length > 0 ? (
+      {brief && brief.items.length > 0 ? (
         <div className="mt-4 flex flex-col gap-3 text-ink-muted">
-          {brief.map((paragraph, i) => (
+          {brief.items.map((paragraph, i) => (
             <div key={i}>
               <LocalizedText
                 text={paragraph.text}

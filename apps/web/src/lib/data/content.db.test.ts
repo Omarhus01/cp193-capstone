@@ -6,7 +6,7 @@ import { loadContent } from "@/lib/services/content/load";
 // eslint-disable-next-line no-restricted-imports
 import { toSeedPayload } from "@/lib/services/content/payload";
 // eslint-disable-next-line no-restricted-imports
-import { explanation, item, testBundle } from "@/lib/services/content/test-bundle";
+import { explanation, item, testBundle, wordMeaning } from "@/lib/services/content/test-bundle";
 import {
   getExplanationsForSpan,
   getPassages,
@@ -15,6 +15,7 @@ import {
   getSurahContent,
   getVerseTexts,
 } from "./content";
+import { queryPassages, querySurahContent } from "./content-queries";
 
 // The cache directives need the Next.js server; here every call goes to the database.
 vi.mock("next/cache", () => ({ cacheLife: () => {}, cacheTag: () => {} }));
@@ -63,11 +64,19 @@ const noSession = { auth: { persistSession: false, autoRefreshToken: false } };
  */
 function dbBundle() {
   const bundle = testBundle();
-  const [first] = bundle.surahs;
+  const [first, second] = bundle.surahs;
+  // In review (testers see it): the second reading section, citing a passage nothing published
+  // cites; a word meaning; surah 2's brief; and a draft transliteration with text.
   const section = first.explanations.findIndex((e) => e.id === "s1-reading-2");
-  const draft = explanation("s1-reading-2", "reading_section", "1:3", "1:4", "draft");
-  draft.parts.context = [item("draft point")];
-  first.explanations[section] = draft;
+  const inReview = explanation("s1-reading-2", "reading_section", "1:3", "1:4", "ko_drafted");
+  inReview.parts.context = [item("draft point", ["passage-3"])];
+  first.explanations[section] = inReview;
+  first.wordMeanings.push({ ...wordMeaning("1:2:1"), status: "ko_drafted", review: [] });
+  first.transliterations[2].text = "draft pronunciation of 1:2 (en)";
+  second.surah = {
+    names: second.surah.names,
+    brief: { items: [item("brief in review")], status: "ko_drafted", review: [] },
+  };
   bundle.sources[0].passages.push({
     id: "passage-3",
     volume: null,
@@ -83,6 +92,9 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
   let service: SupabaseClient;
   let anon: SupabaseClient;
   let user: SupabaseClient;
+  let tester: SupabaseClient;
+  let testerId: string;
+  let userId: string;
 
   async function seed(payload: unknown) {
     const { error } = await service.rpc("seed_content", { payload });
@@ -105,18 +117,32 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
     service = createClient(url, serviceRoleKey, noSession);
     anon = createClient(url, anonKey, noSession);
     user = createClient(url, anonKey, noSession);
-    const { error } = await user.auth.signUp({
+    const { data, error } = await user.auth.signUp({
       email: `content-test-${Date.now()}@example.com`,
       password: "content-test-password",
     });
     expect(error).toBeNull();
+    userId = data.user!.id;
+    // A tester: only the service role can add one (ADR 0016).
+    tester = createClient(url, anonKey, noSession);
+    const signedUp = await tester.auth.signUp({
+      email: `content-test-tester-${Date.now()}@example.com`,
+      password: "content-test-password",
+    });
+    expect(signedUp.error).toBeNull();
+    testerId = signedUp.data.user!.id;
+    const added = await service.from("tester").insert({ user_id: testerId });
+    expect(added.error).toBeNull();
     await seed(toSeedPayload(dbBundle()));
   });
 
   afterAll(async () => {
-    // Put the real content back.
+    // Put the real content back, and remove the accounts this test made.
     if (service) {
       await seed(toSeedPayload(loadContent().bundle));
+      for (const id of [userId, testerId].filter(Boolean)) {
+        await service.auth.admin.deleteUser(id);
+      }
     }
   });
 
@@ -182,19 +208,23 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
       expect(content?.surah.verseCount).toBe(4);
       expect(content?.verses).toHaveLength(4);
       expect(content?.verses[0].words.map((w) => w.position)).toEqual([1, 2, 3, 4]);
-      expect(content?.brief).toEqual([
-        {
-          text: { en: "brief paragraph 1 (en)", ko: "brief paragraph 1 (ko)" },
-          citations: [{ passageId: "passage-1", quoting: null }],
-        },
-        {
-          text: { en: "brief paragraph 2 (en)", ko: "brief paragraph 2 (ko)" },
-          citations: [{ passageId: "passage-2", quoting: null }],
-        },
-      ]);
+      expect(content?.brief).toEqual({
+        status: "published",
+        items: [
+          {
+            text: { en: "brief paragraph 1 (en)", ko: "brief paragraph 1 (ko)" },
+            citations: [{ passageId: "passage-1", quoting: null }],
+          },
+          {
+            text: { en: "brief paragraph 2 (en)", ko: "brief paragraph 2 (ko)" },
+            citations: [{ passageId: "passage-2", quoting: null }],
+          },
+        ],
+      });
       expect(content?.wordMeanings).toEqual([
         {
           word: { surah: 1, ayah: 1, word: 1 },
+          status: "published",
           meaning: { en: "meaning of 1:1:1 (en)", ko: "meaning of 1:1:1 (ko)" },
           citations: [{ passageId: "passage-1", quoting: null }],
           elsewhere: [
@@ -297,10 +327,116 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
     });
   });
 
+  describe("the tester preview", () => {
+    it("knows who is a tester, and only answers for the caller", async () => {
+      expect((await anon.rpc("is_tester")).data).toBe(false);
+      expect((await user.rpc("is_tester")).data).toBe(false);
+      expect((await tester.rpc("is_tester")).data).toBe(true);
+    });
+
+    it("gives a tester content in review, with its status", async () => {
+      const content = await querySurahContent(tester, 1, "preview");
+      const sections = content?.readingSections.map((s) => [
+        s.position,
+        s.explanation?.id ?? null,
+        s.explanation?.status ?? null,
+      ]);
+      expect(sections).toEqual([
+        [1, "s1-reading-1", "published"],
+        [2, "s1-reading-2", "ko_drafted"],
+      ]);
+      expect(content?.readingSections[1].explanation?.parts.context[0].citations).toEqual([
+        { passageId: "passage-3", quoting: null },
+      ]);
+      expect(content?.wordMeanings.map((m) => [m.word.ayah, m.word.word, m.status])).toEqual([
+        [1, 1, "published"],
+        [2, 1, "ko_drafted"],
+      ]);
+      expect(content?.verses[1].transliteration.en).toBe("draft pronunciation of 1:2 (en)");
+      expect(content?.verses[1].transliterationStatus.en).toBe("draft");
+      expect((await querySurahContent(tester, 2, "preview"))?.brief).toEqual({
+        status: "ko_drafted",
+        items: [
+          {
+            text: { en: "brief in review (en)", ko: "brief in review (ko)" },
+            citations: [{ passageId: "passage-1", quoting: null }],
+          },
+        ],
+      });
+      expect((await queryPassages(tester, ["passage-3"])).map((p) => p.id)).toEqual(["passage-3"]);
+    });
+
+    it("never gives a tester plain drafts or the review history", async () => {
+      const drafts = await tester.from("explanation").select("id").eq("status", "draft");
+      expect(drafts.data).toEqual([]);
+      const draftMeaning = await tester.from("word_meaning").select("position").eq("position", 2);
+      expect(draftMeaning.data).toEqual([]);
+      for (const table of [
+        "explanation_review",
+        "word_meaning_review",
+        "surah_brief_review",
+        "verse_transliteration_review",
+      ]) {
+        const { data, error } = await tester.from(table).select("*");
+        expect(error !== null || data?.length === 0, table).toBe(true);
+      }
+    });
+
+    it("doesn't let a tester write", async () => {
+      await tester.from("explanation").update({ status: "published" }).eq("id", "s1-reading-2");
+      const { data } = await service.from("explanation").select("status").eq("id", "s1-reading-2");
+      expect(data).toEqual([{ status: "ko_drafted" }]);
+    });
+
+    it("keeps the shared, cached functions to published content, even after a tester's reads", async () => {
+      await querySurahContent(tester, 1, "preview");
+      const content = await getSurahContent(1);
+      expect(content?.readingSections.map((s) => s.explanation?.id ?? null)).toEqual([
+        "s1-reading-1",
+        null,
+      ]);
+      expect(content?.wordMeanings.map((m) => m.status)).toEqual(["published"]);
+      expect(content?.verses[1].transliteration.en).toBeNull();
+      expect((await getSurahContent(2))?.brief).toBeNull();
+      expect(await getPassages(["passage-3"])).toEqual([]);
+    });
+
+    it("gives a non-tester's session nothing in review, even on the preview path", async () => {
+      const content = await querySurahContent(user, 1, "preview");
+      expect(content?.readingSections.map((s) => s.explanation?.id ?? null)).toEqual([
+        "s1-reading-1",
+        null,
+      ]);
+      expect(content?.wordMeanings.map((m) => m.status)).toEqual(["published"]);
+      expect(content?.verses[1].transliteration.en).toBeNull();
+    });
+
+    it("keeps the tester list when content is seeded again", async () => {
+      await seed(toSeedPayload(dbBundle()));
+      const { data } = await service.from("tester").select("user_id").eq("user_id", testerId);
+      expect(data).toEqual([{ user_id: testerId }]);
+    });
+  });
+
   describe.each([
     ["anon", () => anon],
     ["a logged-in user", () => user],
   ])("as %s", (_, client) => {
+    it("can't read or change the tester list", async () => {
+      const db = client();
+      const read = await db.from("tester").select("user_id");
+      expect(read.error !== null || read.data?.length === 0).toBe(true);
+      const insert = await db
+        .from("tester")
+        .insert({ user_id: "00000000-0000-0000-0000-000000000000" });
+      expect(insert.error).not.toBeNull();
+      const { data } = await service
+        .from("tester")
+        .select("user_id")
+        .eq("user_id", "00000000-0000-0000-0000-000000000000");
+      expect(data).toEqual([]);
+    });
+
     it("can't read drafts, review history or uncited passages", async () => {
       const db = client();
       const drafts = await db.from("explanation").select("id").eq("status", "draft");
