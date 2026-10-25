@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { ReviewStatus } from "@/lib/domain/content";
 import {
   REVIEW_STEPS,
+  REVIEW_TRACKS,
   canTransition,
   isVisibleToReaders,
   recordReview,
@@ -90,6 +91,47 @@ describe("recordReview", () => {
   it("throws on a skipped step and leaves the item as it was", () => {
     expect(() => recordReview(draft, entry("published"))).toThrow(/skip/);
     expect(draft.review).toEqual([]);
+  });
+});
+
+describe("transliteration tracks", () => {
+  it("approves a Latin transliteration in English and a Hangul one in Korean", () => {
+    expect(replayReview([entry("en_approved"), entry("published")], "latin")).toEqual({
+      ok: true,
+      status: "published",
+    });
+    expect(replayReview([entry("ko_approved"), entry("published")], "hangul")).toEqual({
+      ok: true,
+      status: "published",
+    });
+  });
+
+  it("never skips the approval", () => {
+    for (const track of ["latin", "hangul"] as const) {
+      expect(canTransition("draft", "published", undefined, track)).toBe(false);
+    }
+  });
+
+  it("rejects the steps of the other language and of the bilingual track", () => {
+    expect(canTransition("draft", "ko_approved", undefined, "latin")).toBe(false);
+    expect(canTransition("draft", "en_approved", undefined, "hangul")).toBe(false);
+    const result = replayReview([entry("en_approved"), entry("ko_drafted")], "latin");
+    expect(result).toMatchObject({ ok: false, step: 1 });
+  });
+
+  it("sends a transliteration back only with notes", () => {
+    expect(canTransition("published", "draft", undefined, "hangul")).toBe(false);
+    expect(canTransition("published", "draft", "Wrong vowel", "hangul")).toBe(true);
+  });
+
+  it("keeps the bilingual track as the default", () => {
+    expect(REVIEW_TRACKS.bilingual).toEqual(REVIEW_STEPS);
+    expect(() =>
+      recordReview({ status: "draft" as ReviewStatus, review: [] }, entry("ko_approved"), "hangul"),
+    ).not.toThrow();
+    expect(() =>
+      recordReview({ status: "draft" as ReviewStatus, review: [] }, entry("ko_approved")),
+    ).toThrow(/skip/);
   });
 });
 

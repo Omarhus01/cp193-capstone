@@ -214,6 +214,16 @@ export function toSeedPayload(bundle: ContentBundle): SeedPayload {
       payload.word_meaning_reviews.push(...reviewRows(key, meaning.review));
     }
 
+    for (const item of surah.transliterations) {
+      const ref = parseRef(item.verse);
+      if (!ref) {
+        throw new Error(`Invalid verse ref ${item.verse}; run the content validation first.`);
+      }
+      const key = { surah: ref.surah, ayah: ref.ayah, language: item.language };
+      payload.verse_transliterations.push({ ...key, text: item.text, status: item.status });
+      payload.verse_transliteration_reviews.push(...reviewRows(key, item.review));
+    }
+
     const brief = surah.surah.brief;
     if (brief) {
       payload.surah_briefs.push({
@@ -254,5 +264,7 @@ export function toSeedPayload(bundle: ContentBundle): SeedPayload {
   payload.word_meanings.sort(byKeys("surah", "ayah", "position"));
   payload.word_meaning_citations.sort(byKeys("surah", "ayah", "position", "sort_order"));
   payload.word_meaning_reviews.sort(byKeys("surah", "ayah", "position", "step"));
+  payload.verse_transliterations.sort(byKeys("surah", "ayah", "language"));
+  payload.verse_transliteration_reviews.sort(byKeys("surah", "ayah", "language", "step"));
   return payload;
 }

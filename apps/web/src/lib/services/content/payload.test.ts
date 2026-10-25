@@ -41,6 +41,23 @@ describe("toSeedPayload", () => {
     ).toEqual([0, 1, 2, 3]);
   });
 
+  it("stores transliterations per verse and language, with their review steps", () => {
+    const payload = toSeedPayload(testBundle());
+    expect(payload.verse_transliterations).toEqual([
+      { surah: 1, ayah: 1, language: "en", text: "pronunciation of 1:1 (en)", status: "published" },
+      { surah: 1, ayah: 1, language: "ko", text: "pronunciation of 1:1 (ko)", status: "published" },
+      { surah: 1, ayah: 2, language: "en", text: null, status: "draft" },
+    ]);
+    expect(
+      payload.verse_transliteration_reviews
+        .filter((r) => r.language === "ko")
+        .map((r) => [r.step, r.status]),
+    ).toEqual([
+      [0, "ko_approved"],
+      [1, "published"],
+    ]);
+  });
+
   it("keeps drafts, so the database decides what readers see", () => {
     const { explanations } = toSeedPayload(testBundle());
     expect(explanations.find((e) => e.id === "s1-draft")?.status).toBe("draft");
