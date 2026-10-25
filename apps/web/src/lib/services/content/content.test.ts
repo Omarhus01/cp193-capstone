@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { loadContent, type ContentBundle, type ContentError } from "./load";
-import { explanation, testBundle } from "./test-bundle";
+import { explanation, testBundle, transliteration } from "./test-bundle";
 import { validateContent } from "./validate";
 
 describe("content/", () => {
@@ -204,6 +204,62 @@ describe("validateContent", () => {
         b.sources[0].passages[1].verse = null;
       });
       expect(messages(errors)).toContainEqual(expect.stringContaining("needs a page"));
+    });
+  });
+
+  describe("transliterations", () => {
+    it("rejects one for a verse that doesn't exist", () => {
+      const errors = errorsAfter((b) => {
+        b.surahs[0].transliterations[0].verse = "1:9";
+      });
+      expect(messages(errors)).toContainEqual(expect.stringContaining("verse 1:9 isn't in"));
+    });
+
+    it("rejects a second one for the same verse and language", () => {
+      const errors = errorsAfter((b) => {
+        b.surahs[0].transliterations.push(transliteration("1:1", "ko"));
+      });
+      expect(messages(errors)).toContainEqual(expect.stringContaining('already has a "ko" one'));
+    });
+
+    it("rejects a step from the other language's track", () => {
+      const errors = errorsAfter((b) => {
+        b.surahs[0].transliterations[0] = {
+          ...transliteration("1:1", "en", "draft"),
+          status: "ko_approved",
+          review: [{ status: "ko_approved", reviewer: "Reviewer", date: "2026-10-01" }],
+        };
+      });
+      expect(messages(errors)).toContainEqual(
+        expect.stringContaining('"en" transliterations go draft → en_approved → published'),
+      );
+    });
+
+    it("rejects publishing without the approval", () => {
+      const errors = errorsAfter((b) => {
+        b.surahs[0].transliterations[1].review = [
+          { status: "published", reviewer: "Owner", date: "2026-10-02" },
+        ];
+      });
+      expect(messages(errors)).toContainEqual(expect.stringContaining("review[0]: can't skip"));
+    });
+
+    it("rejects an approved one without text", () => {
+      const errors = errorsAfter((b) => {
+        b.surahs[0].transliterations[0].text = null;
+      });
+      expect(messages(errors)).toContainEqual(
+        expect.stringContaining("is published but has no text"),
+      );
+    });
+
+    it("rejects 하나님", () => {
+      const errors = errorsAfter((b) => {
+        b.surahs[0].transliterations[1].text = "하나님";
+      });
+      expect(messages(errors)).toContainEqual(
+        expect.stringContaining("transliterations[1].text.ko"),
+      );
     });
   });
 

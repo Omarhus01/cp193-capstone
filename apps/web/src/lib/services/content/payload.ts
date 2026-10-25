@@ -3,7 +3,8 @@ import type { ReviewEntry } from "@/lib/services/review";
 import type { ContentBundle } from "./load";
 import { parseRef, parseSpan, spanId, type SpanRefs } from "./spans";
 
-// The argument of the seed_content database function (supabase/migrations/…_create_content.sql).
+// The argument of the seed_content database function (supabase/migrations/, last replaced in
+// …_reading_structure_and_transliteration.sql).
 // Keys are table names and rows use the column names, so the function can read them with
 // jsonb_populate_recordset. Rows are sorted, so the same content always gives the same payload.
 
@@ -26,6 +27,8 @@ export type SeedPayload = {
   word_meanings: Row[];
   word_meaning_citations: Row[];
   word_meaning_reviews: Row[];
+  verse_transliterations: Row[];
+  verse_transliteration_reviews: Row[];
 };
 
 function reviewRows(key: Row, review: ReviewEntry[]): Row[] {
@@ -73,6 +76,8 @@ export function toSeedPayload(bundle: ContentBundle): SeedPayload {
     word_meanings: [],
     word_meaning_citations: [],
     word_meaning_reviews: [],
+    verse_transliterations: [],
+    verse_transliteration_reviews: [],
   };
 
   const spans = new Map<string, Span>();
@@ -172,13 +177,20 @@ export function toSeedPayload(bundle: ContentBundle): SeedPayload {
       payload.explanation_reviews.push(...reviewRows({ explanation_id: id }, explanation.review));
     }
 
-    surah.readingSections.forEach((explanationId, i) =>
+    surah.readingSections.forEach((explanationId, i) => {
+      const explanation = surah.explanations.find(({ id }) => id === explanationId);
+      if (!explanation) {
+        throw new Error(
+          `Unknown reading section ${explanationId}; run the content validation first.`,
+        );
+      }
       payload.reading_sections.push({
         surah: number,
         position: i + 1,
         explanation_id: explanationId,
-      }),
-    );
+        span_id: addSpan(explanation.span),
+      });
+    });
 
     for (const meaning of surah.wordMeanings) {
       const ref = parseRef(meaning.word);
@@ -200,6 +212,16 @@ export function toSeedPayload(bundle: ContentBundle): SeedPayload {
         }),
       );
       payload.word_meaning_reviews.push(...reviewRows(key, meaning.review));
+    }
+
+    for (const item of surah.transliterations) {
+      const ref = parseRef(item.verse);
+      if (!ref) {
+        throw new Error(`Invalid verse ref ${item.verse}; run the content validation first.`);
+      }
+      const key = { surah: ref.surah, ayah: ref.ayah, language: item.language };
+      payload.verse_transliterations.push({ ...key, text: item.text, status: item.status });
+      payload.verse_transliteration_reviews.push(...reviewRows(key, item.review));
     }
 
     const brief = surah.surah.brief;
@@ -242,5 +264,7 @@ export function toSeedPayload(bundle: ContentBundle): SeedPayload {
   payload.word_meanings.sort(byKeys("surah", "ayah", "position"));
   payload.word_meaning_citations.sort(byKeys("surah", "ayah", "position", "sort_order"));
   payload.word_meaning_reviews.sort(byKeys("surah", "ayah", "position", "step"));
+  payload.verse_transliterations.sort(byKeys("surah", "ayah", "language"));
+  payload.verse_transliteration_reviews.sort(byKeys("surah", "ayah", "language", "step"));
   return payload;
 }

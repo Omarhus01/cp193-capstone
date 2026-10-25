@@ -5,3 +5,15 @@
   --font-sans: var(--font-inter), var(--font-noto-kr), ui-sans-serif, system-ui, sans-serif;
   --font-arabic: var(--font-amiri), serif;
 }
+
+/* Colors of the approved design (docs/design/). */
+@theme {
+  --color-page: #f4f5f2;
+  --color-ink: #17201e;
+  --color-ink-muted: #56605d;
+  --color-line: #dde2de;
+  --color-brand: #0b6656;
+  --color-brand-soft: #e3f0ec;
+  --color-cite: #8a5a0b;
+  --color-cite-soft: #f6eedf;
+}

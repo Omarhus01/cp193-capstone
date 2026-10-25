@@ -7,7 +7,7 @@
     "logo": "Quran Explained",
     "navLabel": "Main navigation",
     "home": "Home",
-    "surah": "Surah",
+    "surah": "Surahs",
     "searchLabel": "Search",
     "searchPlaceholder": "Search verses or ask a question",
     "searchComingSoon": "Search is coming soon",
@@ -19,7 +19,10 @@
     "languageShort": {
       "en": "English",
       "ko": "한국어"
-    }
+    },
+    "account": "Account",
+    "menu": "Menu",
+    "closeMenu": "Close menu"
   },
   "home": {
     "title": "Understand the Quran in your language",
@@ -51,7 +54,51 @@
   },
   "surah": {
     "title": "Surah {number}",
-    "placeholder": "Verses for this surah will appear here."
+    "unavailable": "This surah isn't available yet.",
+    "meccan": "Meccan",
+    "medinan": "Medinan",
+    "verseCount": "{count, plural, one {# verse} other {# verses}}",
+    "readingSections": "Reading sections",
+    "inReview": "In review",
+    "showEnglish": "Show English explanation too",
+    "showPronunciation": "Show pronunciation",
+    "wordHint": "Hover over or tap an underlined word to see its meaning in this verse.",
+    "listen": "Listen",
+    "listenComingSoon": "Audio coming soon",
+    "sectionOf": "Reading section {position} of {total}",
+    "sectionOfShort": "{position} / {total}",
+    "verseNumber": "verse {number}",
+    "pronunciation": "Pronunciation",
+    "meaning": "Meaning",
+    "background": "Background",
+    "relatedVerses": "Related verses",
+    "seeVerse": "See verse",
+    "sources": "Sources",
+    "sourceNumber": "Source {number}",
+    "sourceLabel": "Source {number}: {label}",
+    "comingSoonTitle": "Explanation coming soon",
+    "comingSoonBody": "This section's explanation is still in review. It appears here once the review is done.",
+    "passage": {
+      "volumePage": "{title}, vol. {volume}, p. {page}",
+      "page": "{title}, p. {page}",
+      "verse": "{title}, on {verse}"
+    },
+    "word": {
+      "inThisVerse": "In this verse",
+      "elsewhere": "Elsewhere it means",
+      "root": "root",
+      "close": "Close"
+    }
+  },
+  "qa": {
+    "title": "Questions and answers",
+    "readingNow": "Reading now: {range}",
+    "askLabel": "Ask your own question",
+    "askPlaceholder": "Coming soon",
+    "declineNote": "If the sources don't support an answer, it says so instead of answering."
+  },
+  "footer": {
+    "quranText": "Arabic Quran text: <link>Tanzil Project (tanzil.net)</link>. Every explanation shows its sources."
   },
   "notFound": {
     "title": "Page not found",

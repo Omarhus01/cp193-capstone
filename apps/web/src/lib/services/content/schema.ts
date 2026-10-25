@@ -138,6 +138,23 @@ export const wordMeaningsFileSchema = z.strictObject({
   ),
 });
 
+/** transliterations.json: how each verse is pronounced, written and reviewed per language. */
+export const transliterationsFileSchema = z.strictObject({
+  $schema,
+  transliterations: z.array(
+    z.strictObject({
+      verse: verseRef,
+      language: z.enum(["en", "ko"]).meta({
+        description:
+          "en: Latin letters, shown on English pages, steps draft → en_approved → published. " +
+          "ko: Hangul, shown on Korean pages, steps draft → ko_approved → published.",
+      }),
+      text: text.nullable().meta({ description: "The whole verse. null until written." }),
+      ...reviewed,
+    }),
+  ),
+});
+
 /** sources/<id>.json: a source and the passages cited from it. */
 export const sourceFileSchema = z.strictObject({
   $schema,
@@ -171,6 +188,8 @@ export type ExplanationEntry = ExplanationsFile["explanations"][number];
 export type ReadingFile = z.infer<typeof readingFileSchema>;
 export type WordMeaningsFile = z.infer<typeof wordMeaningsFileSchema>;
 export type WordMeaningEntry = WordMeaningsFile["wordMeanings"][number];
+export type TransliterationsFile = z.infer<typeof transliterationsFileSchema>;
+export type TransliterationEntry = TransliterationsFile["transliterations"][number];
 export type SourceFile = z.infer<typeof sourceFileSchema>;
 
 /** Each schema and the name of its file in content/schema/. */
@@ -181,6 +200,7 @@ export const CONTENT_SCHEMAS = {
   "explanations.schema.json": explanationsFileSchema,
   "reading.schema.json": readingFileSchema,
   "word-meanings.schema.json": wordMeaningsFileSchema,
+  "transliterations.schema.json": transliterationsFileSchema,
   "source.schema.json": sourceFileSchema,
 } as const;
 

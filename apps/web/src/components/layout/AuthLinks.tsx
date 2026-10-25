@@ -16,13 +16,13 @@ export function AuthLinks() {
     <div className="flex items-center gap-3">
       <Link
         href={{ pathname: "/login", query: { next } }}
-        className="text-sm font-medium text-zinc-700 hover:text-emerald-800"
+        className="text-sm font-medium text-ink hover:text-brand"
       >
         {t("login")}
       </Link>
       <Link
         href={{ pathname: "/signup", query: { next } }}
-        className="rounded-md bg-emerald-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-800"
+        className="rounded-md bg-brand px-3 py-1.5 text-sm font-medium text-white hover:bg-brand/90"
       >
         {t("signup")}
       </Link>

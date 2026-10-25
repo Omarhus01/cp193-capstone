@@ -1,7 +1,7 @@
 import type { ReviewStatus } from "@/lib/domain/content";
 import type { ReviewEntry } from "@/lib/services/review";
 import type { ContentBundle, SurahFiles } from "./load";
-import type { ExplanationEntry, WordMeaningEntry } from "./schema";
+import type { ExplanationEntry, TransliterationEntry, WordMeaningEntry } from "./schema";
 
 // A small valid bundle for tests. Its "verses" are made-up Arabic letter strings, not Quran text,
 // and every explanation is a neutral placeholder: no religious content.
@@ -32,6 +32,7 @@ function surahFiles(number: number, verseCount: number): SurahFiles {
     explanations: [],
     readingSections: [],
     wordMeanings: [],
+    transliterations: [],
   };
 }
 
@@ -41,6 +42,9 @@ const PUBLISHED_HISTORY: ReviewEntry[] = [
   { status: "ko_approved", reviewer: "Reviewer B", date: "2026-10-03" },
   { status: "published", reviewer: "Owner", date: "2026-10-04" },
 ];
+
+/** A fresh copy for each item, so a test that changes one history doesn't change the others. */
+const publishedHistory = () => PUBLISHED_HISTORY.map((entry) => ({ ...entry }));
 
 /** Placeholder text in both languages. */
 const both = (label: string) => ({ en: `${label} (en)`, ko: `${label} (ko)` });
@@ -67,7 +71,7 @@ export function explanation(
     citations: published ? ["passage-1"] : [],
     contextLinks: [],
     status,
-    review: published ? PUBLISHED_HISTORY : [],
+    review: published ? publishedHistory() : [],
   };
 }
 
@@ -78,14 +82,39 @@ export function wordMeaning(word: string, status: ReviewStatus = "published"): W
     meaning: published ? both(`meaning of ${word}`) : empty,
     citations: published ? ["passage-1"] : [],
     status,
-    review: published ? PUBLISHED_HISTORY : [],
+    review: published ? publishedHistory() : [],
+  };
+}
+
+export function transliteration(
+  verse: string,
+  language: TransliterationEntry["language"],
+  status: ReviewStatus = "published",
+): TransliterationEntry {
+  const approved = language === "en" ? "en_approved" : "ko_approved";
+  const review: ReviewEntry[] =
+    status === "draft"
+      ? []
+      : [
+          { status: approved, reviewer: "Reviewer", date: "2026-10-01" },
+          ...(status === "published"
+            ? [{ status: "published" as const, reviewer: "Owner", date: "2026-10-02" }]
+            : []),
+        ];
+  return {
+    verse,
+    language,
+    text: status === "draft" ? null : `pronunciation of ${verse} (${language})`,
+    status,
+    review,
   };
 }
 
 /**
  * Surah 1 with 4 verses and surah 2 with 3, one source with two passages, two reading sections
  * covering surah 1, a phrase note with a context link into surah 2, a published word meaning,
- * a published brief, and a draft verse explanation.
+ * a published brief, a draft verse explanation, and transliterations of 1:1 (published in both
+ * languages) and 1:2 (a draft in Latin).
  */
 export function testBundle(): ContentBundle {
   const first = surahFiles(1, 4);
@@ -101,9 +130,14 @@ export function testBundle(): ContentBundle {
   ];
   first.readingSections = ["s1-reading-1", "s1-reading-2"];
   first.wordMeanings = [wordMeaning("1:1:1"), wordMeaning("1:1:2", "draft")];
+  first.transliterations = [
+    transliteration("1:1", "en"),
+    transliteration("1:1", "ko"),
+    transliteration("1:2", "en", "draft"),
+  ];
   first.surah = {
     names: { en: "Test", ko: "테스트" },
-    brief: { ...both("brief"), status: "published", review: PUBLISHED_HISTORY },
+    brief: { ...both("brief"), status: "published", review: publishedHistory() },
   };
   return {
     surahs: [first, second],

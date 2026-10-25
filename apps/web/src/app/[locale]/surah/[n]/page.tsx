@@ -1,15 +1,25 @@
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
+import { PageLayout } from "@/components/layout/PageLayout";
+import { QaPanel } from "@/components/surah/QaPanel";
+import { ReadingControls } from "@/components/surah/ReadingControls";
+import { ReadingSectionCard } from "@/components/surah/ReadingSectionCard";
+import { ReadingSectionNav } from "@/components/surah/ReadingSectionNav";
+import { SurahHeader } from "@/components/surah/SurahHeader";
+import { SurahReader } from "@/components/surah/SurahReader";
 import type { Locale } from "@/i18n/locale";
 import { requireUserId } from "@/lib/services/auth/require-user";
+import { parsePreferences } from "@/lib/services/reading/preferences";
+import { loadSurahPage } from "@/lib/services/reading/surah-page";
 import { parseSurahNumber } from "@/lib/services/surah";
 
 type SurahPageProps = PageProps<"/[locale]/surah/[n]">;
 
-/** Protected placeholder. Verse content arrives in step 2. */
+/** A surah's verses in reading sections, with their explanations. Logged-in users only. */
 export default function SurahPage({ params }: SurahPageProps) {
-  // The surah number and the session are only known at request time, so render behind Suspense.
+  // The surah number, the session and the reader's preferences are only known at request time.
   return (
     <Suspense>
       <SurahContent params={params} />
@@ -27,11 +37,54 @@ async function SurahContent({ params }: Pick<SurahPageProps, "params">) {
   }
   await requireUserId(locale, `/${locale}/surah/${n}`);
 
-  const t = await getTranslations("surah");
+  const [view, cookieStore, t] = await Promise.all([
+    loadSurahPage(surahNumber),
+    cookies(),
+    getTranslations("surah"),
+  ]);
+  if (!view) {
+    return (
+      <section className="flex flex-col gap-4">
+        <h1 className="text-2xl font-semibold">{t("title", { number: surahNumber })}</h1>
+        <p className="text-ink-muted">{t("unavailable")}</p>
+      </section>
+    );
+  }
+
+  const { sections } = view;
   return (
-    <section className="flex flex-col gap-4">
-      <h1 className="text-2xl font-semibold">{t("title", { number: surahNumber })}</h1>
-      <p className="text-zinc-600">{t("placeholder")}</p>
-    </section>
+    <SurahReader
+      locale={locale}
+      initialPreferences={parsePreferences((name) => cookieStore.get(name)?.value)}
+      firstSection={sections[0]?.position ?? 1}
+    >
+      <PageLayout
+        sidebar={
+          <ReadingSectionNav
+            sections={sections.map(({ position, anchor, label, previewAr, published }) => ({
+              position,
+              anchor,
+              label,
+              previewAr,
+              published,
+            }))}
+          />
+        }
+        aside={
+          <QaPanel
+            variant="panel"
+            sectionLabels={Object.fromEntries(sections.map((s) => [s.position, s.label]))}
+          />
+        }
+      >
+        <div className="flex flex-col gap-6">
+          <SurahHeader surah={view.surah} brief={view.brief} locale={locale} />
+          <ReadingControls hasWordMeanings={Object.keys(view.words).length > 0} />
+          {sections.map((section) => (
+            <ReadingSectionCard key={section.position} section={section} locale={locale} />
+          ))}
+        </div>
+      </PageLayout>
+    </SurahReader>
   );
 }

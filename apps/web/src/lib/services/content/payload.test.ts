@@ -33,12 +33,29 @@ describe("toSeedPayload", () => {
   it("numbers reading sections and review steps in order", () => {
     const payload = toSeedPayload(testBundle());
     expect(payload.reading_sections).toEqual([
-      { surah: 1, position: 1, explanation_id: "s1-reading-1" },
-      { surah: 1, position: 2, explanation_id: "s1-reading-2" },
+      { surah: 1, position: 1, explanation_id: "s1-reading-1", span_id: "1:1-1:2" },
+      { surah: 1, position: 2, explanation_id: "s1-reading-2", span_id: "1:3-1:4" },
     ]);
     expect(
       payload.explanation_reviews.filter((r) => r.explanation_id === "s1-note").map((r) => r.step),
     ).toEqual([0, 1, 2, 3]);
+  });
+
+  it("stores transliterations per verse and language, with their review steps", () => {
+    const payload = toSeedPayload(testBundle());
+    expect(payload.verse_transliterations).toEqual([
+      { surah: 1, ayah: 1, language: "en", text: "pronunciation of 1:1 (en)", status: "published" },
+      { surah: 1, ayah: 1, language: "ko", text: "pronunciation of 1:1 (ko)", status: "published" },
+      { surah: 1, ayah: 2, language: "en", text: null, status: "draft" },
+    ]);
+    expect(
+      payload.verse_transliteration_reviews
+        .filter((r) => r.language === "ko")
+        .map((r) => [r.step, r.status]),
+    ).toEqual([
+      [0, "ko_approved"],
+      [1, "published"],
+    ]);
   });
 
   it("keeps drafts, so the database decides what readers see", () => {

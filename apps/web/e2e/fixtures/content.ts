@@ -1,0 +1,145 @@
+import type { ContentBundle, SurahFiles } from "../../src/lib/services/content/load";
+import {
+  explanation,
+  transliteration,
+  wordMeaning,
+} from "../../src/lib/services/content/test-bundle";
+
+// Content the surah page e2e tests seed into a local Supabase. The "verses" are made-up Arabic
+// letter strings and every text is a bracketed placeholder: no Quran text, translation or
+// explanation.
+
+/** A pause mark, which Tanzil writes as its own token and which isn't a word. */
+export const PAUSE_MARK = "ۛ";
+
+export const FIXTURE_ROOT = "ا ب ت";
+
+const WORDS = ["ابت", "ثجح", "خدذ", "رزس"];
+
+function surahFiles(number: number, verseCount: number): SurahFiles {
+  const verses = Array.from({ length: verseCount }, (_, i) => ({
+    ayah: i + 1,
+    // Verse 2 of surah 1 has a pause mark between its first two words.
+    text:
+      number === 1 && i === 1
+        ? [WORDS[0], PAUSE_MARK, ...WORDS.slice(1)].join(" ")
+        : WORDS.join(" "),
+  }));
+  return {
+    number,
+    dir: `surahs/${String(number).padStart(3, "0")}`,
+    text: {
+      attribution: "fixture",
+      surah: { number, nameAr: "اختبار", revelationPlace: "meccan", verseCount, basmala: null },
+      verses,
+    },
+    words: {
+      attribution: "fixture",
+      verses: verses.map(({ ayah }) => ({
+        ayah,
+        words: WORDS.map((text, i) => ({
+          position: i + 1,
+          text,
+          root: i === 0 ? FIXTURE_ROOT : null,
+        })),
+      })),
+    },
+    surah: { names: { en: `[Fixture surah ${number}]`, ko: `[픽스처 수라 ${number}]` } },
+    explanations: [],
+    readingSections: [],
+    wordMeanings: [],
+    transliterations: [],
+  };
+}
+
+const both = (label: string) => ({ en: `[${label} en]`, ko: `[${label} ko]` });
+
+/**
+ * Surah 1 (5 verses) in three reading sections:
+ * - 1:1–2, published, with every part, two citations and a link to 2:1
+ * - 1:3, a draft: "explanation coming soon"
+ * - 1:4–5, published, with a meaning only
+ * Word meanings: 1:1:1 and 2:1:1 share a root; 1:2:2 has none. Transliterations: 1:1 in both
+ * languages, 1:4 in Korean only, 1:2 a Latin draft (hidden).
+ */
+export function fixtureBundle(): ContentBundle {
+  const first = surahFiles(1, 5);
+  const second = surahFiles(2, 3);
+
+  const full = explanation("fx-reading-1", "reading_section", "1:1", "1:2");
+  full.parts = {
+    wordMeanings: both("word meanings part"),
+    background: both("background 1"),
+    context: both("meaning 1"),
+    connectedVerses: both("related 1"),
+  };
+  full.citations = ["fx-passage-1", "fx-passage-2"];
+  full.contextLinks = [{ span: { from: "2:1", to: "2:1" }, reason: both("why 2:1") }];
+
+  const short = explanation("fx-reading-3", "reading_section", "1:4", "1:5");
+  short.parts = { ...short.parts, background: { en: null, ko: null }, context: both("meaning 3") };
+  short.citations = ["fx-passage-1"];
+
+  first.explanations = [
+    full,
+    explanation("fx-reading-2", "reading_section", "1:3", "1:3", "draft"),
+    short,
+  ];
+  first.readingSections = ["fx-reading-1", "fx-reading-2", "fx-reading-3"];
+  first.wordMeanings = [
+    { ...wordMeaning("1:1:1"), meaning: both("meaning of 1:1:1"), citations: ["fx-passage-1"] },
+    { ...wordMeaning("1:2:2"), meaning: both("meaning of 1:2:2"), citations: ["fx-passage-2"] },
+  ];
+  first.transliterations = [
+    { ...transliteration("1:1", "en"), text: "[latin 1:1]" },
+    { ...transliteration("1:1", "ko"), text: "[hangul 1:1]" },
+    transliteration("1:2", "en", "draft"),
+    { ...transliteration("1:4", "ko"), text: "[hangul 1:4]" },
+  ];
+  first.surah = {
+    names: first.surah.names,
+    brief: {
+      ...both("brief"),
+      status: "published",
+      review: full.review.map((entry) => ({ ...entry })),
+    },
+  };
+  second.wordMeanings = [
+    { ...wordMeaning("2:1:1"), meaning: both("meaning of 2:1:1"), citations: ["fx-passage-1"] },
+  ];
+
+  return {
+    surahs: [first, second],
+    sources: [
+      {
+        file: "sources/fx-source.json",
+        source: {
+          id: "fx-source",
+          titleAr: null,
+          titleEn: "[Fixture source]",
+          author: "[Fixture author]",
+          edition: null,
+          type: "tafsir",
+        },
+        passages: [
+          {
+            id: "fx-passage-1",
+            volume: "1",
+            page: "10",
+            verse: null,
+            textAr: null,
+            summary: both("passage 1"),
+          },
+          {
+            id: "fx-passage-2",
+            volume: null,
+            page: null,
+            verse: "1:2",
+            textAr: null,
+            summary: both("passage 2"),
+          },
+        ],
+      },
+    ],
+  };
+}

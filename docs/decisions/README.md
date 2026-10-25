@@ -18,6 +18,8 @@ Records are not rewritten when a decision changes. Add a new record and set the 
 | [0010](0010-github-workflow.md)                    | Issue branches, pull requests with merge commits, protected `main`  | Accepted |
 | [0011](0011-content-in-git-seeded-into-supabase.md) | Content as JSON in git, seeded into Supabase; review status in the files | Accepted |
 | [0012](0012-explanations-attach-to-spans.md)       | Explanations attach to spans; Hafs numbering; pause marks aren't words | Accepted |
+| [0013](0013-public-reading-structure-and-transliteration.md) | Reading structure is public; transliteration is reviewed per language | Accepted |
+| [0014](0014-page-layout-preferences-and-caching.md) | Page layout slots, reading preferences in cookies, cached published content | Accepted |
 
 ## Template
 

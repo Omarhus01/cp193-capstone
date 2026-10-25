@@ -8,12 +8,14 @@ import {
   sourceFileSchema,
   surahFileSchema,
   textFileSchema,
+  transliterationsFileSchema,
   wordMeaningsFileSchema,
   wordsFileSchema,
   type ExplanationEntry,
   type SourceFile,
   type SurahFile,
   type TextFile,
+  type TransliterationEntry,
   type WordMeaningEntry,
   type WordsFile,
 } from "./schema";
@@ -35,6 +37,7 @@ export type SurahFiles = {
   explanations: ExplanationEntry[];
   readingSections: string[];
   wordMeanings: WordMeaningEntry[];
+  transliterations: TransliterationEntry[];
 };
 
 export type SourceFiles = SourceFile & { file: string };
@@ -42,7 +45,12 @@ export type SourceFiles = SourceFile & { file: string };
 export type ContentBundle = { surahs: SurahFiles[]; sources: SourceFiles[] };
 
 const REQUIRED_FILES = ["text.json", "words.json", "surah.json"];
-const OPTIONAL_FILES = ["explanations.json", "reading.json", "word-meanings.json"];
+const OPTIONAL_FILES = [
+  "explanations.json",
+  "reading.json",
+  "word-meanings.json",
+  "transliterations.json",
+];
 
 /** "explanations[0].span.from" */
 export function formatPath(segments: readonly PropertyKey[]): string {
@@ -122,7 +130,12 @@ export function loadContent(dir: string = CONTENT_DIR): {
     const explanations = readOptional(`${surahDir}/explanations.json`, explanationsFileSchema);
     const reading = readOptional(`${surahDir}/reading.json`, readingFileSchema);
     const wordMeanings = readOptional(`${surahDir}/word-meanings.json`, wordMeaningsFileSchema);
-    if (!text || !words || !surah || [explanations, reading, wordMeanings].includes(null)) {
+    const transliterations = readOptional(
+      `${surahDir}/transliterations.json`,
+      transliterationsFileSchema,
+    );
+    const optional = [explanations, reading, wordMeanings, transliterations];
+    if (!text || !words || !surah || optional.includes(null)) {
       continue;
     }
     surahs.push({
@@ -134,6 +147,7 @@ export function loadContent(dir: string = CONTENT_DIR): {
       explanations: explanations?.explanations ?? [],
       readingSections: reading?.sections ?? [],
       wordMeanings: wordMeanings?.wordMeanings ?? [],
+      transliterations: transliterations?.transliterations ?? [],
     });
   }
 

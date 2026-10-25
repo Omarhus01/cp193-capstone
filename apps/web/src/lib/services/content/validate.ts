@@ -1,5 +1,11 @@
 import type { Localized, ReviewStatus, Span } from "@/lib/domain/content";
-import { REVIEW_STEPS, replayReview, type ReviewEntry } from "@/lib/services/review";
+import {
+  REVIEW_STEPS,
+  REVIEW_TRACKS,
+  replayReview,
+  type ReviewEntry,
+  type ReviewTrack,
+} from "@/lib/services/review";
 import { findBannedTerms } from "@/lib/services/terminology";
 import type { ContentBundle, ContentError } from "./load";
 import { formatRef, isReversed, parseRef, parseSpan, type SpanRefs } from "./spans";
@@ -335,6 +341,53 @@ export function validateContent(bundle: ContentBundle): ContentError[] {
       checkCitations(meaningsFile, `${path}.citations`, meaning.citations);
       checkText(meaningsFile, `${path}.meaning`, meaning.meaning);
       checkReview(meaningsFile, path, meaning, [meaning.meaning], meaning.citations.length);
+    });
+
+    // Transliterations: one per verse and language, reviewed on that language's track.
+    const transliterationsFile = `${dir}/transliterations.json`;
+    const transliterated = new Set<string>();
+    surah.transliterations.forEach((item, i) => {
+      const path = `transliterations[${i}]`;
+      const missing = missingText(item.verse);
+      if (missing) {
+        report(transliterationsFile, `${path}.verse`, missing);
+      } else if (parseRef(item.verse)?.surah !== number) {
+        report(
+          transliterationsFile,
+          `${path}.verse`,
+          `${item.verse} belongs in that surah's folder`,
+        );
+      }
+      const key = `${item.verse} ${item.language}`;
+      if (transliterated.has(key)) {
+        report(transliterationsFile, path, `${item.verse} already has a "${item.language}" one`);
+      }
+      transliterated.add(key);
+
+      const track: ReviewTrack = item.language === "en" ? "latin" : "hangul";
+      const steps: readonly ReviewStatus[] = REVIEW_TRACKS[track];
+      if (!steps.includes(item.status)) {
+        report(
+          transliterationsFile,
+          `${path}.status`,
+          `"${item.language}" transliterations go ${steps.join(" → ")}`,
+        );
+      }
+      const replay = replayReview(item.review, track);
+      if (!replay.ok) {
+        report(transliterationsFile, `${path}.review[${replay.step}]`, replay.message);
+      } else if (replay.status !== item.status) {
+        report(
+          transliterationsFile,
+          `${path}.status`,
+          `is ${item.status}, but the review history ends at ${replay.status}`,
+        );
+      }
+      if (item.status !== "draft" && !item.text) {
+        report(transliterationsFile, path, `is ${item.status} but has no text`);
+      }
+      const text = { en: null, ko: null, [item.language]: item.text };
+      checkText(transliterationsFile, `${path}.text`, text);
     });
 
     const surahFile = `${dir}/surah.json`;

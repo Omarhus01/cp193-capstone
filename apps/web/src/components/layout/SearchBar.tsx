@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 export function SearchBar() {
   const t = useTranslations("header");
   return (
-    <div className="group relative w-full sm:w-72">
+    <div className="group relative w-full max-w-72">
       <label htmlFor="site-search" className="sr-only">
         {t("searchLabel")}
       </label>
@@ -17,7 +17,7 @@ export function SearchBar() {
         disabled
         placeholder={t("searchPlaceholder")}
         aria-describedby="site-search-tooltip"
-        className="w-full cursor-not-allowed rounded-md border border-zinc-300 bg-zinc-100 px-3 py-1.5 text-sm text-zinc-500"
+        className="w-full cursor-not-allowed rounded-md border border-line bg-page px-3 py-1.5 text-sm text-ink-muted"
       />
       <span
         id="site-search-tooltip"

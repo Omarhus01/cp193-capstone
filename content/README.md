@@ -16,6 +16,7 @@ content/
     explanations.json      explanations: phrase notes, verse explanations, reading sections. Owner.
     reading.json           the order of the reading sections. Owner.
     word-meanings.json     what words mean in their verse. Owner. Optional.
+    transliterations.json  how each verse is pronounced, in Latin letters and Hangul. Owner. Optional.
   sources/<source id>.json a source and the passages cited from it. Owner.
 ```
 
@@ -63,6 +64,8 @@ A ref without a word position means the whole verse at that end.
 
 An explanation goes in the folder of the surah where its span starts.
 
+Where reading sections start and end is public: the surah page lists every section, and shows "Explanation coming soon" for one whose explanation isn't published yet ([ADR 0013](../docs/decisions/0013-public-reading-structure-and-transliteration.md)). The explanation itself stays hidden until it is published.
+
 ## Explanations
 
 ```json
@@ -87,9 +90,34 @@ An explanation goes in the folder of the surah where its span starts.
 
 The four parts follow the proposal: word meanings, historical background, context, and connected verses. A part that doesn't apply stays `null`. Ids are lowercase words joined by hyphens and are never reused. Citations are passage ids from `content/sources/`.
 
+## Transliterations
+
+`transliterations.json` holds how each verse is pronounced: `en` in Latin letters, shown on English pages, and `ko` in Hangul, shown on Korean pages. Each is written and reviewed on its own, so the Latin line can be published before the Hangul exists ([ADR 0013](../docs/decisions/0013-public-reading-structure-and-transliteration.md)).
+
+```json
+{
+  "transliterations": [
+    {
+      "verse": "1:1",
+      "language": "en",
+      "text": "…",
+      "status": "published",
+      "review": [
+        { "status": "en_approved", "reviewer": "Reviewer name", "date": "2026-10-24" },
+        { "status": "published", "reviewer": "Owner", "date": "2026-10-25" }
+      ]
+    }
+  ]
+}
+```
+
+- `en` goes `draft → en_approved → published`, approved by the Arabic reviewer.
+- `ko` goes `draft → ko_approved → published`, approved by a Korean Muslim reviewer.
+- A page shows only its own language. A verse without a published transliteration in that language has no pronunciation line.
+
 ## Review
 
-Explanations, word meanings and surah briefs go through these steps, one at a time:
+Explanations, word meanings and surah briefs go through these steps, one at a time (transliterations have a shorter track, above):
 
 ```
 draft → en_approved → ko_drafted → ko_approved → published
@@ -135,7 +163,7 @@ It needs the project's service role key (Supabase dashboard: **Project Settings 
 $env:SUPABASE_SERVICE_ROLE_KEY = "<service role key>"; npm run content:seed
 ```
 
-Seed after every merged content change, and after `npx supabase db push` when a migration changes the content tables.
+Seed after every merged content change, and after `npx supabase db push` when a migration changes the content tables. The site caches published content for a few minutes during Sprint 1 ([ADR 0014](../docs/decisions/0014-page-layout-preferences-and-caching.md)), so a seed can take that long to show.
 
 ### Testing against a local database
 
@@ -147,7 +175,13 @@ npx supabase db reset       # applies supabase/migrations/ to the local database
 npx supabase status -o env  # local URL and keys
 ```
 
-Set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY` from that output in the shell. Then `npm run content:seed` seeds the local database, and `SUPABASE_DB_TEST=1 npm test` also runs `src/lib/data/content.db.test.ts`. That test replaces the content with test data and puts `content/` back afterwards. It runs only when the URL is local. `npx supabase stop` shuts it down.
+Set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY` from that output in the shell. Then:
+
+- `npm run content:seed` seeds the local database.
+- `SUPABASE_DB_TEST=1 npm test` also runs `src/lib/data/content.db.test.ts`.
+- `E2E_LOCAL_SUPABASE=1 npm run test:e2e` also runs `e2e/surah-page.spec.ts` against the surah page.
+
+Both tests replace the content with fixtures (placeholder text, no religious content) and put `content/` back afterwards. They run only when the URL is local. `npx supabase stop` shuts it down.
 
 ## Changing the schema
 

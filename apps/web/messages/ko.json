@@ -19,7 +19,10 @@
     "languageShort": {
       "en": "English",
       "ko": "한국어"
-    }
+    },
+    "account": "계정",
+    "menu": "메뉴",
+    "closeMenu": "메뉴 닫기"
   },
   "home": {
     "title": "꾸란을 내 언어로 이해하기",
@@ -51,7 +54,51 @@
   },
   "surah": {
     "title": "수라 {number}",
-    "placeholder": "이 수라의 구절이 여기에 표시됩니다."
+    "unavailable": "이 수라는 아직 준비되지 않았습니다.",
+    "meccan": "메카 계시",
+    "medinan": "메디나 계시",
+    "verseCount": "{count}절",
+    "readingSections": "읽기 구간",
+    "inReview": "준비 중",
+    "showEnglish": "영어 해설 함께 보기",
+    "showPronunciation": "발음 표기 보기",
+    "wordHint": "밑줄 친 단어에 마우스를 올리거나 누르면 이 구절에서의 뜻을 볼 수 있어요.",
+    "listen": "듣기",
+    "listenComingSoon": "음성은 곧 제공됩니다",
+    "sectionOf": "읽기 구간 {position} / {total}",
+    "sectionOfShort": "{position} / {total}",
+    "verseNumber": "{number}절",
+    "pronunciation": "발음",
+    "meaning": "의미",
+    "background": "배경",
+    "relatedVerses": "관련 구절",
+    "seeVerse": "보기",
+    "sources": "출처",
+    "sourceNumber": "출처 {number}",
+    "sourceLabel": "출처 {number}: {label}",
+    "comingSoonTitle": "해설 준비 중",
+    "comingSoonBody": "이 구간의 해설은 아직 검토 중입니다. 아랍어와 한국어 검토가 끝나면 여기에 표시됩니다.",
+    "passage": {
+      "volumePage": "{title}, {volume}권 {page}쪽",
+      "page": "{title}, {page}쪽",
+      "verse": "{title}, {verse} 해설"
+    },
+    "word": {
+      "inThisVerse": "이 구절에서",
+      "elsewhere": "다른 곳에서의 뜻",
+      "root": "어근",
+      "close": "닫기"
+    }
+  },
+  "qa": {
+    "title": "질문과 답변",
+    "readingNow": "지금 읽는 구간: {range}",
+    "askLabel": "직접 질문하기",
+    "askPlaceholder": "곧 제공",
+    "declineNote": "출처가 뒷받침하지 않는 질문에는 답하지 않고 그렇다고 알려 드립니다."
+  },
+  "footer": {
+    "quranText": "꾸란 아랍어 본문: <link>Tanzil Project (tanzil.net)</link>. 해설은 각 출처에 근거하며, 출처는 해설마다 표시됩니다."
   },
   "notFound": {
     "title": "페이지를 찾을 수 없습니다",

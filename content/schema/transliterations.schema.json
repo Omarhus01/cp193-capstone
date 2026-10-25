@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "transliterations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "verse": { "type": "string", "pattern": "^[1-9]\\d{0,2}:[1-9]\\d{0,2}$" },
+          "language": {
+            "type": "string",
+            "enum": ["en", "ko"],
+            "description": "en: Latin letters, shown on English pages, steps draft → en_approved → published. ko: Hangul, shown on Korean pages, steps draft → ko_approved → published."
+          },
+          "text": {
+            "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }],
+            "description": "The whole verse. null until written."
+          },
+          "status": {
+            "type": "string",
+            "enum": ["draft", "en_approved", "ko_drafted", "ko_approved", "published"],
+            "description": "Must be where the review history ends (draft when it's empty)."
+          },
+          "review": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "enum": ["draft", "en_approved", "ko_drafted", "ko_approved", "published"]
+                },
+                "reviewer": { "type": "string", "minLength": 1 },
+                "date": {
+                  "type": "string",
+                  "format": "date",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                },
+                "notes": { "type": "string", "minLength": 1 }
+              },
+              "required": ["status", "reviewer", "date"],
+              "additionalProperties": false,
+              "description": "One review step. Sending an item back to an earlier step needs notes."
+            }
+          }
+        },
+        "required": ["verse", "language", "text", "status", "review"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["transliterations"],
+  "additionalProperties": false
+}
