@@ -6,6 +6,7 @@ import { CloseIcon } from "@/components/icons";
 import { ArabicText } from "@/components/text/ArabicText";
 import { Link } from "@/i18n/navigation";
 import type { WordDetail } from "@/lib/services/reading/surah-view";
+import { DraftBadge } from "./DraftBadge";
 import { LocalizedText } from "./LocalizedText";
 import { SourceLink } from "./SourceLink";
 import { useReader } from "./SurahReader";
@@ -55,6 +56,7 @@ export function WordPopover({
               {word.textAr}
             </ArabicText>
           </div>
+          {word.draft ? <DraftBadge /> : null}
           <p className="text-xs text-ink-muted">
             {ref.surah}:{ref.ayah}
             {root ? (

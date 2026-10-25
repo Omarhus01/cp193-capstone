@@ -3,6 +3,7 @@ import { ArabicText } from "@/components/text/ArabicText";
 import type { Locale } from "@/i18n/locale";
 import type { Surah } from "@/lib/domain/content";
 import type { ItemView } from "@/lib/services/reading/surah-view";
+import { DraftBadge } from "./DraftBadge";
 import { LocalizedText } from "./LocalizedText";
 import { SourceChips } from "./SourceLink";
 
@@ -45,6 +46,11 @@ export function SurahHeader({ surah, brief, locale }: SurahHeaderProps) {
       </ul>
       {brief && brief.items.length > 0 ? (
         <div className="mt-4 flex flex-col gap-3 text-ink-muted">
+          {brief.draft ? (
+            <p>
+              <DraftBadge />
+            </p>
+          ) : null}
           {brief.items.map((paragraph, i) => (
             <div key={i}>
               <LocalizedText

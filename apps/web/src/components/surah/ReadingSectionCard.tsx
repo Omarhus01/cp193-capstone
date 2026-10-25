@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl";
 import { PlayIcon } from "@/components/icons";
 import type { Locale } from "@/i18n/locale";
 import type { SectionView } from "@/lib/services/reading/surah-view";
+import { DraftBadge } from "./DraftBadge";
 import { ExplanationParts } from "./ExplanationParts";
 import { QaPanel } from "./QaPanel";
 import { SectionFrame } from "./SectionFrame";
@@ -17,7 +18,10 @@ export function ReadingSectionCard({ section, locale }: ReadingSectionCardProps)
   return (
     <SectionFrame position={position} anchor={section.anchor} label={section.label}>
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-sm font-semibold text-brand">{section.label}</h2>
+        <h2 className="flex items-center gap-2 text-sm font-semibold text-brand">
+          {section.label}
+          {section.draft ? <DraftBadge /> : null}
+        </h2>
         <div className="flex items-center gap-3 text-sm text-ink-muted">
           {/* Recitation audio comes with its own issue. */}
           <button

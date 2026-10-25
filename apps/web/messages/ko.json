@@ -100,6 +100,12 @@
     "askPlaceholder": "곧 제공",
     "declineNote": "출처가 뒷받침하지 않는 질문에는 답하지 않고 그렇다고 알려 드립니다."
   },
+  "tester": {
+    "bannerTitle": "테스트용 초안 콘텐츠를 보고 있습니다",
+    "bannerBody": "\"초안\"으로 표시된 부분은 아직 검토가 끝나지 않았으며 바뀔 수 있습니다. 다른 독자에게는 보이지 않습니다.",
+    "draft": "초안",
+    "draftLabel": "초안, 아직 검토 전"
+  },
   "footer": {
     "quranText": "꾸란 아랍어 본문: <link>Tanzil Project (tanzil.net)</link>. 해설은 각 출처에 근거하며, 출처는 해설마다 표시됩니다."
   },
