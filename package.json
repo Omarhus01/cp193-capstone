@@ -15,6 +15,7 @@
     "typecheck": "npm run typecheck -w apps/web",
     "test": "npm run test -w apps/web",
     "test:e2e": "npm run test:e2e -w apps/web",
+    "test:smoke": "npm run test:smoke -w apps/web",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky",
