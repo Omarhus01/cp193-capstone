@@ -86,18 +86,34 @@ export function WordPopover({
         <div className="mt-4 rounded-lg bg-page p-4">
           <h3 className="text-xs font-semibold text-ink-muted">{t("word.elsewhere")}</h3>
           <ul className="flex flex-col gap-3">
-            {word.elsewhere.map((other) => (
-              <li key={other.label + other.ref.word}>
-                <LocalizedText text={other.meaning} locale={locale} />
-                <div className="flex items-center justify-end gap-2">
-                  <Link
-                    href={`/surah/${other.ref.surah}#${other.anchor}`}
-                    className="text-xs text-brand underline"
-                  >
-                    {other.label}
-                  </Link>
-                  <ArabicText size="md">{other.verseAr}</ArabicText>
-                </div>
+            {word.elsewhere.map((other, i) => (
+              <li key={i}>
+                <LocalizedText
+                  text={other.text}
+                  locale={locale}
+                  lead={
+                    other.verse ? (
+                      <>
+                        {other.verse.available ? (
+                          <Link
+                            href={`/surah/${other.verse.surah}#${other.verse.anchor}`}
+                            className="font-semibold text-brand underline underline-offset-2"
+                          >
+                            {other.verse.label}
+                          </Link>
+                        ) : (
+                          <span className="font-semibold">{other.verse.label}</span>
+                        )}
+                        :{" "}
+                      </>
+                    ) : null
+                  }
+                />
+                {other.verseAr ? (
+                  <ArabicText size="md" className="text-right">
+                    {other.verseAr}
+                  </ArabicText>
+                ) : null}
               </li>
             ))}
           </ul>
@@ -108,9 +124,9 @@ export function WordPopover({
         <>
           <h3 className="mt-4 text-xs font-semibold">{t("sources")}</h3>
           <ul>
-            {word.sources.map((passage) => (
-              <li key={passage.id}>
-                <SourceLink passage={passage} />
+            {word.sources.map((source, i) => (
+              <li key={`${source.passage.id}-${i}`}>
+                <SourceLink source={source} />
               </li>
             ))}
           </ul>

@@ -1,14 +1,16 @@
 import type {
+  Citation,
+  ContentItem,
   Explanation,
   Localized,
   Passage,
   ReadingSectionSummary,
-  RootWordMeaning,
   Span,
   Surah,
   SurahContent,
   Verse,
   VerseRef,
+  VerseText,
 } from "@/lib/domain/content";
 import { isAnnotationOnly } from "@/lib/services/content/words";
 
@@ -31,9 +33,29 @@ export type VerseView = VerseRef & {
   transliteration: Localized;
 };
 
-export type CitationView = { number: number; passage: Passage };
+/**
+ * A source behind a point: the passage, numbered within its explanation (or brief), and who the
+ * passage quotes, if anyone.
+ */
+export type SourceView = { number: number; passage: Passage; quoting: string | null };
 
-export type RelatedVerseView = {
+/** One point of an explanation, or one paragraph of a brief, with its sources (ADR 0015). */
+export type ItemView = { text: Localized; sources: SourceView[] };
+
+/** Where a verse reference leads: a link once that verse is imported, plain text until then. */
+export type VerseLink = {
+  /** "4:69" */
+  label: string;
+  surah: number;
+  anchor: string;
+  /** Whether the verse is in the database, so the reference can be a link. */
+  available: boolean;
+};
+
+export type RelatedVerseView = ItemView & { verse: VerseLink };
+
+/** A link to another part of the imported text (a context link, ADR 0012). */
+export type ContextLinkView = {
   /** "4:69" or "4:69–70" */
   label: string;
   surah: number;
@@ -41,13 +63,12 @@ export type RelatedVerseView = {
   reason: Localized;
 };
 
-/** The parts of an explanation that readers see. A part that isn't written is null. */
+/** The parts of an explanation that readers see, as lists of points. Word meanings aren't shown. */
 export type ExplanationView = {
-  meaning: Localized | null;
-  background: Localized | null;
-  relatedVerses: Localized | null;
-  relatedVerseLinks: RelatedVerseView[];
-  citations: CitationView[];
+  meaning: ItemView[];
+  background: ItemView[];
+  relatedVerses: RelatedVerseView[];
+  contextLinks: ContextLinkView[];
 };
 
 export type SectionView = {
@@ -68,12 +89,12 @@ export type SectionView = {
   explanation: ExplanationView | null;
 };
 
-export type ElsewhereMeaning = {
-  ref: VerseRef & { word: number };
-  label: string;
-  anchor: string;
-  verseAr: string;
-  meaning: Localized;
+/** What a word means elsewhere: in another verse (with its Arabic once imported), or in usage. */
+export type ElsewhereView = {
+  verse: VerseLink | null;
+  /** The verse's Arabic, when the verse is imported. */
+  verseAr: string | null;
+  text: Localized;
 };
 
 /** What the word popover shows. */
@@ -84,13 +105,14 @@ export type WordDetail = {
   textAr: string;
   root: string | null;
   meaning: Localized;
-  sources: Passage[];
-  elsewhere: ElsewhereMeaning[];
+  sources: SourceView[];
+  elsewhere: ElsewhereView[];
 };
 
 export type SurahPageView = {
   surah: Surah;
-  brief: Localized | null;
+  /** The published brief's paragraphs with their sources, or null. */
+  brief: ItemView[] | null;
   sections: SectionView[];
   /** Keyed by "surah:ayah:word". Only words with a published meaning are here. */
   words: Record<string, WordDetail>;
@@ -100,6 +122,8 @@ export const wordKey = ({ surah, ayah, word }: VerseRef & { word: number }) =>
   `${surah}:${ayah}:${word}`;
 
 export const verseAnchor = ({ surah, ayah }: VerseRef) => `verse-${surah}-${ayah}`;
+
+const verseKey = ({ surah, ayah }: VerseRef) => `${surah}:${ayah}`;
 
 /** "1:1", "1:2–4", or "1:7–2:3" across surahs. */
 export function formatRange({ start, end }: Span): string {
@@ -132,31 +156,85 @@ export function verseTokens(verse: Verse, hasMeaning: (position: number) => bool
     });
 }
 
-const written = (text: Localized): Localized | null => (text.en || text.ko ? text : null);
+/**
+ * Numbers sources within one explanation or brief: a passage keeps the number it got where it was
+ * first cited, so "Source 2" is the same book page everywhere in that explanation. A citation of a
+ * passage readers can't see is left out.
+ */
+function sourceNumbering(passages: ReadonlyMap<string, Passage>) {
+  const numbers = new Map<string, number>();
+  return (citations: readonly Citation[]): SourceView[] =>
+    citations.flatMap(({ passageId, quoting }) => {
+      const passage = passages.get(passageId);
+      if (!passage) {
+        return [];
+      }
+      if (!numbers.has(passageId)) {
+        numbers.set(passageId, numbers.size + 1);
+      }
+      return [{ number: numbers.get(passageId)!, passage, quoting }];
+    });
+}
 
-/** The explanation's visible parts, or null when none is written. Word meanings aren't shown. */
+const written = (text: Localized) => Boolean(text.en || text.ko);
+
+function verseLink(verse: VerseRef, available: ReadonlySet<string>): VerseLink {
+  return {
+    label: verseKey(verse),
+    surah: verse.surah,
+    anchor: verseAnchor(verse),
+    available: available.has(verseKey(verse)),
+  };
+}
+
+/**
+ * The explanation's visible parts, numbered in the order they are shown (Meaning, Background,
+ * Related verses), or null when nothing is written. The word meanings part isn't shown.
+ */
 export function explanationView(
   explanation: Explanation,
   passages: ReadonlyMap<string, Passage>,
+  availableVerses: ReadonlySet<string> = new Set(),
 ): ExplanationView | null {
   const { parts } = explanation;
+  const sources = sourceNumbering(passages);
+  const items = (list: ContentItem[]): ItemView[] =>
+    list
+      .filter(({ text }) => written(text))
+      .map(({ text, citations }) => ({ text, sources: sources(citations) }));
   const view: ExplanationView = {
-    meaning: written(parts.context),
-    background: written(parts.background),
-    relatedVerses: written(parts.connectedVerses),
-    relatedVerseLinks: explanation.contextLinks.map(({ span, reason }) => ({
+    meaning: items(parts.context),
+    background: items(parts.background),
+    relatedVerses: parts.relatedVerses.map(({ verse, text, citations }) => ({
+      verse: verseLink(verse, availableVerses),
+      text,
+      sources: sources(citations),
+    })),
+    contextLinks: explanation.contextLinks.map(({ span, reason }) => ({
       label: formatRange(span),
       surah: span.start.surah,
       anchor: verseAnchor(span.start),
       reason,
     })),
-    citations: explanation.passageIds
-      .flatMap((id) => passages.get(id) ?? [])
-      .map((passage, i) => ({ number: i + 1, passage })),
   };
   const visible =
-    view.meaning || view.background || view.relatedVerses || view.relatedVerseLinks.length > 0;
+    view.meaning.length +
+      view.background.length +
+      view.relatedVerses.length +
+      view.contextLinks.length >
+    0;
   return visible ? view : null;
+}
+
+/** The brief's paragraphs with their sources, numbered within the brief. */
+export function briefView(
+  brief: readonly ContentItem[],
+  passages: ReadonlyMap<string, Passage>,
+): ItemView[] {
+  const sources = sourceNumbering(passages);
+  return brief
+    .filter(({ text }) => written(text))
+    .map(({ text, citations }) => ({ text, sources: sources(citations) }));
 }
 
 /** A surah without reading sections still shows every verse: one block per verse. */
@@ -174,13 +252,18 @@ function sectionsOf(content: SurahContent): ReadingSectionSummary[] {
   }));
 }
 
-/** Builds the page from published content, the passages it cites, and meanings by root. */
+/**
+ * Builds the page from published content, the passages it cites, and the Arabic of the verses it
+ * refers to that are imported.
+ */
 export function buildSurahPageView(
   content: SurahContent,
   passages: readonly Passage[],
-  rootMeanings: readonly RootWordMeaning[],
+  verseTexts: readonly VerseText[],
 ): SurahPageView {
   const passagesById = new Map(passages.map((passage) => [passage.id, passage]));
+  const arabic = new Map(verseTexts.map((verse) => [verseKey(verse), verse.textAr]));
+  const available = new Set(arabic.keys());
   const meanings = new Map(content.wordMeanings.map((meaning) => [wordKey(meaning.word), meaning]));
 
   const sections = sectionsOf(content);
@@ -208,7 +291,9 @@ export function buildSurahPageView(
       })),
       published: section.explanation !== null,
       words: {},
-      explanation: section.explanation ? explanationView(section.explanation, passagesById) : null,
+      explanation: section.explanation
+        ? explanationView(section.explanation, passagesById, available)
+        : null,
     };
   });
 
@@ -227,16 +312,12 @@ export function buildSurahPageView(
         textAr: word.textAr,
         root: word.root,
         meaning: meaning.meaning,
-        sources: meaning.passageIds.flatMap((id) => passagesById.get(id) ?? []),
-        elsewhere: rootMeanings
-          .filter((other) => other.root === word.root && wordKey(other.word) !== key)
-          .map((other) => ({
-            ref: other.word,
-            label: `${other.word.surah}:${other.word.ayah}`,
-            anchor: verseAnchor(other.word),
-            verseAr: other.verseAr,
-            meaning: other.meaning,
-          })),
+        sources: sourceNumbering(passagesById)(meaning.citations),
+        elsewhere: meaning.elsewhere.map((note) => ({
+          verse: note.verse ? verseLink(note.verse, available) : null,
+          verseAr: note.verse ? (arabic.get(verseKey(note.verse)) ?? null) : null,
+          text: note.text,
+        })),
       };
     }
   }
@@ -248,43 +329,57 @@ export function buildSurahPageView(
     );
   }
 
-  return { surah: content.surah, brief: content.brief, sections: sectionViews, words };
+  return {
+    surah: content.surah,
+    brief: content.brief ? briefView(content.brief, passagesById) : null,
+    sections: sectionViews,
+    words,
+  };
 }
 
 /** The ids of every passage cited on the page, sorted, so the same page asks the same question. */
 export function citedPassageIds(content: SurahContent): string[] {
   const ids = new Set([
     ...content.readingSections.flatMap((section) => section.explanation?.passageIds ?? []),
-    ...content.wordMeanings.flatMap((meaning) => meaning.passageIds),
+    ...content.wordMeanings.flatMap((meaning) => meaning.citations.map((c) => c.passageId)),
+    ...(content.brief ?? []).flatMap((item) => item.citations.map((c) => c.passageId)),
   ]);
   return [...ids].sort();
 }
 
-/** The roots of the words that have a published meaning, sorted. */
-export function rootsWithMeanings(content: SurahContent): string[] {
-  const roots = new Set<string>();
-  for (const { word } of content.wordMeanings) {
-    const root = content.verses
-      .find((verse) => verse.ayah === word.ayah)
-      ?.words.find((w) => w.position === word.word)?.root;
-    if (root) {
-      roots.add(root);
+/** Every verse the page refers to (related verses, elsewhere notes), each once, in text order. */
+export function referencedVerses(content: SurahContent): VerseRef[] {
+  const refs = new Map<string, VerseRef>();
+  const add = (verse: VerseRef | null) => {
+    if (verse) {
+      refs.set(verseKey(verse), { surah: verse.surah, ayah: verse.ayah });
     }
+  };
+  for (const section of content.readingSections) {
+    section.explanation?.parts.relatedVerses.forEach(({ verse }) => add(verse));
   }
-  return [...roots].sort();
+  for (const meaning of content.wordMeanings) {
+    meaning.elsewhere.forEach(({ verse }) => add(verse));
+  }
+  return [...refs.values()].sort((a, b) => a.surah - b.surah || a.ayah - b.ayah);
 }
 
-/** How a passage is named in a source link: a message key of "surah.passage" and its values. */
+/** How a source is named: a message key of "surah.passage" and its values. */
 export function passageLabel(passage: Passage): {
-  key: "volumePage" | "page" | "verse";
+  key: "volumePage" | "volumePages" | "page" | "pages" | "verse";
   values: Record<string, string>;
 } {
-  const title = passage.source.titleEn ?? passage.source.titleAr ?? passage.source.author;
-  if (passage.page) {
-    return passage.volume
-      ? { key: "volumePage", values: { title, volume: passage.volume, page: passage.page } }
-      : { key: "page", values: { title, page: passage.page } };
+  const { author, titleEn, titleAr } = passage.source;
+  const book = { author, title: titleEn ?? titleAr ?? "" };
+  const { page, volume } = passage;
+  if (page) {
+    // "101–111" is a range of pages: "pp." rather than "p.".
+    const range = /[–-]/.test(page);
+    if (volume) {
+      return { key: range ? "volumePages" : "volumePage", values: { ...book, volume, page } };
+    }
+    return { key: range ? "pages" : "page", values: { ...book, page } };
   }
-  const verse = passage.verse ? `${passage.verse.surah}:${passage.verse.ayah}` : "";
-  return { key: "verse", values: { title, verse } };
+  const verse = passage.verse ? verseKey(passage.verse) : "";
+  return { key: "verse", values: { ...book, verse } };
 }

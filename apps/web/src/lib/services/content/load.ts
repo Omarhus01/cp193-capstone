@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import type { z } from "zod";
 import {
   explanationsFileSchema,
+  quranMetadataFileSchema,
   readingFileSchema,
   sourceFileSchema,
   surahFileSchema,
@@ -13,6 +14,7 @@ import {
   wordsFileSchema,
   type ExplanationEntry,
   type SourceFile,
+  type SurahMetadata,
   type SurahFile,
   type TextFile,
   type TransliterationEntry,
@@ -42,7 +44,12 @@ export type SurahFiles = {
 
 export type SourceFiles = SourceFile & { file: string };
 
-export type ContentBundle = { surahs: SurahFiles[]; sources: SourceFiles[] };
+export type ContentBundle = {
+  /** All 114 surahs from Tanzil's metadata (quran-metadata.json), imported or not. */
+  metadata: SurahMetadata[];
+  surahs: SurahFiles[];
+  sources: SourceFiles[];
+};
 
 const REQUIRED_FILES = ["text.json", "words.json", "surah.json"];
 const OPTIONAL_FILES = [
@@ -151,6 +158,15 @@ export function loadContent(dir: string = CONTENT_DIR): {
     });
   }
 
+  if (!existsSync(path.join(dir, "quran-metadata.json"))) {
+    errors.push({
+      file: "quran-metadata.json",
+      path: "",
+      message: "is missing; run npm run content:import-tanzil-metadata",
+    });
+  }
+  const metadata = readOptional("quran-metadata.json", quranMetadataFileSchema);
+
   const sources: SourceFiles[] = [];
   for (const name of listDir(path.join(dir, "sources"))) {
     const file = `sources/${name}`;
@@ -164,5 +180,5 @@ export function loadContent(dir: string = CONTENT_DIR): {
     }
   }
 
-  return { bundle: { surahs, sources }, errors };
+  return { bundle: { metadata: metadata?.surahs ?? [], surahs, sources }, errors };
 }

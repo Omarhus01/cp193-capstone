@@ -58,6 +58,55 @@ describe("toSeedPayload", () => {
     ]);
   });
 
+  it("stores each point of an explanation with its own citations", () => {
+    const payload = toSeedPayload(testBundle());
+    const items = payload.explanation_items.filter((i) => i.explanation_id === "s1-reading-1");
+    expect(items.map((i) => [i.part, i.sort_order, i.verse_surah, i.verse_ayah])).toEqual([
+      ["background", 0, null, null],
+      ["connected_verses", 0, 3, 5],
+      ["context", 0, null, null],
+    ]);
+    expect(
+      payload.explanation_item_citations
+        .filter((c) => c.explanation_id === "s1-reading-1" && c.part === "context")
+        .map((c) => [c.sort_order, c.passage_id, c.quoting]),
+    ).toEqual([
+      [0, "passage-1", null],
+      [1, "passage-2", "[narrator]"],
+    ]);
+    // The explanation's passages, each once, in the order its parts first cite them.
+    expect(
+      payload.explanation_citations
+        .filter((c) => c.explanation_id === "s1-reading-1")
+        .map((c) => c.passage_id),
+    ).toEqual(["passage-1", "passage-2"]);
+  });
+
+  it("stores the brief's paragraphs and a word meaning's elsewhere notes", () => {
+    const payload = toSeedPayload(testBundle());
+    expect(payload.surah_briefs).toEqual([{ surah: 1, status: "published" }]);
+    expect(payload.surah_brief_items.map((i) => i.text_en)).toEqual([
+      "brief paragraph 1 (en)",
+      "brief paragraph 2 (en)",
+    ]);
+    expect(payload.surah_brief_item_citations.map((c) => [c.item_order, c.passage_id])).toEqual([
+      [0, "passage-1"],
+      [1, "passage-2"],
+    ]);
+    expect(payload.word_meaning_elsewhere).toEqual([
+      {
+        surah: 1,
+        ayah: 1,
+        position: 1,
+        sort_order: 0,
+        verse_surah: 2,
+        verse_ayah: 3,
+        text_en: "elsewhere in 2:3 (en)",
+        text_ko: "elsewhere in 2:3 (ko)",
+      },
+    ]);
+  });
+
   it("keeps drafts, so the database decides what readers see", () => {
     const { explanations } = toSeedPayload(testBundle());
     expect(explanations.find((e) => e.id === "s1-draft")?.status).toBe("draft");

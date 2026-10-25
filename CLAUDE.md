@@ -56,7 +56,8 @@ apps/web/                 Next.js site (npm workspace)
                           seed payload), reading/ (surah page view, reading preferences)
   src/lib/data/           all database access: auth, session, content (the only importers of lib/supabase)
   src/lib/supabase/       browser, server, proxy and public (cookie-less, for published content) client factories
-  scripts/                content tooling run with tsx: import-tanzil, write-content-schema, seed-content
+  scripts/                content tooling run with tsx: import-tanzil, import-tanzil-metadata, write-content-schema,
+                          seed-content
   src/lib/domain/         domain types shared by every layer
   src/lib/ai/             RetrievalProvider interface and its mock
   src/architecture.test.ts  checks the ESLint layer rules
@@ -91,6 +92,7 @@ npm run test:e2e       # Playwright (builds and serves on :3100)
 npx supabase db push   # apply migrations to the linked project
 npm run content:seed   # load content/ into Supabase (needs SUPABASE_SERVICE_ROLE_KEY in the shell)
 npm run content:schema # rewrite content/schema/ after changing the Zod schemas
+npm run content:import-tanzil-metadata -- <quran-data.xml>  # rewrite content/quran-metadata.json
 ```
 
 `.github/workflows/ci.yml` runs format:check, lint, typecheck, and test on every push and PR. Its job, `Format, lint, typecheck, unit tests`, is a required check on `main`. A husky pre-push hook (`.husky/pre-push`) runs the same checks locally as a safety net and blocks the push if any fail. `npm install` sets it up through the `prepare` script. Don't bypass the hook with `--no-verify`.
@@ -140,7 +142,7 @@ app/ (routes, pages, server actions) → components/ → lib/services/ → lib/d
   - Server code checks the session with `getCurrentUserId()` (`@/lib/services/auth/accounts`) or `requireUserId()` (`@/lib/services/auth/require-user`), which use `getClaims()` and so verify the JWT.
   - Pages check the session themselves and don't rely on the proxy alone.
   - Redirect targets from user input go through `safeNextPath`.
-- **Content:** explanations attach to spans, not verses, and verse numbering follows the Hafs mushaf as in Tanzil ([ADR 0012](docs/decisions/0012-explanations-attach-to-spans.md)). Public content is read with `createPublicClient()` and filtered on `status = 'published'` on top of RLS. The functions in `lib/data/content.ts` are cached with `"use cache"` and `cacheTag("content")` ([ADR 0014](docs/decisions/0014-page-layout-preferences-and-caching.md)).
+- **Content:** explanations attach to spans, not verses, and verse numbering follows the Hafs mushaf as in Tanzil ([ADR 0012](docs/decisions/0012-explanations-attach-to-spans.md)). Public content is read with `createPublicClient()` and filtered on `status = 'published'` on top of RLS. The functions in `lib/data/content.ts` are cached with `"use cache"` and `cacheTag("content")` ([ADR 0014](docs/decisions/0014-page-layout-preferences-and-caching.md)). Explanation parts and the brief are lists of points, each with its own citations; related verses and elsewhere notes are verse references checked against `content/quran-metadata.json` ([ADR 0015](docs/decisions/0015-explanation-items-and-verse-references.md)). Content text renders through `RichText` (bold, italic, paragraphs; never HTML).
 - **Tanzil credit:** every page that shows Quran text must credit the Tanzil Project with a link to tanzil.net. The global `SiteFooter` does this; don't remove it.
 - **Layout:** pages with columns use `PageLayout` (`sidebar` and `aside` props). The right column shows on wide screens only, so a page puts its phone version inline.
 - **e2e with content:** tests that need content seed fixtures into a local Supabase (`e2e/local-supabase.ts`), and are skipped unless `E2E_LOCAL_SUPABASE=1` with a local URL. Never point them at the hosted project.

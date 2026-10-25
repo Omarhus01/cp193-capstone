@@ -10,6 +10,13 @@ describe("content/", () => {
     expect(bundle.surahs.map((s) => s.number)).toContain(1);
   });
 
+  it("has Tanzil's metadata for all 114 surahs", () => {
+    const { metadata } = loadContent().bundle;
+    expect(metadata).toHaveLength(114);
+    expect(metadata[1]).toMatchObject({ number: 2, verseCount: 286 });
+    expect(metadata.reduce((total, surah) => total + surah.verseCount, 0)).toBe(6236);
+  });
+
   it("keeps Al-Fatiha's Basmala as verse 1:1, as in Tanzil", () => {
     const fatiha = loadContent().bundle.surahs.find((s) => s.number === 1);
     expect(fatiha?.text.surah).toMatchObject({ verseCount: 7, basmala: null });
@@ -155,7 +162,7 @@ describe("validateContent", () => {
 
     it("needs Korean for every English part once the Korean is drafted", () => {
       const errors = errorsAfter((b) => {
-        b.surahs[0].explanations[0].parts.context.ko = null;
+        b.surahs[0].explanations[0].parts.context[0].ko = null;
       });
       expect(messages(errors)).toContainEqual(expect.stringContaining("needs its Korean"));
     });
@@ -165,6 +172,38 @@ describe("validateContent", () => {
         b.surahs[0].wordMeanings[0].citations = [];
       });
       expect(messages(errors)).toContainEqual(expect.stringContaining("at least one citation"));
+    });
+
+    it("needs a citation on every point of a published explanation or brief", () => {
+      expect(
+        messages(
+          errorsAfter((b) => {
+            b.surahs[0].explanations[0].parts.background[0].citations = [];
+          }),
+        ),
+      ).toContainEqual(
+        expect.stringContaining(
+          "explanations[0].parts.background[0]: is published, so it needs at least one citation",
+        ),
+      );
+      expect(
+        messages(
+          errorsAfter((b) => {
+            b.surahs[0].surah.brief!.items[1].citations = [];
+          }),
+        ),
+      ).toContainEqual(expect.stringContaining("brief.items[1]: is published"));
+    });
+
+    it("needs Korean for an elsewhere note once the Korean is drafted", () => {
+      const errors = errorsAfter((b) => {
+        b.surahs[0].wordMeanings[0].elsewhere[0].ko = null;
+      });
+      expect(messages(errors)).toContainEqual(
+        expect.stringContaining(
+          "wordMeanings[0]: is published, so every English part needs its Korean",
+        ),
+      );
     });
 
     it("checks the surah brief's history too", () => {
@@ -178,9 +217,42 @@ describe("validateContent", () => {
   describe("references and ids", () => {
     it("rejects a citation of a passage that doesn't exist", () => {
       const errors = errorsAfter((b) => {
-        b.surahs[0].explanations[0].citations = ["passage-9"];
+        b.surahs[0].explanations[0].parts.context[0].citations = ["passage-9"];
       });
       expect(messages(errors)).toContainEqual(expect.stringContaining('no passage "passage-9"'));
+    });
+
+    it("rejects a quoting citation of a passage that doesn't exist", () => {
+      const errors = errorsAfter((b) => {
+        b.surahs[0].explanations[0].parts.context[0].citations = [
+          { passage: "passage-9", quoting: "[narrator]" },
+        ];
+      });
+      expect(messages(errors)).toContainEqual(expect.stringContaining('no passage "passage-9"'));
+    });
+
+    it("checks related verses and elsewhere notes against Tanzil's verse counts", () => {
+      expect(
+        messages(
+          errorsAfter((b) => {
+            b.surahs[0].explanations[0].parts.connectedVerses[0].verse = "3:11";
+          }),
+        ),
+      ).toContainEqual(
+        expect.stringContaining("parts.connectedVerses[0].verse: 3:11: surah 3 has 10 verses"),
+      );
+      expect(
+        messages(
+          errorsAfter((b) => {
+            b.surahs[0].wordMeanings[0].elsewhere[0].verse = "115:1";
+          }),
+        ),
+      ).toContainEqual(expect.stringContaining("elsewhere[0].verse: surah 115 doesn't exist"));
+    });
+
+    it("accepts a related verse in a surah that isn't imported", () => {
+      expect(testBundle().surahs.map((s) => s.number)).not.toContain(3);
+      expect(validateContent(testBundle())).toEqual([]);
     });
 
     it("rejects a duplicate explanation id, across surahs too", () => {
@@ -271,6 +343,15 @@ describe("validateContent", () => {
       expect(messages(errors)).toContainEqual(expect.stringContaining("aren't the verse text"));
     });
 
+    it("rejects a surah text that doesn't match Tanzil's metadata", () => {
+      const errors = errorsAfter((b) => {
+        b.metadata[1].verseCount = 5;
+      });
+      expect(messages(errors)).toContainEqual(
+        expect.stringContaining("surahs/002/text.json surah: doesn't match quran-metadata.json"),
+      );
+    });
+
     it("rejects a verse count that doesn't match the verses", () => {
       const errors = errorsAfter((b) => {
         b.surahs[0].text.surah.verseCount = 5;
@@ -280,7 +361,7 @@ describe("validateContent", () => {
 
     it("rejects 하나님 in any text", () => {
       const errors = errorsAfter((b) => {
-        b.surahs[0].explanations[0].parts.background.ko = "하나님";
+        b.surahs[0].explanations[0].parts.background[0].ko = "하나님";
       });
       expect(messages(errors)).toContainEqual(expect.stringContaining('uses "하나님"'));
     });

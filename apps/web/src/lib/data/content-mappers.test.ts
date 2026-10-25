@@ -2,9 +2,10 @@ import { describe, expect, it } from "vitest";
 import {
   spanKeys,
   toExplanation,
+  toBrief,
   toPassage,
-  toRootWordMeaning,
   toVerse,
+  toWordMeaning,
   type ExplanationRow,
   type SpanRow,
 } from "./content-mappers";
@@ -53,15 +54,39 @@ describe("toExplanation", () => {
   const row: ExplanationRow = {
     id: "note",
     kind: "phrase_note",
-    word_meanings_en: null,
-    word_meanings_ko: null,
-    background_en: "background (en)",
-    background_ko: "background (ko)",
-    context_en: null,
-    context_ko: null,
-    connected_verses_en: null,
-    connected_verses_ko: null,
     span: span("1:2:1-1:2:3", [1, 2, 1], [1, 2, 3]),
+    explanation_item: [
+      {
+        part: "background",
+        sort_order: 1,
+        text_en: "second point (en)",
+        text_ko: "second point (ko)",
+        verse_surah: null,
+        verse_ayah: null,
+        explanation_item_citation: [],
+      },
+      {
+        part: "background",
+        sort_order: 0,
+        text_en: "first point (en)",
+        text_ko: "first point (ko)",
+        verse_surah: null,
+        verse_ayah: null,
+        explanation_item_citation: [
+          { sort_order: 1, passage_id: "second", quoting: "[narrator]" },
+          { sort_order: 0, passage_id: "first", quoting: null },
+        ],
+      },
+      {
+        part: "connected_verses",
+        sort_order: 0,
+        text_en: "why (en)",
+        text_ko: null,
+        verse_surah: 40,
+        verse_ayah: 16,
+        explanation_item_citation: [],
+      },
+    ],
     explanation_citation: [
       { passage_id: "second", sort_order: 1 },
       { passage_id: "first", sort_order: 0 },
@@ -82,9 +107,26 @@ describe("toExplanation", () => {
     ],
   };
 
-  it("maps the parts and keeps citations and context links in their order", () => {
+  it("maps each part's points in order, each with its citations in order", () => {
     const explanation = toExplanation(row);
-    expect(explanation.parts.background).toEqual({ en: "background (en)", ko: "background (ko)" });
+    expect(explanation.parts.background).toEqual([
+      {
+        text: { en: "first point (en)", ko: "first point (ko)" },
+        citations: [
+          { passageId: "first", quoting: null },
+          { passageId: "second", quoting: "[narrator]" },
+        ],
+      },
+      { text: { en: "second point (en)", ko: "second point (ko)" }, citations: [] },
+    ]);
+    expect(explanation.parts.context).toEqual([]);
+    expect(explanation.parts.relatedVerses).toEqual([
+      { verse: { surah: 40, ayah: 16 }, text: { en: "why (en)", ko: null }, citations: [] },
+    ]);
+  });
+
+  it("keeps the explanation's passages and context links in their order", () => {
+    const explanation = toExplanation(row);
     expect(explanation.span).toEqual({
       start: { surah: 1, ayah: 2, word: 1 },
       end: { surah: 1, ayah: 2, word: 3 },
@@ -125,25 +167,48 @@ describe("toVerse", () => {
   });
 });
 
-describe("toRootWordMeaning", () => {
-  it("adds the word, its root and its verse to the meaning", () => {
-    const meaning = toRootWordMeaning({
+describe("toWordMeaning", () => {
+  it("keeps the citations with who they quote, and the elsewhere notes in order", () => {
+    const meaning = toWordMeaning({
       surah: 2,
       ayah: 3,
       position: 4,
       meaning_en: "[en]",
       meaning_ko: "[ko]",
-      word_meaning_citation: [{ passage_id: "p", sort_order: 0 }],
-      word: { text_ar: "ابت", root: "ا ب ت", verse: { text_ar: "ثجح ابت" } },
+      word_meaning_citation: [{ passage_id: "p", sort_order: 0, quoting: "[narrator]" }],
+      word_meaning_elsewhere: [
+        { sort_order: 1, verse_surah: null, verse_ayah: null, text_en: "[usage]", text_ko: null },
+        { sort_order: 0, verse_surah: 109, verse_ayah: 6, text_en: "[109:6]", text_ko: "[ko]" },
+      ],
     });
     expect(meaning).toEqual({
       word: { surah: 2, ayah: 3, word: 4 },
       meaning: { en: "[en]", ko: "[ko]" },
-      passageIds: ["p"],
-      root: "ا ب ت",
-      wordAr: "ابت",
-      verseAr: "ثجح ابت",
+      citations: [{ passageId: "p", quoting: "[narrator]" }],
+      elsewhere: [
+        { verse: { surah: 109, ayah: 6 }, text: { en: "[109:6]", ko: "[ko]" } },
+        { verse: null, text: { en: "[usage]", ko: null } },
+      ],
     });
+  });
+});
+
+describe("toBrief", () => {
+  it("orders the paragraphs and their citations", () => {
+    expect(
+      toBrief([
+        { sort_order: 1, text_en: "b", text_ko: null, surah_brief_item_citation: [] },
+        {
+          sort_order: 0,
+          text_en: "a",
+          text_ko: "가",
+          surah_brief_item_citation: [{ sort_order: 0, passage_id: "p", quoting: null }],
+        },
+      ]),
+    ).toEqual([
+      { text: { en: "a", ko: "가" }, citations: [{ passageId: "p", quoting: null }] },
+      { text: { en: "b", ko: null }, citations: [] },
+    ]);
   });
 });
 

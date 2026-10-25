@@ -1,10 +1,12 @@
 import { useTranslations } from "next-intl";
 import { ArabicText } from "@/components/text/ArabicText";
 import type { Locale } from "@/i18n/locale";
-import type { Localized, Surah } from "@/lib/domain/content";
+import type { Surah } from "@/lib/domain/content";
+import type { ItemView } from "@/lib/services/reading/surah-view";
 import { LocalizedText } from "./LocalizedText";
+import { SourceChips } from "./SourceLink";
 
-type SurahHeaderProps = { surah: Surah; brief: Localized | null; locale: Locale };
+type SurahHeaderProps = { surah: Surah; brief: ItemView[] | null; locale: Locale };
 
 /** The surah's names, where it was revealed, its length, and its brief once published. */
 export function SurahHeader({ surah, brief, locale }: SurahHeaderProps) {
@@ -37,9 +39,17 @@ export function SurahHeader({ surah, brief, locale }: SurahHeaderProps) {
           </li>
         ))}
       </ul>
-      {brief ? (
-        <div className="mt-4 text-ink-muted">
-          <LocalizedText text={brief} locale={locale} />
+      {brief && brief.length > 0 ? (
+        <div className="mt-4 flex flex-col gap-3 text-ink-muted">
+          {brief.map((paragraph, i) => (
+            <div key={i}>
+              <LocalizedText
+                text={paragraph.text}
+                locale={locale}
+                trailing={<SourceChips sources={paragraph.sources} />}
+              />
+            </div>
+          ))}
         </div>
       ) : null}
     </header>

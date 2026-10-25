@@ -22,11 +22,51 @@
           "citations": {
             "type": "array",
             "items": {
-              "type": "string",
-              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
-              "description": "A stable id, such as \"001-reading-1\". Never reuse one for something else."
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                  "description": "A stable id, such as \"001-reading-1\". Never reuse one for something else."
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "passage": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                      "description": "A stable id, such as \"001-reading-1\". Never reuse one for something else."
+                    },
+                    "quoting": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Who the passage quotes or narrates from, as the draft names them: \"Muslim\"."
+                    }
+                  },
+                  "required": ["passage", "quoting"],
+                  "additionalProperties": false
+                }
+              ]
             },
-            "description": "Ids of passages in content/sources/, in the order they are shown."
+            "description": "Passages in content/sources/ behind this text, in order: a passage id, or { \"passage\": id, \"quoting\": \"Muslim\" } when the passage quotes or narrates from someone."
+          },
+          "elsewhere": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "verse": {
+                  "anyOf": [
+                    { "type": "string", "pattern": "^[1-9]\\d{0,2}:[1-9]\\d{0,2}$" },
+                    { "type": "null" }
+                  ]
+                },
+                "en": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] },
+                "ko": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] }
+              },
+              "required": ["verse", "en", "ko"],
+              "additionalProperties": false
+            },
+            "description": "What the word means elsewhere: a verse and its sense there, or a note with no verse."
           },
           "status": {
             "type": "string",
@@ -56,7 +96,7 @@
             }
           }
         },
-        "required": ["word", "meaning", "citations", "status", "review"],
+        "required": ["word", "meaning", "citations", "elsewhere", "status", "review"],
         "additionalProperties": false
       }
     }

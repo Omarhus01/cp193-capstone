@@ -11,6 +11,7 @@ import { CONTENT_DIR } from "@/lib/services/content/load";
 import { wordsFileSchema } from "@/lib/services/content/schema";
 import { splitWords } from "@/lib/services/content/words";
 import { writeJsonFile } from "./json-file";
+import { attributes } from "./tanzil";
 
 const [textXmlPath, metadataXmlPath, ...surahArgs] = process.argv.slice(2);
 if (!textXmlPath || !metadataXmlPath || surahArgs.length === 0) {
@@ -30,10 +31,6 @@ if (!notice?.includes("Tanzil Quran Text (Uthmani")) {
 }
 if (textXml.includes("&")) {
   throw new Error(`${textXmlPath} has XML entities; this importer expects plain attribute text.`);
-}
-
-function attributes(tag: string): Record<string, string> {
-  return Object.fromEntries([...tag.matchAll(/(\w+)="([^"]*)"/g)].map((m) => [m[1], m[2]]));
 }
 
 for (const arg of surahArgs) {

@@ -48,12 +48,58 @@ const reviewed = {
   review: z.array(reviewEntry),
 };
 
-const citations = z
-  .array(id)
-  .meta({ description: "Ids of passages in content/sources/, in the order they are shown." });
+const citation = z.union([
+  id,
+  z.strictObject({
+    passage: id,
+    quoting: text.meta({
+      description: 'Who the passage quotes or narrates from, as the draft names them: "Muslim".',
+    }),
+  }),
+]);
+
+const citations = z.array(citation).meta({
+  description:
+    'Passages in content/sources/ behind this text, in order: a passage id, or { "passage": id, ' +
+    '"quoting": "Muslim" } when the passage quotes or narrates from someone.',
+});
+
+/** One point of an explanation, or one paragraph of a brief, with the sources behind it. */
+const item = z.strictObject({ en: text.nullable(), ko: text.nullable(), citations });
+
+/** A verse an explanation relates to, and why. The verse needn't be imported yet. */
+const relatedVerse = z.strictObject({
+  verse: verseRef,
+  en: text.nullable(),
+  ko: text.nullable(),
+  citations,
+});
 
 const attribution = text.meta({
   description: "Tanzil's copyright notice, verbatim. Its terms require it in every derived file.",
+});
+
+const revelationPlace = z.enum(["meccan", "medinan"]);
+
+/**
+ * quran-metadata.json: every surah's name, revelation place and verse count, from Tanzil's
+ * metadata. Verse references are checked against it. Generated; never edited by hand.
+ */
+export const quranMetadataFileSchema = z.strictObject({
+  $schema,
+  attribution: text.meta({
+    description: "Tanzil's copyright and license for the metadata, kept as its license asks.",
+  }),
+  surahs: z
+    .array(
+      z.strictObject({
+        number: z.int().min(1).max(114),
+        nameAr: text,
+        revelationPlace,
+        verseCount: z.int().min(1),
+      }),
+    )
+    .length(114),
 });
 
 /** text.json: the surah's Quran text, imported from Tanzil. Never edited by hand. */
@@ -63,7 +109,7 @@ export const textFileSchema = z.strictObject({
   surah: z.strictObject({
     number: z.int().min(1).max(114),
     nameAr: text,
-    revelationPlace: z.enum(["meccan", "medinan"]),
+    revelationPlace,
     verseCount: z.int().min(1),
     basmala: text
       .nullable()
@@ -88,7 +134,12 @@ export const wordsFileSchema = z.strictObject({
 export const surahFileSchema = z.strictObject({
   $schema,
   names: localized,
-  brief: z.strictObject({ en: text.nullable(), ko: text.nullable(), ...reviewed }).optional(),
+  brief: z
+    .strictObject({
+      items: z.array(item).meta({ description: "The brief's paragraphs, each with its sources." }),
+      ...reviewed,
+    })
+    .optional(),
 });
 
 const explanationKind = z.enum(["phrase_note", "verse_explanation", "reading_section"]).meta({
@@ -105,13 +156,16 @@ export const explanationsFileSchema = z.strictObject({
       id,
       kind: explanationKind,
       span,
-      parts: z.strictObject({
-        wordMeanings: localized,
-        background: localized,
-        context: localized,
-        connectedVerses: localized,
-      }),
-      citations,
+      parts: z
+        .strictObject({
+          wordMeanings: z.array(item),
+          background: z.array(item),
+          context: z.array(item).meta({ description: 'Shown on the page as "Meaning".' }),
+          connectedVerses: z
+            .array(relatedVerse)
+            .meta({ description: 'Shown on the page as "Related verses".' }),
+        })
+        .meta({ description: "Each part is a list of points, each with its own citations." }),
       contextLinks: z.array(z.strictObject({ span, reason: localized })).meta({
         description: "Other parts of the text a reader needs for this explanation, and why.",
       }),
@@ -134,7 +188,20 @@ export const readingFileSchema = z.strictObject({
 export const wordMeaningsFileSchema = z.strictObject({
   $schema,
   wordMeanings: z.array(
-    z.strictObject({ word: wordRef, meaning: localized, citations, ...reviewed }),
+    z.strictObject({
+      word: wordRef,
+      meaning: localized,
+      citations,
+      elsewhere: z
+        .array(
+          z.strictObject({ verse: verseRef.nullable(), en: text.nullable(), ko: text.nullable() }),
+        )
+        .meta({
+          description:
+            "What the word means elsewhere: a verse and its sense there, or a note with no verse.",
+        }),
+      ...reviewed,
+    }),
   ),
 });
 
@@ -180,11 +247,16 @@ export const sourceFileSchema = z.strictObject({
   ),
 });
 
+export type QuranMetadataFile = z.infer<typeof quranMetadataFileSchema>;
+export type SurahMetadata = QuranMetadataFile["surahs"][number];
 export type TextFile = z.infer<typeof textFileSchema>;
 export type WordsFile = z.infer<typeof wordsFileSchema>;
 export type SurahFile = z.infer<typeof surahFileSchema>;
 export type ExplanationsFile = z.infer<typeof explanationsFileSchema>;
 export type ExplanationEntry = ExplanationsFile["explanations"][number];
+export type ItemEntry = z.infer<typeof item>;
+export type RelatedVerseEntry = z.infer<typeof relatedVerse>;
+export type CitationEntry = z.infer<typeof citation>;
 export type ReadingFile = z.infer<typeof readingFileSchema>;
 export type WordMeaningsFile = z.infer<typeof wordMeaningsFileSchema>;
 export type WordMeaningEntry = WordMeaningsFile["wordMeanings"][number];
@@ -192,8 +264,16 @@ export type TransliterationsFile = z.infer<typeof transliterationsFileSchema>;
 export type TransliterationEntry = TransliterationsFile["transliterations"][number];
 export type SourceFile = z.infer<typeof sourceFileSchema>;
 
+/** A citation as { passage, quoting }, whichever way the file writes it. */
+export function readCitation(citation: CitationEntry): { passage: string; quoting: string | null } {
+  return typeof citation === "string"
+    ? { passage: citation, quoting: null }
+    : { passage: citation.passage, quoting: citation.quoting };
+}
+
 /** Each schema and the name of its file in content/schema/. */
 export const CONTENT_SCHEMAS = {
+  "quran-metadata.schema.json": quranMetadataFileSchema,
   "text.schema.json": textFileSchema,
   "words.schema.json": wordsFileSchema,
   "surah.schema.json": surahFileSchema,

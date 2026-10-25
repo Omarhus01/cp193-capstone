@@ -21,13 +21,7 @@ describe("explanationsFileSchema", () => {
         id: "001-reading-1",
         kind: "reading_section",
         span: { from: "1:1", to: "1:7" },
-        parts: {
-          wordMeanings: { en: null, ko: null },
-          background: { en: null, ko: null },
-          context: { en: null, ko: null },
-          connectedVerses: { en: null, ko: null },
-        },
-        citations: [],
+        parts: { wordMeanings: [], background: [], context: [], connectedVerses: [] },
         contextLinks: [],
         status: "draft",
         review: [],
@@ -47,7 +41,30 @@ describe("explanationsFileSchema", () => {
     ["an id with capitals", { id: "Reading-1" }],
     [
       "an empty string instead of null",
-      { parts: { ...valid.explanations[0].parts, context: { en: "", ko: null } } },
+      {
+        parts: {
+          ...valid.explanations[0].parts,
+          context: [{ en: "", ko: null, citations: [] }],
+        },
+      },
+    ],
+    [
+      "a related verse that names a word",
+      {
+        parts: {
+          ...valid.explanations[0].parts,
+          connectedVerses: [{ verse: "2:1:3", en: "x", ko: null, citations: [] }],
+        },
+      },
+    ],
+    [
+      "a quoting citation without a passage",
+      {
+        parts: {
+          ...valid.explanations[0].parts,
+          context: [{ en: "x", ko: null, citations: [{ quoting: "Muslim" }] }],
+        },
+      },
     ],
   ])("rejects %s", (_, change) => {
     const broken = { explanations: [{ ...valid.explanations[0], ...change }] };

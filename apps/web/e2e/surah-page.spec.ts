@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import en from "../messages/en.json";
 import ko from "../messages/ko.json";
-import { fixtureBundle } from "./fixtures/content";
+import { FIXTURE_NARRATOR, fixtureBundle } from "./fixtures/content";
 import {
   createTestUser,
   deleteTestUser,
@@ -56,11 +56,19 @@ test.describe("reading sections", () => {
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("[Fixture surah 1]");
     const published = section(page, "1:1–2");
     await expect(published.getByRole("heading", { name: en.surah.meaning })).toBeVisible();
-    await expect(published.getByText("[meaning 1 en]")).toBeVisible();
+    await expect(published.getByText("[meaning 1b en]")).toBeVisible();
     await expect(published.getByText("[background 1 en]")).toBeVisible();
-    await expect(published.getByText("[related 1 en]")).toBeVisible();
     // The explanation's word meanings part is only for the word popover.
     await expect(page.getByText("[word meanings part en]")).toHaveCount(0);
+
+    // Bold and italic are rendered, and no Markdown marks show.
+    await expect(published.locator("strong", { hasText: "bold" })).toBeVisible();
+    await expect(published.locator("em", { hasText: "italic" })).toBeVisible();
+    await expect(page.getByText(/\*\*/)).toHaveCount(0);
+
+    // The brief, paragraph by paragraph, each with its sources.
+    await expect(page.getByText("[brief 1 en]")).toBeVisible();
+    await expect(page.getByText("[brief 2 en]")).toBeVisible();
 
     const draft = section(page, "1:3");
     await expect(draft.getByText(en.surah.comingSoonTitle)).toBeVisible();
@@ -72,22 +80,49 @@ test.describe("reading sections", () => {
     ).toBeVisible();
   });
 
-  test("links each citation to its source page and every related verse to the verse", async ({
+  test("ends each point with its own source links, naming who a source quotes", async ({
+    page,
+  }) => {
+    await openLoggedIn(page, "/en/surah/1");
+    const published = section(page, "1:1–2");
+    const book = "[Fixture author], [Fixture source]";
+    const point = (text: string) => published.getByRole("listitem").filter({ hasText: text });
+
+    const first = point("[meaning 1a en]");
+    await expect(
+      first.getByRole("link", { name: `Source 1: ${book}, vol. 1, p. 10` }),
+    ).toHaveAttribute("href", "/en/sources/fx-passage-1");
+    await expect(
+      first.getByRole("link", { name: `Source 2: ${FIXTURE_NARRATOR}, via ${book}, on 1:2` }),
+    ).toHaveAttribute("href", "/en/sources/fx-passage-2");
+    await expect(first.getByRole("link", { name: /^Source / })).toHaveCount(2);
+
+    // A passage keeps its number across the explanation.
+    await expect(
+      point("[meaning 1b en]").getByRole("link", { name: `Source 2: ${book}, on 1:2` }),
+    ).toBeVisible();
+    await expect(
+      point("[background 1 en]").getByRole("link", { name: `Source 1: ${book}, vol. 1, p. 10` }),
+    ).toBeVisible();
+  });
+
+  test("shows related verses as text, and as links once that verse is imported", async ({
     page,
   }) => {
     await openLoggedIn(page, "/en/surah/1");
     const published = section(page, "1:1–2");
 
-    await expect(
-      published.getByRole("link", { name: /^Source 1: \[Fixture source\], vol\. 1, p\. 10$/ }),
-    ).toHaveAttribute("href", "/en/sources/fx-passage-1");
-    await expect(
-      published.getByRole("link", { name: /^Source 2: \[Fixture source\], on 1:2$/ }),
-    ).toHaveAttribute("href", "/en/sources/fx-passage-2");
+    // 2:1 is in the database, so its reference is a link.
     await expect(published.getByRole("link", { name: `2:1 ${en.surah.seeVerse}` })).toHaveAttribute(
       "href",
       "/en/surah/2#verse-2-1",
     );
+    await expect(published.getByText("[why 2:1 en]")).toBeVisible();
+    // Surah 40 isn't imported: the reference is text, with its reason and sources.
+    const notImported = published.getByRole("listitem").filter({ hasText: "40:6" });
+    await expect(notImported).toContainText("40:6: [why 40:6 en]");
+    await expect(notImported.getByRole("link", { name: /40:6/ })).toHaveCount(0);
+    await expect(notImported.getByRole("link", { name: /^Source 2: / })).toBeVisible();
   });
 
   test("keeps the Listen button disabled until audio arrives", async ({ page }) => {
@@ -104,9 +139,9 @@ test.describe("toggles", () => {
   }) => {
     await openLoggedIn(page, "/ko/surah/1");
     const toggle = page.getByRole("switch", { name: ko.surah.showEnglish });
-    const english = section(page, "1:1–2").getByText("[meaning 1 en]");
+    const english = section(page, "1:1–2").getByText("[meaning 1b en]");
 
-    await expect(page.getByText("[meaning 1 ko]")).toBeVisible();
+    await expect(page.getByText("[meaning 1b ko]")).toBeVisible();
     await expect(toggle).toHaveAttribute("aria-checked", "false");
     await expect(english).toBeHidden();
 
@@ -179,23 +214,34 @@ test.describe("word popover", () => {
     await expect(popover).toBeHidden();
   });
 
-  test("shows the meaning in this verse, the root's meanings elsewhere, and the sources", async ({
+  test("shows the meaning in this verse, the owner's elsewhere notes, and the sources", async ({
     page,
   }) => {
     await openLoggedIn(page, "/en/surah/1");
     await firstWord(page).click();
     const popover = page.getByRole("dialog");
+    const book = "[Fixture author], [Fixture source]";
 
     await expect(popover.getByText("[meaning of 1:1:1 en]")).toBeVisible();
     await expect(popover.getByText(en.surah.word.elsewhere)).toBeVisible();
-    await expect(popover.getByText("[meaning of 2:1:1 en]")).toBeVisible();
+    // A note on an imported verse links to it and shows its Arabic; a usage note has no verse.
+    await expect(popover.getByText("[elsewhere in 2:1 en]")).toBeVisible();
     await expect(popover.getByRole("link", { name: "2:1" })).toHaveAttribute(
       "href",
       "/en/surah/2#verse-2-1",
     );
+    await expect(popover.locator('[lang="ar"]', { hasText: "ابت ثجح خدذ رزس" })).toBeVisible();
+    await expect(popover.getByText("[usage note en]")).toBeVisible();
+    // The root lookup is gone: another word's meaning with the same root isn't listed.
+    await expect(popover.getByText("[meaning of 2:1:1 en]")).toHaveCount(0);
+
+    await expect(popover.getByRole("link", { name: `${book}, vol. 1, p. 10` })).toHaveAttribute(
+      "href",
+      "/en/sources/fx-passage-1",
+    );
     await expect(
-      popover.getByRole("link", { name: "[Fixture source], vol. 1, p. 10" }),
-    ).toHaveAttribute("href", "/en/sources/fx-passage-1");
+      popover.getByRole("link", { name: `${FIXTURE_NARRATOR}, via ${book}, on 1:2` }),
+    ).toHaveAttribute("href", "/en/sources/fx-passage-2");
   });
 
   test("opens from the keyboard, moves focus inside, and Escape returns focus", async ({

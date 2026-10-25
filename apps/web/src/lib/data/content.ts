@@ -3,23 +3,24 @@ import type {
   Explanation,
   Passage,
   ReadingSection,
-  RootWordMeaning,
   Span,
   SurahContent,
+  VerseRef,
+  VerseText,
 } from "@/lib/domain/content";
 import { createPublicClient } from "@/lib/supabase/public";
 import {
   spanKeys,
+  toBrief,
   toExplanation,
   toPassage,
-  toRootWordMeaning,
   toSpan,
   toSurah,
   toVerse,
   toWordMeaning,
+  type BriefItemRow,
   type ExplanationRow,
   type PassageRow,
-  type RootWordMeaningRow,
   type SpanRow,
   type SurahRow,
   type VerseRow,
@@ -37,13 +38,16 @@ import {
 const SPAN = "id, start_surah, start_ayah, start_word, end_surah, end_ayah, end_word";
 const VERSE = `surah, ayah, text_ar, word(position, text_ar, root),
   verse_transliteration(language, text, status)`;
-const EXPLANATION = `id, kind, word_meanings_en, word_meanings_ko, background_en, background_ko,
-  context_en, context_ko, connected_verses_en, connected_verses_ko,
-  span!inner(${SPAN}),
+const CITATION = "sort_order, passage_id, quoting";
+const EXPLANATION = `id, kind, span!inner(${SPAN}),
   explanation_citation(passage_id, sort_order),
+  explanation_item(part, sort_order, text_en, text_ko, verse_surah, verse_ayah,
+    explanation_item_citation(${CITATION})),
   context_link(sort_order, reason_en, reason_ko, span(${SPAN}))`;
-const WORD_MEANING =
-  "surah, ayah, position, meaning_en, meaning_ko, word_meaning_citation(passage_id, sort_order)";
+const WORD_MEANING = `surah, ayah, position, meaning_en, meaning_ko,
+  word_meaning_citation(${CITATION}),
+  word_meaning_elsewhere(sort_order, verse_surah, verse_ayah, text_en, text_ko)`;
+const BRIEF = `surah_brief_item(sort_order, text_en, text_ko, surah_brief_item_citation(${CITATION}))`;
 const PASSAGE = `id, volume, page, verse_surah, verse_ayah, text_ar, summary_en, summary_ko,
   source!inner(id, title_ar, title_en, author, edition, type)`;
 
@@ -77,7 +81,7 @@ export async function getSurahContent(surah: number): Promise<SurahContent | nul
         .maybeSingle(),
       db
         .from("surah_brief")
-        .select("brief_en, brief_ko")
+        .select(BRIEF)
         .eq("surah", surah)
         .eq("status", "published")
         .maybeSingle(),
@@ -111,7 +115,7 @@ export async function getSurahContent(surah: number): Promise<SurahContent | nul
   if (!surahRow) {
     return null;
   }
-  const brief = rows<{ brief_en: string | null; brief_ko: string | null } | null>(
+  const brief = rows<{ surah_brief_item: BriefItemRow[] } | null>(
     briefResult,
     `the brief of surah ${surah}`,
   );
@@ -126,7 +130,7 @@ export async function getSurahContent(surah: number): Promise<SurahContent | nul
   );
   return {
     surah: toSurah(surahRow),
-    brief: brief ? { en: brief.brief_en, ko: brief.brief_ko } : null,
+    brief: brief ? toBrief(brief.surah_brief_item) : null,
     verses: rows<VerseRow[]>(versesResult, `the verses of surah ${surah}`).map(toVerse),
     wordMeanings: rows<WordMeaningRow[]>(meaningsResult, `the word meanings of surah ${surah}`).map(
       toWordMeaning,
@@ -235,22 +239,22 @@ export async function getPassages(ids: readonly string[]): Promise<Passage[]> {
 }
 
 /**
- * Published meanings of every word with one of these roots, anywhere in the Quran, in text order,
- * with the word and its verse.
+ * The Arabic of the referenced verses that are in the database, in text order. A reference to a
+ * surah that isn't imported yet is left out, so the page shows it as text instead of a link.
  */
-export async function getWordMeaningsByRoot(roots: readonly string[]): Promise<RootWordMeaning[]> {
+export async function getVerseTexts(refs: readonly VerseRef[]): Promise<VerseText[]> {
   "use cache";
   cachePublishedContent();
-  if (roots.length === 0) {
+  if (refs.length === 0) {
     return [];
   }
   const result = await createPublicClient()
-    .from("word_meaning")
-    .select(`${WORD_MEANING}, word!inner(text_ar, root, verse!inner(text_ar))`)
-    .eq("status", "published")
-    .in("word.root", [...roots])
+    .from("verse")
+    .select("surah, ayah, text_ar")
+    .or(refs.map(({ surah, ayah }) => `and(surah.eq.${surah},ayah.eq.${ayah})`).join(","))
     .order("surah")
-    .order("ayah")
-    .order("position");
-  return rows<RootWordMeaningRow[]>(result, "word meanings by root").map(toRootWordMeaning);
+    .order("ayah");
+  return rows<{ surah: number; ayah: number; text_ar: string }[]>(result, "verse texts").map(
+    (row) => ({ surah: row.surah, ayah: row.ayah, textAr: row.text_ar }),
+  );
 }

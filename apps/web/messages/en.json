@@ -79,9 +79,12 @@
     "comingSoonTitle": "Explanation coming soon",
     "comingSoonBody": "This section's explanation is still in review. It appears here once the review is done.",
     "passage": {
-      "volumePage": "{title}, vol. {volume}, p. {page}",
-      "page": "{title}, p. {page}",
-      "verse": "{title}, on {verse}"
+      "volumePage": "{author}, {title}, vol. {volume}, p. {page}",
+      "volumePages": "{author}, {title}, vol. {volume}, pp. {page}",
+      "page": "{author}, {title}, p. {page}",
+      "pages": "{author}, {title}, pp. {page}",
+      "verse": "{author}, {title}, on {verse}",
+      "via": "{quoting}, via {label}"
     },
     "word": {
       "inThisVerse": "In this verse",

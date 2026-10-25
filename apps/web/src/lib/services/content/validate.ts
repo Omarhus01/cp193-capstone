@@ -8,6 +8,7 @@ import {
 } from "@/lib/services/review";
 import { findBannedTerms } from "@/lib/services/terminology";
 import type { ContentBundle, ContentError } from "./load";
+import { readCitation, type CitationEntry } from "./schema";
 import { formatRef, isReversed, parseRef, parseSpan, type SpanRefs } from "./spans";
 import { wordsMatchVerse } from "./words";
 
@@ -20,6 +21,14 @@ export function validateContent(bundle: ContentBundle): ContentError[] {
   const errors: ContentError[] = [];
   const report = (file: string, path: string, message: string) =>
     errors.push({ file, path, message });
+
+  // Every surah's verse count from Tanzil's metadata, imported or not.
+  const metadata = new Map(bundle.metadata.map((surah) => [surah.number, surah]));
+  bundle.metadata.forEach((surah, i) => {
+    if (surah.number !== i + 1) {
+      report("quran-metadata.json", `surahs[${i}].number`, `is ${surah.number}; expected ${i + 1}`);
+    }
+  });
 
   // Word count of every verse, keyed "surah:ayah".
   const wordCounts = new Map<string, number>();
@@ -39,6 +48,15 @@ export function validateContent(bundle: ContentBundle): ContentError[] {
       );
     }
     verseCounts.set(number, text.surah.verseCount);
+    const meta = metadata.get(number);
+    if (
+      meta &&
+      (meta.verseCount !== text.surah.verseCount ||
+        meta.nameAr !== text.surah.nameAr ||
+        meta.revelationPlace !== text.surah.revelationPlace)
+    ) {
+      report(textFile, "surah", "doesn't match quran-metadata.json; import both from Tanzil again");
+    }
     text.verses.forEach((verse, i) => {
       if (verse.ayah !== i + 1) {
         report(textFile, `verses[${i}].ayah`, `is ${verse.ayah}; verses are numbered 1, 2, 3, …`);
@@ -125,12 +143,27 @@ export function validateContent(bundle: ContentBundle): ContentError[] {
     }
   }
 
+  /** Why a verse reference doesn't name a verse of the Quran, or null when it does. */
+  function missingVerse(ref: string): string | null {
+    const parsed = parseRef(ref);
+    if (!parsed || parsed.word !== null) {
+      return `"${ref}" isn't a verse ref ("2:60")`;
+    }
+    const surah = metadata.get(parsed.surah);
+    if (bundle.metadata.length > 0 && !surah) {
+      return `surah ${parsed.surah} doesn't exist`;
+    }
+    if (surah && parsed.ayah > surah.verseCount) {
+      return `${ref}: surah ${parsed.surah} has ${surah.verseCount} verses`;
+    }
+    return null;
+  }
+
   function checkReview(
     file: string,
     path: string,
     item: { status: ReviewStatus; review: ReviewEntry[] },
     texts: Localized[],
-    citationCount: number | null,
   ) {
     const replay = replayReview(item.review);
     if (!replay.ok) {
@@ -152,8 +185,25 @@ export function validateContent(bundle: ContentBundle): ContentError[] {
     if (step >= REVIEW_STEPS.indexOf("ko_drafted") && texts.some((t) => t.en && !t.ko)) {
       report(file, path, `is ${item.status}, so every English part needs its Korean`);
     }
-    if (item.status === "published" && citationCount === 0) {
-      report(file, path, "is published, so it needs at least one citation");
+  }
+
+  /** A published item shows a source for each of its points. */
+  function checkPublishedSources(
+    file: string,
+    path: string,
+    status: ReviewStatus,
+    items: { path: string; citations: CitationEntry[] }[],
+  ) {
+    if (status !== "published") {
+      return;
+    }
+    if (items.length === 0) {
+      report(file, path, "is published but has nothing to show");
+    }
+    for (const item of items) {
+      if (item.citations.length === 0) {
+        report(file, item.path, "is published, so it needs at least one citation");
+      }
     }
   }
 
@@ -192,13 +242,19 @@ export function validateContent(bundle: ContentBundle): ContentError[] {
     });
   }
 
-  function checkCitations(file: string, path: string, ids: string[]) {
-    ids.forEach((citation, i) => {
-      if (!passageIds.has(citation)) {
-        report(file, `${path}[${i}]`, `no passage "${citation}" in content/sources/`);
+  function checkCitations(file: string, path: string, citations: CitationEntry[]) {
+    const seen = new Set<string>();
+    citations.map(readCitation).forEach(({ passage, quoting }, i) => {
+      if (!passageIds.has(passage)) {
+        report(file, `${path}[${i}]`, `no passage "${passage}" in content/sources/`);
       }
-      if (ids.indexOf(citation) !== i) {
-        report(file, `${path}[${i}]`, `"${citation}" is cited twice`);
+      const key = `${passage} ${quoting ?? ""}`;
+      if (seen.has(key)) {
+        report(file, `${path}[${i}]`, `"${passage}" is cited twice`);
+      }
+      seen.add(key);
+      if (quoting) {
+        checkText(file, `${path}[${i}].quoting`, { en: quoting, ko: null });
       }
     });
   }
@@ -248,19 +304,25 @@ export function validateContent(bundle: ContentBundle): ContentError[] {
         checkSpan(file, `${path}.contextLinks[${j}].span`, link.span);
         checkText(file, `${path}.contextLinks[${j}].reason`, link.reason);
       });
-      checkCitations(file, `${path}.citations`, explanation.citations);
-
-      const texts = Object.values(explanation.parts);
-      for (const [part, text] of Object.entries(explanation.parts)) {
-        checkText(file, `${path}.parts.${part}`, text);
-      }
-      checkReview(
-        file,
-        path,
-        explanation,
-        [...texts, ...explanation.contextLinks.map((link) => link.reason)],
-        explanation.citations.length,
+      const { parts } = explanation;
+      const items = (["context", "background", "wordMeanings", "connectedVerses"] as const).flatMap(
+        (part) => parts[part].map((item, j) => ({ ...item, path: `${path}.parts.${part}[${j}]` })),
       );
+      parts.connectedVerses.forEach((related, j) => {
+        const missing = missingVerse(related.verse);
+        if (missing) {
+          report(file, `${path}.parts.connectedVerses[${j}].verse`, missing);
+        }
+      });
+      for (const item of items) {
+        checkCitations(file, `${item.path}.citations`, item.citations);
+        checkText(file, item.path, item);
+      }
+      checkReview(file, path, explanation, [
+        ...items.map(({ en, ko }) => ({ en, ko })),
+        ...explanation.contextLinks.map((link) => link.reason),
+      ]);
+      checkPublishedSources(file, path, explanation.status, items);
     });
 
     // Reading sections run from the first verse to the last, in order, with no gaps or overlaps.
@@ -340,7 +402,17 @@ export function validateContent(bundle: ContentBundle): ContentError[] {
       meaningWords.add(meaning.word);
       checkCitations(meaningsFile, `${path}.citations`, meaning.citations);
       checkText(meaningsFile, `${path}.meaning`, meaning.meaning);
-      checkReview(meaningsFile, path, meaning, [meaning.meaning], meaning.citations.length);
+      meaning.elsewhere.forEach((other, j) => {
+        const missing = other.verse ? missingVerse(other.verse) : null;
+        if (missing) {
+          report(meaningsFile, `${path}.elsewhere[${j}].verse`, missing);
+        }
+        checkText(meaningsFile, `${path}.elsewhere[${j}]`, other);
+      });
+      checkReview(meaningsFile, path, meaning, [meaning.meaning, ...meaning.elsewhere]);
+      checkPublishedSources(meaningsFile, path, meaning.status, [
+        { path, citations: meaning.citations },
+      ]);
     });
 
     // Transliterations: one per verse and language, reviewed on that language's track.
@@ -394,9 +466,13 @@ export function validateContent(bundle: ContentBundle): ContentError[] {
     checkText(surahFile, "names", surah.surah.names);
     const brief = surah.surah.brief;
     if (brief) {
-      const text = { en: brief.en, ko: brief.ko };
-      checkText(surahFile, "brief", text);
-      checkReview(surahFile, "brief", brief, [text], null);
+      const items = brief.items.map((item, j) => ({ ...item, path: `brief.items[${j}]` }));
+      for (const item of items) {
+        checkCitations(surahFile, `${item.path}.citations`, item.citations);
+        checkText(surahFile, item.path, item);
+      }
+      checkReview(surahFile, "brief", brief, items);
+      checkPublishedSources(surahFile, "brief", brief.status, items);
     }
   }
 

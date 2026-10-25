@@ -6,14 +6,14 @@ import { loadContent } from "@/lib/services/content/load";
 // eslint-disable-next-line no-restricted-imports
 import { toSeedPayload } from "@/lib/services/content/payload";
 // eslint-disable-next-line no-restricted-imports
-import { explanation, testBundle, wordMeaning } from "@/lib/services/content/test-bundle";
+import { explanation, item, testBundle } from "@/lib/services/content/test-bundle";
 import {
   getExplanationsForSpan,
   getPassages,
   getPassagesForExplanation,
   getReadingSection,
   getSurahContent,
-  getWordMeaningsByRoot,
+  getVerseTexts,
 } from "./content";
 
 // The cache directives need the Next.js server; here every call goes to the database.
@@ -48,28 +48,34 @@ const TABLES = [
   "surah_brief_review",
   "verse_transliteration",
   "verse_transliteration_review",
+  "explanation_item",
+  "explanation_item_citation",
+  "surah_brief_item",
+  "surah_brief_item_citation",
+  "word_meaning_elsewhere",
 ];
 
 const noSession = { auth: { persistSession: false, autoRefreshToken: false } };
 
 /**
- * The test bundle with its second reading section left as a draft, and a root shared by a word of
- * 1:1 and a word of 2:1, each with a published meaning.
+ * The test bundle with its second reading section left as a draft that already has a point, and a
+ * passage no published content cites.
  */
-function rootBundle() {
+function dbBundle() {
   const bundle = testBundle();
-  const [first, second] = bundle.surahs;
+  const [first] = bundle.surahs;
   const section = first.explanations.findIndex((e) => e.id === "s1-reading-2");
-  first.explanations[section] = explanation(
-    "s1-reading-2",
-    "reading_section",
-    "1:3",
-    "1:4",
-    "draft",
-  );
-  first.words.verses[0].words[0].root = "ا ب ت";
-  second.words.verses[0].words[0].root = "ا ب ت";
-  second.wordMeanings = [wordMeaning("2:1:1")];
+  const draft = explanation("s1-reading-2", "reading_section", "1:3", "1:4", "draft");
+  draft.parts.context = [item("draft point")];
+  first.explanations[section] = draft;
+  bundle.sources[0].passages.push({
+    id: "passage-3",
+    volume: null,
+    page: "3",
+    verse: null,
+    textAr: null,
+    summary: { en: null, ko: null },
+  });
   return bundle;
 }
 
@@ -104,7 +110,7 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
       password: "content-test-password",
     });
     expect(error).toBeNull();
-    await seed(toSeedPayload(rootBundle()));
+    await seed(toSeedPayload(dbBundle()));
   });
 
   afterAll(async () => {
@@ -116,7 +122,7 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
 
   it("gives the same database when seeded twice", async () => {
     const before = await snapshot();
-    await seed(toSeedPayload(rootBundle()));
+    await seed(toSeedPayload(dbBundle()));
     expect(await snapshot()).toEqual(before);
   });
 
@@ -126,13 +132,13 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
     await seed(toSeedPayload(smaller));
     const { data } = await service.from("explanation").select("id").eq("id", "s1-draft");
     expect(data).toEqual([]);
-    await seed(toSeedPayload(rootBundle()));
+    await seed(toSeedPayload(dbBundle()));
   });
 
   it("refuses a payload with a missing table, and changes nothing", async () => {
     const before = await snapshot();
     const broken = Object.fromEntries(
-      Object.entries(toSeedPayload(rootBundle())).filter(([table]) => table !== "explanations"),
+      Object.entries(toSeedPayload(dbBundle())).filter(([table]) => table !== "explanations"),
     );
     const { error } = await service.rpc("seed_content", { payload: broken });
     expect(error?.message).toContain("payload.explanations");
@@ -145,8 +151,29 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
       expect(content?.surah.verseCount).toBe(4);
       expect(content?.verses).toHaveLength(4);
       expect(content?.verses[0].words.map((w) => w.position)).toEqual([1, 2, 3, 4]);
-      expect(content?.brief).toEqual({ en: "brief (en)", ko: "brief (ko)" });
-      expect(content?.wordMeanings.map((m) => m.word)).toEqual([{ surah: 1, ayah: 1, word: 1 }]);
+      expect(content?.brief).toEqual([
+        {
+          text: { en: "brief paragraph 1 (en)", ko: "brief paragraph 1 (ko)" },
+          citations: [{ passageId: "passage-1", quoting: null }],
+        },
+        {
+          text: { en: "brief paragraph 2 (en)", ko: "brief paragraph 2 (ko)" },
+          citations: [{ passageId: "passage-2", quoting: null }],
+        },
+      ]);
+      expect(content?.wordMeanings).toEqual([
+        {
+          word: { surah: 1, ayah: 1, word: 1 },
+          meaning: { en: "meaning of 1:1:1 (en)", ko: "meaning of 1:1:1 (ko)" },
+          citations: [{ passageId: "passage-1", quoting: null }],
+          elsewhere: [
+            {
+              verse: { surah: 2, ayah: 3 },
+              text: { en: "elsewhere in 2:3 (en)", ko: "elsewhere in 2:3 (ko)" },
+            },
+          ],
+        },
+      ]);
       expect(content?.verses[0].transliteration).toEqual({
         en: "pronunciation of 1:1 (en)",
         ko: "pronunciation of 1:1 (ko)",
@@ -164,21 +191,45 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
       expect(content?.readingSections[1].span.start).toEqual({ surah: 1, ayah: 3, word: null });
     });
 
-    it("getPassages returns cited passages in the order asked, and skips uncited ones", async () => {
-      const passages = await getPassages(["passage-2", "passage-1"]);
-      expect(passages.map((p) => p.id)).toEqual(["passage-1"]);
-      expect(await getPassages([])).toEqual([]);
+    it("getSurahContent gives each point its own citations, and related verses their verse", async () => {
+      const parts = (await getSurahContent(1))?.readingSections[0].explanation?.parts;
+      expect(parts?.context).toEqual([
+        {
+          text: { en: "context of s1-reading-1 (en)", ko: "context of s1-reading-1 (ko)" },
+          citations: [
+            { passageId: "passage-1", quoting: null },
+            { passageId: "passage-2", quoting: "[narrator]" },
+          ],
+        },
+      ]);
+      expect(parts?.relatedVerses).toEqual([
+        {
+          verse: { surah: 3, ayah: 5 },
+          text: { en: "why 3:5 (en)", ko: "why 3:5 (ko)" },
+          citations: [{ passageId: "passage-1", quoting: null }],
+        },
+      ]);
+      expect(parts?.wordMeanings).toEqual([]);
     });
 
-    it("getWordMeaningsByRoot finds published meanings of words with the root", async () => {
-      const meanings = await getWordMeaningsByRoot(["ا ب ت"]);
-      expect(meanings.map((m) => m.word)).toEqual([
-        { surah: 1, ayah: 1, word: 1 },
-        { surah: 2, ayah: 1, word: 1 },
+    it("getVerseTexts returns only the referenced verses that are imported", async () => {
+      const verses = await getVerseTexts([
+        { surah: 3, ayah: 5 },
+        { surah: 2, ayah: 3 },
+        { surah: 1, ayah: 1 },
       ]);
-      expect(meanings[1]).toMatchObject({ wordAr: "ابت", root: "ا ب ت" });
-      expect(meanings[1].verseAr).toContain("ابت");
-      expect(await getWordMeaningsByRoot(["missing"])).toEqual([]);
+      expect(verses.map((v) => [v.surah, v.ayah])).toEqual([
+        [1, 1],
+        [2, 3],
+      ]);
+      expect(verses[0].textAr).toContain("ابت");
+      expect(await getVerseTexts([])).toEqual([]);
+    });
+
+    it("getPassages returns cited passages in the order asked, and skips uncited ones", async () => {
+      const passages = await getPassages(["passage-3", "passage-2", "passage-1"]);
+      expect(passages.map((p) => p.id)).toEqual(["passage-2", "passage-1"]);
+      expect(await getPassages([])).toEqual([]);
     });
 
     it("getExplanationsForSpan finds overlapping published explanations, in order", async () => {
@@ -225,8 +276,23 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
       expect(drafts.data).toEqual([]);
       const meanings = await db.from("word_meaning").select("position").eq("position", 2);
       expect(meanings.data).toEqual([]);
-      const passage = await db.from("passage").select("id").eq("id", "passage-2");
+      const passage = await db.from("passage").select("id").eq("id", "passage-3");
       expect(passage.data).toEqual([]);
+      const draftItems = await db
+        .from("explanation_item")
+        .select("sort_order")
+        .eq("explanation_id", "s1-reading-2");
+      expect(draftItems.data).toEqual([]);
+      const draftCitations = await db
+        .from("explanation_item_citation")
+        .select("sort_order")
+        .eq("explanation_id", "s1-reading-2");
+      expect(draftCitations.data).toEqual([]);
+      const draftElsewhere = await db
+        .from("word_meaning_elsewhere")
+        .select("ayah")
+        .eq("position", 2);
+      expect(draftElsewhere.data).toEqual([]);
       const transliteration = await db.from("verse_transliteration").select("ayah").eq("ayah", 2);
       expect(transliteration.data).toEqual([]);
       for (const table of [
@@ -267,7 +333,7 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
 
     it("can't run the seed", async () => {
       const { error } = await client().rpc("seed_content", {
-        payload: toSeedPayload(rootBundle()),
+        payload: toSeedPayload(dbBundle()),
       });
       expect(error).not.toBeNull();
     });
