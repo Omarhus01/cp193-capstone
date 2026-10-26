@@ -3,14 +3,17 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { PageLayout } from "@/components/layout/PageLayout";
+import { FeedbackButton } from "@/components/surah/FeedbackButton";
 import { QaPanel } from "@/components/surah/QaPanel";
 import { ReadingControls } from "@/components/surah/ReadingControls";
 import { ReadingSectionCard } from "@/components/surah/ReadingSectionCard";
 import { ReadingSectionNav } from "@/components/surah/ReadingSectionNav";
+import { ReviewNote } from "@/components/surah/ReviewNote";
 import { SurahHeader } from "@/components/surah/SurahHeader";
 import { SurahReader } from "@/components/surah/SurahReader";
 import type { Locale } from "@/i18n/locale";
 import { requireUserId } from "@/lib/services/auth/require-user";
+import { feedbackFormUrl } from "@/lib/services/feedback";
 import { parsePreferences } from "@/lib/services/reading/preferences";
 import { loadSurahPage } from "@/lib/services/reading/surah-page";
 import { parseSurahNumber } from "@/lib/services/surah";
@@ -52,12 +55,14 @@ async function SurahContent({ params }: Pick<SurahPageProps, "params">) {
   }
 
   const { sections } = view;
+  const feedbackUrl = feedbackFormUrl();
   return (
     <SurahReader
       locale={locale}
       initialPreferences={parsePreferences((name) => cookieStore.get(name)?.value)}
       firstSection={sections[0]?.position ?? 1}
     >
+      <ReviewNote />
       <PageLayout
         sidebar={
           <ReadingSectionNav
@@ -71,10 +76,13 @@ async function SurahContent({ params }: Pick<SurahPageProps, "params">) {
           />
         }
         aside={
-          <QaPanel
-            variant="panel"
-            sectionLabels={Object.fromEntries(sections.map((s) => [s.position, s.label]))}
-          />
+          <div className="flex flex-col gap-4">
+            <QaPanel
+              variant="panel"
+              sectionLabels={Object.fromEntries(sections.map((s) => [s.position, s.label]))}
+            />
+            <FeedbackButton url={feedbackUrl} />
+          </div>
         }
       >
         <div className="flex flex-col gap-6">
@@ -83,6 +91,10 @@ async function SurahContent({ params }: Pick<SurahPageProps, "params">) {
           {sections.map((section) => (
             <ReadingSectionCard key={section.position} section={section} locale={locale} />
           ))}
+          {/* On phones the right column is hidden, so the feedback form comes at the end. */}
+          <div className="lg:hidden">
+            <FeedbackButton url={feedbackUrl} />
+          </div>
         </div>
       </PageLayout>
     </SurahReader>

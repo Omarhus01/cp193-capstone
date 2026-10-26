@@ -22,6 +22,7 @@ export default function SignupPage() {
       <Suspense fallback={<p>{t("common.loading")}</p>}>
         <SignupForm />
       </Suspense>
+      <p className="text-sm text-zinc-600">{t("auth.signupEmailNote")}</p>
     </AuthPageShell>
   );
 }

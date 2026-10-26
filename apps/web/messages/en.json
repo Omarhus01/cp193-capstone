@@ -43,13 +43,14 @@
     "noAccount": "No account yet?",
     "haveAccount": "Already have an account?",
     "checkEmail": "Check your email for a confirmation link, then log in.",
+    "signupEmailNote": "After signing up, check your inbox for a confirmation email. If you don't see it, check your spam folder.",
     "errors": {
       "invalidEmail": "Enter a valid email address.",
       "passwordTooShort": "The password must be at least 8 characters.",
       "invalidCredentials": "The email or password is incorrect.",
       "emailNotConfirmed": "Confirm your email before logging in.",
       "signupFailed": "We could not create the account. Try again.",
-      "confirmFailed": "The confirmation link is invalid or has expired."
+      "confirmFailed": "This confirmation link is invalid or has expired. Your email may already be confirmed, so try logging in."
     }
   },
   "surah": {
@@ -91,6 +92,15 @@
       "elsewhere": "Elsewhere it means",
       "root": "root",
       "close": "Close"
+    },
+    "reviewNote": {
+      "status": "The English explanations have been reviewed. The Korean translation is being reviewed by Korean readers and may still contain mistakes.",
+      "feedback": "When you're done, please fill in the short feedback form. The button is on the right side of the page (at the bottom on phones)."
+    },
+    "feedback": {
+      "button": "Fill in the feedback form",
+      "newTab": "(opens in a new tab)",
+      "comingSoon": "Feedback form coming soon"
     }
   },
   "qa": {

@@ -2,8 +2,10 @@ import { expect, test, type Page } from "@playwright/test";
 import en from "../messages/en.json";
 import ko from "../messages/ko.json";
 import { FIXTURE_NARRATOR, fixtureBundle } from "./fixtures/content";
+import { E2E_FEEDBACK_URL } from "../playwright.config";
 import {
   createTestUser,
+  createUnconfirmedUser,
   deleteTestUser,
   assertLocalTestServer,
   LOCAL_SUPABASE_SKIP_REASON,
@@ -284,6 +286,76 @@ test.describe("word popover", () => {
   });
 });
 
+test.describe("note and feedback for user testing", () => {
+  for (const [locale, messages] of [
+    ["en", en],
+    ["ko", ko],
+  ] as const) {
+    test(`the note at the top tells every reader about the review (${locale})`, async ({
+      page,
+    }) => {
+      await openLoggedIn(page, `/${locale}/surah/1`);
+      const note = page.getByRole("note");
+      await expect(note).toContainText(messages.surah.reviewNote.status);
+      await expect(note).toContainText(messages.surah.reviewNote.feedback);
+      // Above the reading: before the surah's heading.
+      const noteBox = await note.boundingBox();
+      const headingBox = await page.getByRole("heading", { level: 1 }).boundingBox();
+      expect(noteBox!.y).toBeLessThan(headingBox!.y);
+    });
+  }
+
+  test("on a wide screen, the feedback button stays in the right column", async ({ page }) => {
+    await openLoggedIn(page, "/en/surah/1");
+    const button = page
+      .getByRole("complementary")
+      .getByRole("link", { name: `${en.surah.feedback.button} ${en.surah.feedback.newTab}` });
+    await expect(button).toBeVisible();
+    await expect(button).toHaveAttribute("href", E2E_FEEDBACK_URL);
+    await expect(button).toHaveAttribute("target", "_blank");
+    await expect(button).toHaveAttribute("rel", "noopener noreferrer");
+    // The phone copy at the end of the page is hidden: this is the only one shown.
+    await expect(
+      page.getByRole("link", { name: new RegExp(en.surah.feedback.button) }),
+    ).toHaveCount(1);
+
+    // Still in view after scrolling to the last section.
+    await section(page, "1:4–5").scrollIntoViewIfNeeded();
+    await expect(button).toBeInViewport();
+  });
+});
+
+test.describe("confirming an email", () => {
+  test("the link from the email works in a browser other than the one that signed up", async ({
+    browser,
+  }) => {
+    const { user: confirmed, tokenHash } = await createUnconfirmedUser();
+    // A fresh browser: no PKCE verifier from a sign-up, as when the email opens in a phone's mail app.
+    const context = await browser.newContext();
+    try {
+      const page = await context.newPage();
+      const next = encodeURIComponent("/ko/surah/1");
+      await page.goto(`/auth/confirm?token_hash=${tokenHash}&type=email&locale=ko&next=${next}`);
+      await expect(page).toHaveURL(/\/ko\/surah\/1$/, { timeout: 15_000 });
+      await expect(
+        page.getByRole("banner").getByRole("button", { name: ko.header.account }),
+      ).toBeVisible();
+      await expect(page.getByRole("note")).toContainText(ko.surah.reviewNote.status);
+    } finally {
+      await context.close();
+      await deleteTestUser(confirmed);
+    }
+  });
+
+  test("a used or wrong token lands on the login page, which suggests logging in", async ({
+    page,
+  }) => {
+    await page.goto("/auth/confirm?token_hash=not-a-real-token&type=email&locale=ko");
+    await expect(page).toHaveURL(/\/ko\/login\?error=confirmFailed$/);
+    await expect(page.getByText(ko.auth.errors.confirmFailed)).toBeVisible();
+  });
+});
+
 test.describe("on a phone", () => {
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
 
@@ -308,6 +380,21 @@ test.describe("on a phone", () => {
     await expect(popover.getByText("[meaning of 1:1:1 ko]")).toBeVisible();
     await popover.getByRole("button", { name: ko.surah.word.close }).tap();
     await expect(popover).toBeHidden();
+  });
+
+  test("the feedback button comes at the end of the page", async ({ page }) => {
+    await openLoggedIn(page, "/ko/surah/1");
+    // The right column is hidden, so this is the only one shown.
+    const button = page.getByRole("link", {
+      name: `${ko.surah.feedback.button} ${ko.surah.feedback.newTab}`,
+    });
+    await expect(button).toHaveCount(1);
+    await expect(button).toHaveAttribute("href", E2E_FEEDBACK_URL);
+    await button.scrollIntoViewIfNeeded();
+    await expect(button).toBeVisible();
+    // After the last section.
+    const last = await section(page, "1:4–5").boundingBox();
+    expect((await button.boundingBox())!.y).toBeGreaterThan(last!.y + last!.height);
   });
 });
 

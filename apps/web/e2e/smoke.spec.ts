@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 import en from "../messages/en.json";
 import ko from "../messages/ko.json";
+import { expectPublishedAlFatiha } from "./al-fatiha";
 
 // A read-only smoke run against a deployed site (docs/deploy.md, "Check it worked"):
 //
@@ -46,6 +47,18 @@ test.describe("smoke @smoke", () => {
   }) => {
     await page.goto("/auth/confirm");
     await expect(page).toHaveURL(/\/en\/login\?error=confirmFailed$/);
+    // The message suggests the email may already be confirmed.
+    await expect(page.getByText(en.auth.errors.confirmFailed)).toBeVisible();
+  });
+
+  test("the sign-up page tells new users to look for the confirmation email", async ({ page }) => {
+    for (const [locale, messages] of [
+      ["en", en],
+      ["ko", ko],
+    ] as const) {
+      await page.goto(`/${locale}/signup`);
+      await expect(page.getByText(messages.auth.signupEmailNote)).toBeVisible();
+    }
   });
 
   test("the health check answers without revealing the Supabase URL", async ({ request }) => {
@@ -72,8 +85,7 @@ test.describe("smoke @smoke", () => {
     ] as const) {
       await page.goto(path);
       await expect(page.getByRole("heading", { level: 1 })).toContainText(name);
-      const sections = page.getByRole("navigation", { name: messages.surah.readingSections });
-      await expect(sections.getByRole("link")).toHaveCount(4);
+      await expectPublishedAlFatiha(page, messages);
     }
 
     // Log out again; the run leaves nothing behind.
