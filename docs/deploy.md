@@ -10,7 +10,7 @@ The hosted database must be up to date: every migration pushed (`npx supabase db
 
 1. **Add New → Project**, then import `Omarhus01/cp193-capstone`. Install the Vercel GitHub app for the repository if Vercel asks.
 2. **Root Directory:** click **Edit** next to it and choose `apps/web`. Vercel finds the lockfile at the repository root and installs the npm workspaces from there.
-3. **Framework Preset:** Next.js (detected). Leave **Build Command**, **Install Command** and **Output Directory** at their defaults.
+3. **Framework Preset:** Next.js (detected). Leave **Build Command**, **Install Command** and **Output Directory** at their defaults. `apps/web/vercel.json` sets the install command (section 8).
 4. **Environment Variables**, before the first deploy. Next.js builds them into the site, so they must be there when it builds. Add both, for the **Production** environment:
 
    | Name | Value |
@@ -85,3 +85,30 @@ Because the database changes before the code, a migration must keep working with
 
 - **Code:** Vercel → **Deployments** → the previous production deployment → **Instant Rollback**.
 - **Database:** a new migration that undoes the change. Never edit a migration that was already applied.
+
+## 8. Why Vercel installs from the repository root
+
+The first deploy of `main` (f2fa5db) failed during the install:
+
+```
+> prepare
+> husky
+sh: line 1: husky: command not found
+Error: [BUILD_UTILS_SPAWN_127] Command "npm install" exited with 127
+```
+
+**Cause:**
+
+- Vercel runs the install command in the Root Directory, `apps/web`.
+- Run inside a workspace folder, npm installs only that workspace's dependencies. The root's devDependencies (husky, Prettier, the Supabase CLI) are left out.
+- npm still runs the root's `prepare` script, which called `husky`. So it failed with the path `/vercel/path0`, the repository root.
+- Earlier checks missed it because they installed at the root, as CI does, and there husky is present. Without a `.git` folder, husky only prints ".git can't be found" and exits 0.
+- Reproduce it in a copy without `.git` (`git archive HEAD`) by running `npm install` inside `apps/web`, or `npm ci --omit=dev` at the root.
+
+**Two fixes:**
+
+- **The install runs at the root.** `apps/web/vercel.json` sets `"installCommand": "cd ../.. && npm ci"`, the same install CI runs. Without it, the build failed next: `next build` type-checks `apps/web/scripts/json-file.ts`, which imports Prettier.
+- **`prepare` can't fail an install.** It runs `node .husky/install.mjs`. That script:
+  - skips when `VERCEL` or `CI` is set
+  - prints a note and exits 0 when husky isn't installed
+  - otherwise installs the hooks as before (`git config core.hooksPath` is `.husky/_`)

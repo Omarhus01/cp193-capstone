@@ -18,7 +18,8 @@ There is one Supabase project, holding real accounts and the content in review.
 ## Decision
 
 - **Project:**
-  - Vercel builds `apps/web` (Root Directory) with Next.js defaults, and installs the npm workspaces from the repository root.
+  - Vercel builds `apps/web` (Root Directory) with Next.js defaults.
+  - It installs from the repository root with `npm ci`, as CI does (`installCommand` in `apps/web/vercel.json`). Its default install runs inside `apps/web`, which leaves out the root devDependencies; the first deploy failed on that (`docs/deploy.md`, section 8).
   - Production is `main`, and Node.js is 22.x.
 - **Secrets:**
   - Vercel holds only `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`, which are public by design.
@@ -44,5 +45,5 @@ There is one Supabase project, holding real accounts and the content in review.
 
 - A breaking schema change takes two releases: add, deploy and migrate, then remove.
 - Seeded content shows within minutes, not instantly (the cache, [0014](0014-page-layout-preferences-and-caching.md)).
-- Turning previews on later means a staging Supabase project, its variables in Vercel's Preview environment, and deleting `vercel.json`.
+- Turning previews on later means a staging Supabase project, its variables in Vercel's Preview environment, and removing `ignoreCommand` from `vercel.json`.
 - The owner runs the database steps by hand before each merge; `docs/deploy.md` lists them.
