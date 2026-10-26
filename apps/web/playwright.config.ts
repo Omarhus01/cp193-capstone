@@ -7,6 +7,17 @@ const PORT = 3100;
 const deployedURL = process.env.E2E_BASE_URL?.replace(/\/$/, "");
 const baseURL = deployedURL ?? `http://localhost:${PORT}`;
 
+// Say where the tests run, once per run (workers load this file too, with TEST_WORKER_INDEX set).
+// A leftover E2E_BASE_URL in the shell would otherwise send `npm run test:e2e` to the deployed
+// site without a word.
+if (process.env.TEST_WORKER_INDEX === undefined) {
+  console.log(
+    deployedURL
+      ? `e2e target: ${deployedURL} (E2E_BASE_URL is set; no local build)`
+      : `e2e target: ${baseURL} (a local production build of this checkout)`,
+  );
+}
+
 // Placeholder Supabase settings for when .env.local is missing (the logged-out tests never contact
 // Supabase). They must not be set otherwise: variables in the environment override .env.local in
 // Next.js, so the build and server would talk to the placeholder and every login would fail.

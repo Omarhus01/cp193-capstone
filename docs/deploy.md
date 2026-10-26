@@ -82,9 +82,12 @@ E2E_BASE_URL=https://<domain> E2E_EMAIL=… E2E_PASSWORD=… npm run test:smoke
 ```
 
 ```powershell
-$env:E2E_BASE_URL="https://<domain>"; npm run test:smoke
-$env:E2E_EMAIL="…"; $env:E2E_PASSWORD="…"; npm run test:smoke
+$env:E2E_BASE_URL="https://<domain>"; npm run test:smoke; Remove-Item Env:E2E_BASE_URL
+# also logs in and opens the surah page, with an existing account:
+$env:E2E_BASE_URL="https://<domain>"; $env:E2E_EMAIL="…"; $env:E2E_PASSWORD="…"; npm run test:smoke; Remove-Item Env:E2E_BASE_URL, Env:E2E_EMAIL, Env:E2E_PASSWORD
 ```
+
+In PowerShell, `$env:` variables stay set for the rest of the window, so each line removes them again, even when the run fails. A leftover `E2E_BASE_URL` would send every later `npm run test:e2e` to the deployed site instead of a local build of your branch. Every run prints its target first (`e2e target: …`); check it says `http://localhost:3100` when you mean to test the branch.
 
 **What it checks:**
 
