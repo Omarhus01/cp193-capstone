@@ -48,7 +48,7 @@ const WORD_MEANING = `surah, ayah, position, meaning_en, meaning_ko,
   word_meaning_citation(${CITATION}),
   word_meaning_elsewhere(sort_order, verse_surah, verse_ayah, text_en, text_ko)`;
 const BRIEF = `surah_brief_item(sort_order, text_en, text_ko, surah_brief_item_citation(${CITATION}))`;
-const PASSAGE = `id, volume, page, verse_surah, verse_ayah, text_ar, summary_en, summary_ko,
+const PASSAGE = `id, volume, page, verse_surah, verse_ayah, text_ar, summary_en, summary_ko, url,
   source!inner(id, title_ar, title_en, author, edition, type)`;
 
 /** Marks the result of the calling function as cached published content. */

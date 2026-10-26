@@ -221,6 +221,7 @@ describe("toPassage", () => {
       text_ar: null,
       summary_en: null,
       summary_ko: null,
+      url: null,
       source: {
         id: "s",
         title_ar: null,

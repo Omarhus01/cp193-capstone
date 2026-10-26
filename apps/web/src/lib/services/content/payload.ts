@@ -140,6 +140,7 @@ export function toSeedPayload(bundle: ContentBundle): SeedPayload {
         text_ar: passage.textAr,
         summary_en: passage.summary.en,
         summary_ko: passage.summary.ko,
+        url: passage.url,
       });
     }
   }

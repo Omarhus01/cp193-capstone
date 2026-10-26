@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { CONTENT_DIR } from "./load";
-import { CONTENT_SCHEMAS, explanationsFileSchema, toJsonSchema } from "./schema";
+import { CONTENT_SCHEMAS, explanationsFileSchema, sourceFileSchema, toJsonSchema } from "./schema";
 
 describe("content/schema/", () => {
   it.each(Object.entries(CONTENT_SCHEMAS))(
@@ -69,5 +69,51 @@ describe("explanationsFileSchema", () => {
   ])("rejects %s", (_, change) => {
     const broken = { explanations: [{ ...valid.explanations[0], ...change }] };
     expect(explanationsFileSchema.safeParse(broken).success).toBe(false);
+  });
+});
+
+describe("sourceFileSchema", () => {
+  const sourceFile = (url: unknown) => ({
+    source: {
+      id: "ibn-kathir",
+      titleAr: null,
+      titleEn: "[Title]",
+      author: "[Author]",
+      edition: "[Edition]",
+      type: "tafsir",
+    },
+    passages: [
+      {
+        id: "ibn-kathir-1-50-60",
+        volume: "1",
+        page: "50–60",
+        verse: null,
+        textAr: null,
+        summary: { en: null, ko: null },
+        url,
+      },
+    ],
+  });
+
+  it("accepts a passage with an https link, or with none", () => {
+    expect(sourceFileSchema.safeParse(sourceFile("https://shamela.ws/book/23604/47")).success).toBe(
+      true,
+    );
+    expect(sourceFileSchema.safeParse(sourceFile(null)).success).toBe(true);
+  });
+
+  it.each([
+    ["an http link", "http://shamela.ws/book/23604/47"],
+    ["a path on this site", "/en/sources/ibn-kathir-1-50-60"],
+    ["a script", "javascript:alert(1)"],
+    ["an empty string", ""],
+  ])("rejects %s", (_, url) => {
+    expect(sourceFileSchema.safeParse(sourceFile(url)).success).toBe(false);
+  });
+
+  it("requires the field, like the other nullable ones", () => {
+    const file = sourceFile(null);
+    delete (file.passages[0] as { url?: unknown }).url;
+    expect(sourceFileSchema.safeParse(file).success).toBe(false);
   });
 });

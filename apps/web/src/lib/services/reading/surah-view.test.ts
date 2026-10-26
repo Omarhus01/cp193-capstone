@@ -77,6 +77,7 @@ function passage(id: string, overrides: Partial<Passage> = {}): Passage {
     verse: null,
     textAr: null,
     summary: { en: null, ko: null },
+    url: null,
     ...overrides,
   };
 }

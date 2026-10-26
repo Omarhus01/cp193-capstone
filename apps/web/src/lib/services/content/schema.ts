@@ -243,6 +243,14 @@ export const sourceFileSchema = z.strictObject({
         .meta({ description: "For sources arranged by verse, when there is no page to cite." }),
       textAr: text.nullable(),
       summary: localized,
+      url: z
+        .url({ protocol: /^https$/ })
+        .nullable()
+        .meta({
+          description:
+            "Where readers can open these pages, for example on Shamela (https only). The page's " +
+            "source chip opens it in a new tab; with null, the chip cites the passage without a link.",
+        }),
     }),
   ),
 });
