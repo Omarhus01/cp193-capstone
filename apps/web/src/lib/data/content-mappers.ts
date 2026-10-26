@@ -5,10 +5,8 @@ import type {
   ExplanationKind,
   Localized,
   Passage,
-  ReviewStatus,
   RevelationPlace,
   SourceType,
-  SurahBrief,
   Span,
   Surah,
   Verse,
@@ -43,7 +41,7 @@ export type VerseRow = {
   ayah: number;
   text_ar: string;
   word: { position: number; text_ar: string; root: string | null }[];
-  verse_transliteration: { language: "en" | "ko"; text: string | null; status: ReviewStatus }[];
+  verse_transliteration: { language: "en" | "ko"; text: string | null; status: string }[];
 };
 
 type Ordered = { sort_order: number };
@@ -65,7 +63,6 @@ export type ExplanationItemRow = ItemRow & {
 export type ExplanationRow = {
   id: string;
   kind: ExplanationKind;
-  status: ReviewStatus;
   span: SpanRow;
   explanation_citation: (Ordered & { passage_id: string })[];
   explanation_item: ExplanationItemRow[];
@@ -78,15 +75,12 @@ export type BriefItemRow = Ordered & {
   surah_brief_item_citation: CitationRow[];
 };
 
-export type BriefRow = { status: ReviewStatus; surah_brief_item: BriefItemRow[] };
-
 export type WordMeaningRow = {
   surah: number;
   ayah: number;
   position: number;
   meaning_en: string | null;
   meaning_ko: string | null;
-  status: ReviewStatus;
   word_meaning_citation: CitationRow[];
   word_meaning_elsewhere: (Ordered & {
     verse_surah: number | null;
@@ -159,17 +153,11 @@ export function toSurah(row: SurahRow): Surah {
   };
 }
 
-/**
- * A verse with its words and transliterations. For the published path, a transliteration that
- * isn't published is dropped even if a query returned it; the preview keeps what row level
- * security allowed.
- */
-export function toVerse(row: VerseRow, mode: "published" | "preview"): Verse {
+export function toVerse(row: VerseRow): Verse {
+  // Row level security returns published transliterations only; check again here.
   const transliteration = (language: "en" | "ko") =>
-    row.verse_transliteration.find(
-      (t) => t.language === language && (mode === "preview" || t.status === "published"),
-    ) ?? null;
-  const [en, ko] = [transliteration("en"), transliteration("ko")];
+    row.verse_transliteration.find((t) => t.language === language && t.status === "published")
+      ?.text ?? null;
   return {
     surah: row.surah,
     ayah: row.ayah,
@@ -177,8 +165,7 @@ export function toVerse(row: VerseRow, mode: "published" | "preview"): Verse {
     words: [...row.word]
       .sort((a, b) => a.position - b.position)
       .map((word) => ({ position: word.position, textAr: word.text_ar, root: word.root })),
-    transliteration: localized(en?.text ?? null, ko?.text ?? null),
-    transliterationStatus: { en: en?.status ?? null, ko: ko?.status ?? null },
+    transliteration: localized(transliteration("en"), transliteration("ko")),
   };
 }
 
@@ -192,7 +179,6 @@ export function toExplanation(row: ExplanationRow): Explanation {
   return {
     id: row.id,
     kind: row.kind,
-    status: row.status,
     span: toSpan(row.span),
     parts: {
       wordMeanings: items("word_meanings").map(toItem),
@@ -211,20 +197,16 @@ export function toExplanation(row: ExplanationRow): Explanation {
   };
 }
 
-export function toBrief(row: BriefRow): SurahBrief {
-  return {
-    status: row.status,
-    items: byOrder(row.surah_brief_item).map((item): ContentItem => ({
-      text: localized(item.text_en, item.text_ko),
-      citations: toCitations(item.surah_brief_item_citation),
-    })),
-  };
+export function toBrief(rows: BriefItemRow[]): ContentItem[] {
+  return byOrder(rows).map((row) => ({
+    text: localized(row.text_en, row.text_ko),
+    citations: toCitations(row.surah_brief_item_citation),
+  }));
 }
 
 export function toWordMeaning(row: WordMeaningRow): WordMeaning {
   return {
     word: { surah: row.surah, ayah: row.ayah, word: row.position },
-    status: row.status,
     meaning: localized(row.meaning_en, row.meaning_ko),
     citations: toCitations(row.word_meaning_citation),
     elsewhere: byOrder(row.word_meaning_elsewhere).map((note) => ({

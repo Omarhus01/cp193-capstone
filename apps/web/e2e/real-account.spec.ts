@@ -126,22 +126,4 @@ test.describe("with a real account", () => {
     await expect(page.getByRole("link", { name: en.home.start })).toBeVisible();
     await expect(page.getByText(en.home.accountHint)).toHaveCount(0);
   });
-
-  test("the test account is not a tester: no banner and no draft badges", async ({ page }) => {
-    // Testers see content in review (ADR 0016); this account must see what every reader sees.
-    await page.goto("/en/login?next=%2Fen%2Fsurah%2F1");
-    await submitLogin(page, en);
-    await expect(page).toHaveURL(/\/en\/surah\/1$/, AFTER_LOGIN);
-
-    for (const [path, messages] of [
-      ["/en/surah/1", en],
-      ["/ko/surah/1", ko],
-    ] as const) {
-      await page.goto(path);
-      await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-      await page.waitForLoadState("networkidle");
-      await expect(page.getByText(messages.tester.bannerTitle)).toHaveCount(0);
-      await expect(page.getByTitle(messages.tester.draftLabel)).toHaveCount(0);
-    }
-  });
 });

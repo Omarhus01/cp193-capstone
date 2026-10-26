@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import { RichText } from "@/components/text/RichText";
 import type { Locale } from "@/i18n/locale";
 import type { Localized } from "@/lib/domain/content";
-import { pickText } from "@/lib/services/reading/localized";
 
 type LocalizedTextProps = {
   text: Localized;
@@ -16,8 +15,7 @@ type LocalizedTextProps = {
 
 /**
  * Owner content in the page's language. On Korean pages the English follows, shown when the
- * reader turns on "show English explanation too" (a data attribute set by SurahReader). A draft
- * that a tester sees without its Korean yet shows the English in its place.
+ * reader turns on "show English explanation too" (a data attribute set by SurahReader).
  */
 export function LocalizedText({
   text,
@@ -26,17 +24,12 @@ export function LocalizedText({
   trailing,
   className = "",
 }: LocalizedTextProps) {
-  const { primary, primaryLang, english } = pickText(text, locale);
+  const primary = text[locale];
+  const english = locale === "ko" ? text.en : null;
   return (
     <>
       {primary ? (
-        <RichText
-          text={primary}
-          lang={primaryLang === locale ? undefined : primaryLang}
-          lead={lead}
-          trailing={trailing}
-          className={className}
-        />
+        <RichText text={primary} lead={lead} trailing={trailing} className={className} />
       ) : null}
       {english ? (
         <div className="mt-1 text-ink-muted group-data-[show-english=false]/reader:hidden">

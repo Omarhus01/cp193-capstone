@@ -29,7 +29,6 @@ function verse(ayah: number, words: string[], text = words.join(" ")): Verse {
     textAr: text,
     words: words.map((textAr, i) => ({ position: i + 1, textAr, root: null })),
     transliteration: { en: null, ko: null },
-    transliterationStatus: { en: null, ko: null },
   };
 }
 
@@ -49,7 +48,6 @@ function explanation(overrides: Partial<Explanation> = {}): Explanation {
   return {
     id: "e",
     kind: "reading_section",
-    status: "published",
     span: span(1, 1),
     parts: {
       wordMeanings: [point("word meanings", cite("p1"))],
@@ -91,7 +89,6 @@ function content(): SurahContent {
   ];
   verses[1].words[0].root = "خ د ذ";
   verses[1].transliteration = { en: "[latin 1:2]", ko: null };
-  verses[1].transliterationStatus = { en: "published", ko: null };
   return {
     surah: {
       number: 1,
@@ -102,15 +99,11 @@ function content(): SurahContent {
       verseCount: 3,
       basmalaAr: null,
     },
-    brief: {
-      status: "published",
-      items: [point("brief 1", cite("p2")), point("brief 2", cite("p3"), cite("p2"))],
-    },
+    brief: [point("brief 1", cite("p2")), point("brief 2", cite("p3"), cite("p2"))],
     verses,
     wordMeanings: [
       {
         word: { surah: 1, ayah: 2, word: 1 },
-        status: "published",
         meaning: { en: "[meaning of 1:2:1]", ko: "[1:2:1 뜻]" },
         citations: [cite("p2", "[narrator]")],
         elsewhere: [
@@ -265,7 +258,7 @@ describe("buildSurahPageView", () => {
   });
 
   it("numbers the brief's sources within the brief", () => {
-    expect(view.brief?.items.map((p) => p.sources.map((s) => [s.number, s.passage.id]))).toEqual([
+    expect(view.brief?.map((p) => p.sources.map((s) => [s.number, s.passage.id]))).toEqual([
       [[1, "p2"]],
       [
         [2, "p3"],
@@ -308,36 +301,6 @@ describe("buildSurahPageView", () => {
       },
       { verse: null, verseAr: null, text: { en: "[usage]", ko: "[용례]" } },
     ]);
-  });
-
-  it("marks nothing as a draft when everything is published", () => {
-    expect(view.sections.map((s) => s.draft)).toEqual([false, false]);
-    expect(view.brief?.draft).toBe(false);
-    expect(view.words["1:2:1"].draft).toBe(false);
-    expect(view.sections[0].verses[1].transliterationDraft).toEqual({ en: false, ko: false });
-  });
-
-  it("marks what a tester sees in review as a draft", () => {
-    const preview = content();
-    preview.readingSections[1].explanation = explanation({
-      id: "draft-section",
-      status: "ko_drafted",
-      span: span(3, 3),
-    });
-    preview.brief!.status = "en_approved";
-    preview.wordMeanings[0].status = "ko_drafted";
-    preview.verses[2].transliteration = { en: "[latin draft 1:3]", ko: null };
-    preview.verses[2].transliterationStatus = { en: "draft", ko: null };
-    const draftView = buildSurahPageView(preview, [passage("p1")], []);
-
-    expect(draftView.sections.map((s) => [s.label, s.published, s.draft])).toEqual([
-      ["1:1–2", true, false],
-      ["1:3", false, true],
-    ]);
-    expect(draftView.sections[1].explanation?.meaning[0].text.en).toBe("[meaning]");
-    expect(draftView.brief?.draft).toBe(true);
-    expect(draftView.words["1:2:1"].draft).toBe(true);
-    expect(draftView.sections[1].verses[0].transliterationDraft).toEqual({ en: true, ko: false });
   });
 
   it("gives one block per verse to a surah without reading sections", () => {

@@ -8,7 +8,6 @@ import {
   assertLocalTestServer,
   LOCAL_SUPABASE_SKIP_REASON,
   localSupabaseEnabled,
-  makeTester,
   restoreContent,
   seedContent,
   type TestUser,
@@ -19,7 +18,6 @@ import {
 test.describe.configure({ mode: "serial" });
 
 let user: TestUser;
-let tester: TestUser;
 
 test.beforeAll(async () => {
   test.skip(!localSupabaseEnabled, LOCAL_SUPABASE_SKIP_REASON);
@@ -27,26 +25,22 @@ test.beforeAll(async () => {
   await assertLocalTestServer(test.info().project.use.baseURL);
   await seedContent(fixtureBundle());
   user = await createTestUser();
-  tester = await createTestUser();
-  await makeTester(tester);
 });
 
 test.afterAll(async () => {
   if (localSupabaseEnabled) {
     restoreContent();
-    for (const account of [user, tester]) {
-      if (account) {
-        await deleteTestUser(account);
-      }
+    if (user) {
+      await deleteTestUser(user);
     }
   }
 });
 
-/** Logs in on the login page, which then opens `path`. A normal reader unless told otherwise. */
-async function openLoggedIn(page: Page, path: string, account: TestUser = user) {
+/** Logs in on the login page, which then opens `path`. */
+async function openLoggedIn(page: Page, path: string) {
   await page.goto(`/en/login?next=${encodeURIComponent(path)}`);
-  await page.getByLabel(en.auth.email).fill(account.email);
-  await page.getByLabel(en.auth.password).fill(account.password);
+  await page.getByLabel(en.auth.email).fill(user.email);
+  await page.getByLabel(en.auth.password).fill(user.password);
   await page.getByRole("main").getByRole("button", { name: en.auth.login }).click();
   await expect(page).toHaveURL(path, { timeout: 15_000 });
 }
@@ -75,8 +69,9 @@ test.describe("reading sections", () => {
     await expect(published.locator("em", { hasText: "italic" })).toBeVisible();
     await expect(page.getByText(/\*\*/)).toHaveCount(0);
 
-    // The brief is in review: readers don't see it.
-    await expect(page.getByText("[brief 1 en]")).toHaveCount(0);
+    // The brief, paragraph by paragraph, each with its sources.
+    await expect(page.getByText("[brief 1 en]")).toBeVisible();
+    await expect(page.getByText("[brief 2 en]")).toBeVisible();
 
     const draft = section(page, "1:3");
     await expect(draft.getByText(en.surah.comingSoonTitle)).toBeVisible();
@@ -313,90 +308,6 @@ test.describe("on a phone", () => {
     await expect(popover.getByText("[meaning of 1:1:1 ko]")).toBeVisible();
     await popover.getByRole("button", { name: ko.surah.word.close }).tap();
     await expect(popover).toBeHidden();
-  });
-});
-
-/** What a reader who isn't a tester must never see. */
-async function expectNoDrafts(page: Page, messages: typeof en) {
-  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  await expect(page.getByText(messages.tester.bannerTitle)).toHaveCount(0);
-  await expect(page.getByTitle(messages.tester.draftLabel)).toHaveCount(0);
-  await expect(page.getByText(/\[draft meaning 2/)).toHaveCount(0);
-  await expect(page.getByText(/\[brief 1/)).toHaveCount(0);
-  await expect(page.getByText("[latin draft 1:2]")).toHaveCount(0);
-  await expect(section(page, "1:3").getByText(messages.surah.comingSoonTitle)).toBeVisible();
-}
-
-test.describe("tester preview", () => {
-  test("a tester sees content in review, marked as drafts, with a banner", async ({ page }) => {
-    await openLoggedIn(page, "/en/surah/1", tester);
-    const badge = (scope: ReturnType<Page["getByRole"]>) => scope.getByTitle(en.tester.draftLabel);
-
-    await expect(page.getByRole("note")).toContainText(en.tester.bannerTitle);
-    await expect(page.getByRole("note")).toContainText(en.tester.bannerBody);
-
-    // The section in review shows its explanation, with a "Draft" badge by its range.
-    const inReview = section(page, "1:3");
-    await expect(inReview.getByText("[draft meaning 2 en]")).toBeVisible();
-    await expect(inReview.getByText(en.surah.comingSoonTitle)).toHaveCount(0);
-    await expect(badge(inReview.getByRole("heading", { name: /^1:3/ }))).toBeVisible();
-    // A published section has no badge on its range.
-    await expect(
-      badge(section(page, "1:1–2").getByRole("heading", { name: /^1:1–2/ })),
-    ).toHaveCount(0);
-
-    // The brief in review, with its badge.
-    await expect(page.getByText("[brief 1 en]")).toBeVisible();
-    await expect(page.locator("main header").getByTitle(en.tester.draftLabel)).toBeVisible();
-
-    // The draft transliteration of 1:2, on a pronunciation line with a badge.
-    const line = section(page, "1:1–2").locator("p", { hasText: "[latin draft 1:2]" });
-    await expect(line).toBeVisible();
-    await expect(line.getByTitle(en.tester.draftLabel)).toBeVisible();
-
-    // The word meaning in review opens with a badge; the plain draft isn't there at all.
-    await inReview.getByRole("button", { name: "ابت" }).click();
-    const popover = page.getByRole("dialog");
-    await expect(popover.getByText("[draft meaning of 1:3:1 en]")).toBeVisible();
-    await expect(popover.getByTitle(en.tester.draftLabel)).toBeVisible();
-    await expect(section(page, "1:4–5").locator('[aria-haspopup="dialog"]')).toHaveCount(0);
-    await expect(page.getByText("[plain draft meaning en]")).toHaveCount(0);
-  });
-
-  test("a tester's Korean page shows the Korean draft, and the English toggle still works", async ({
-    page,
-  }) => {
-    await openLoggedIn(page, "/ko/surah/1", tester);
-    await expect(page.getByRole("note")).toContainText(ko.tester.bannerTitle);
-    const inReview = section(page, "1:3");
-    await expect(inReview.getByText("[draft meaning 2 ko]")).toBeVisible();
-    await expect(inReview.getByTitle(ko.tester.draftLabel)).toBeVisible();
-
-    const english = inReview.getByText("[draft meaning 2 en]");
-    await expect(english).toBeHidden();
-    await page.getByRole("switch", { name: ko.surah.showEnglish }).click();
-    await expect(english).toBeVisible();
-  });
-
-  test("a tester's drafts don't reach other readers through the cache", async ({ browser }) => {
-    // The tester goes first, so if drafts could enter the shared cache, the reader would get them.
-    for (const [path, messages] of [
-      ["/en/surah/1", en],
-      ["/ko/surah/1", ko],
-    ] as const) {
-      const testerContext = await browser.newContext();
-      const testerPage = await testerContext.newPage();
-      await openLoggedIn(testerPage, path, tester);
-      await expect(testerPage.getByText(messages.tester.bannerTitle)).toBeVisible();
-      await expect(section(testerPage, "1:3").getByTitle(messages.tester.draftLabel)).toBeVisible();
-      await testerContext.close();
-
-      const readerContext = await browser.newContext();
-      const readerPage = await readerContext.newPage();
-      await openLoggedIn(readerPage, path);
-      await expectNoDrafts(readerPage, messages);
-      await readerContext.close();
-    }
   });
 });
 

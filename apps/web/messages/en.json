@@ -100,12 +100,6 @@
     "askPlaceholder": "Coming soon",
     "declineNote": "If the sources don't support an answer, it says so instead of answering."
   },
-  "tester": {
-    "bannerTitle": "You're seeing draft content for testing",
-    "bannerBody": "Parts marked \"Draft\" haven't finished review yet and may change. Other readers don't see them.",
-    "draft": "Draft",
-    "draftLabel": "Draft, not reviewed yet"
-  },
   "footer": {
     "quranText": "Arabic Quran text: <link>Tanzil Project (tanzil.net)</link>. Every explanation shows its sources."
   },

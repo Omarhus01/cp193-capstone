@@ -36,13 +36,8 @@ export type Word = { position: number; textAr: string; root: string | null };
 export type Verse = VerseRef & {
   textAr: string;
   words: Word[];
-  /**
-   * How the verse is pronounced: Latin letters (en) and Hangul (ko). Readers get published ones
-   * only; testers also get drafts (ADR 0016).
-   */
+  /** How the verse is pronounced: Latin letters (en) and Hangul (ko). Null until published. */
   transliteration: Localized;
-  /** The review step of each transliteration, or null when there is none. */
-  transliterationStatus: { en: ReviewStatus | null; ko: ReviewStatus | null };
 };
 
 export type SourceType = "tafsir" | "asbab_al_nuzul" | "word_dictionary" | "hadith";
@@ -93,14 +88,10 @@ export type ExplanationParts = {
 /** Another part of the text a reader needs in order to understand an explanation. */
 export type ContextLink = { span: Span; reason: Localized };
 
-/**
- * An explanation. Readers only ever get published ones; testers also get those in review, so the
- * page can mark them as drafts (ADR 0016).
- */
+/** A published explanation. Readers never get drafts, so there is no status here. */
 export type Explanation = {
   id: string;
   kind: ExplanationKind;
-  status: ReviewStatus;
   span: Span;
   parts: ExplanationParts;
   contextLinks: ContextLink[];
@@ -114,7 +105,6 @@ export type ElsewhereNote = { verse: VerseRef | null; text: Localized };
 /** What a word means in its verse. */
 export type WordMeaning = {
   word: VerseRef & { word: number };
-  status: ReviewStatus;
   meaning: Localized;
   citations: Citation[];
   elsewhere: ElsewhereNote[];
@@ -140,14 +130,11 @@ export type ReadingSection = {
   verses: Verse[];
 };
 
-/** The surah brief: its paragraphs, and its review step. */
-export type SurahBrief = { status: ReviewStatus; items: ContentItem[] };
-
 /** Everything a surah page needs that doesn't depend on what the reader selects. */
 export type SurahContent = {
   surah: Surah;
-  /** The brief (published, or for testers in review), or null. */
-  brief: SurahBrief | null;
+  /** The published brief's paragraphs, or null. */
+  brief: ContentItem[] | null;
   verses: Verse[];
   wordMeanings: WordMeaning[];
   /** Every section in reading order, published or not. */

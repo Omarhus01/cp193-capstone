@@ -6,8 +6,8 @@ import ko from "../messages/ko.json";
 //
 //   E2E_BASE_URL=https://<domain> npm run test:smoke
 //
-// It never signs up or changes data. With E2E_EMAIL and E2E_PASSWORD (an existing account that
-// isn't a tester), it also logs in and opens the surah page. Without E2E_BASE_URL it runs against
+// It never signs up or changes data. With E2E_EMAIL and E2E_PASSWORD (an existing account), it
+// also logs in and opens the surah page. Without E2E_BASE_URL it runs against
 // a local production build, like the other e2e tests.
 const email = process.env.E2E_EMAIL;
 const password = process.env.E2E_PASSWORD;
@@ -57,8 +57,8 @@ test.describe("smoke @smoke", () => {
     expect(JSON.stringify(report)).not.toMatch(/supabase\.co|https?:\/\//);
   });
 
-  test("a non-tester account reads Al-Fatiha without drafts", async ({ page }) => {
-    test.skip(!email || !password, "set E2E_EMAIL and E2E_PASSWORD (a non-tester) to run");
+  test("a logged-in reader reads Al-Fatiha", async ({ page }) => {
+    test.skip(!email || !password, "set E2E_EMAIL and E2E_PASSWORD to run");
 
     await page.goto("/en/login?next=%2Fko%2Fsurah%2F1");
     await page.getByLabel(en.auth.email).fill(email!);
@@ -74,9 +74,6 @@ test.describe("smoke @smoke", () => {
       await expect(page.getByRole("heading", { level: 1 })).toContainText(name);
       const sections = page.getByRole("navigation", { name: messages.surah.readingSections });
       await expect(sections.getByRole("link")).toHaveCount(4);
-      await page.waitForLoadState("networkidle");
-      await expect(page.getByText(messages.tester.bannerTitle)).toHaveCount(0);
-      await expect(page.getByTitle(messages.tester.draftLabel)).toHaveCount(0);
     }
 
     // Log out again; the run leaves nothing behind.
