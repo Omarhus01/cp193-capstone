@@ -78,11 +78,11 @@ Where reading sections start and end is public: the surah page lists every secti
     "wordMeanings": [],
     "background": [],
     "context": [
-      { "en": "…", "ko": "…", "citations": ["ibn-kathir-1-101-111"] },
+      { "en": "…", "ko": "…", "citations": ["ibn-kathir-1-18-30"] },
       {
         "en": "…",
         "ko": "…",
-        "citations": [{ "passage": "ibn-kathir-1-101-111", "quoting": "Muslim" }, "qurtubi-on-2-26"]
+        "citations": [{ "passage": "ibn-kathir-1-18-30", "quoting": "Muslim" }, "qurtubi-1-108-153"]
       }
     ],
     "connectedVerses": [{ "verse": "2:60", "en": "…", "ko": "…", "citations": ["…"] }]
@@ -130,6 +130,40 @@ A word meaning has its meaning in this verse, its citations, and `elsewhere`: wh
   "review": []
 }
 ```
+
+## Sources
+
+`sources/<source id>.json` holds one book and the passages cited from it:
+
+```json
+{
+  "source": {
+    "id": "ibn-kathir",
+    "titleAr": "تفسير القرآن العظيم",
+    "titleEn": "Tafsīr al-Qurʾān al-ʿAẓīm",
+    "author": "Ibn Kathīr",
+    "edition": "Dār al-Kutub al-ʿIlmiyya, Beirut, 1st ed., 1419/1998, notes by Muḥammad Ḥusayn Shams al-Dīn",
+    "type": "tafsir"
+  },
+  "passages": [
+    {
+      "id": "ibn-kathir-1-50-60",
+      "volume": "1",
+      "page": "50–60",
+      "verse": null,
+      "textAr": null,
+      "summary": { "en": null, "ko": null },
+      "url": "https://shamela.ws/book/23604/47"
+    }
+  ]
+}
+```
+
+- **The edition** is the one the pages were checked in (publisher, place, edition, year, editors). The page shows it in parentheses after the title.
+- **A passage** is cited by volume and pages; a range like `50–60` shows as "pp.". A source arranged by verse can give `verse` instead of a page.
+- **`url`** is where readers can open the cited pages, for example on Shamela. It must be `https://`, or `null` when there is none. The page's source chip opens it in a new tab; without one, the chip shows the citation and links nowhere.
+- **Passage ids** follow the source and its location (`ibn-kathir-1-50-60`: volume 1, pages 50–60). When the pages change, rename the id and every citation to it in the same pull request; the seed deletes the old passage.
+- **The full citation** is the chip's tooltip and accessible name: author, title (edition), volume, pages, led by "Muslim, via …" when the citation quotes someone.
 
 ## Transliterations
 
