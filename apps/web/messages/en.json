@@ -85,7 +85,8 @@
       "page": "{author}, {title}, p. {page}",
       "pages": "{author}, {title}, pp. {page}",
       "verse": "{author}, {title}, on {verse}",
-      "via": "{quoting}, via {label}"
+      "via": "{quoting}, via {label}",
+      "titleEdition": "{title} ({edition})"
     },
     "word": {
       "inThisVerse": "In this verse",
