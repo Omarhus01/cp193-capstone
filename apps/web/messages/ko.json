@@ -85,7 +85,8 @@
       "page": "{author}, {title}, {page}쪽",
       "pages": "{author}, {title}, {page}쪽",
       "verse": "{author}, {title}, {verse} 해설",
-      "via": "{label}에 인용된 {quoting}"
+      "via": "{label}에 인용된 {quoting}",
+      "titleEdition": "{title} ({edition})"
     },
     "word": {
       "inThisVerse": "이 구절에서",

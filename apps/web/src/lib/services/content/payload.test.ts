@@ -118,6 +118,10 @@ describe("toSeedPayload", () => {
       page: null,
       verse_surah: 2,
       verse_ayah: 1,
+      url: null,
+    });
+    expect(passages.find((p) => p.id === "passage-1")).toMatchObject({
+      url: "https://example.com/book/1/10",
     });
   });
 });

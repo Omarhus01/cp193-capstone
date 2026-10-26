@@ -65,6 +65,9 @@ const point = (label: string, citations: ItemEntry["citations"]): ItemEntry => (
 /** The name the fixture's quoting citations give. */
 export const FIXTURE_NARRATOR = "[Fixture narrator]";
 
+/** fx-passage-1 links here; fx-passage-2 has no link. */
+export const FIXTURE_PASSAGE_URL = "https://example.com/fixture-book/1/10";
+
 /**
  * Surah 1 (5 verses) in three reading sections:
  * - 1:1–2, published: two meaning points (the first with **bold**, *italic*, and two sources, one
@@ -154,7 +157,7 @@ export function fixtureBundle(): ContentBundle {
           titleAr: null,
           titleEn: "[Fixture source]",
           author: "[Fixture author]",
-          edition: null,
+          edition: "[Fixture edition]",
           type: "tafsir",
         },
         passages: [
@@ -165,6 +168,7 @@ export function fixtureBundle(): ContentBundle {
             verse: null,
             textAr: null,
             summary: both("passage 1"),
+            url: FIXTURE_PASSAGE_URL,
           },
           {
             id: "fx-passage-2",
@@ -173,6 +177,7 @@ export function fixtureBundle(): ContentBundle {
             verse: "1:2",
             textAr: null,
             summary: both("passage 2"),
+            url: null,
           },
         ],
       },

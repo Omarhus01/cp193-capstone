@@ -1,7 +1,8 @@
 import { expect, test, type Page } from "@playwright/test";
 import en from "../messages/en.json";
 import ko from "../messages/ko.json";
-import { FIXTURE_NARRATOR, fixtureBundle } from "./fixtures/content";
+import { FIXTURE_NARRATOR, FIXTURE_PASSAGE_URL, fixtureBundle } from "./fixtures/content";
+import { expectNoBrokenLinks } from "./links";
 import { E2E_FEEDBACK_URL } from "../playwright.config";
 import {
   createTestUser,
@@ -85,30 +86,41 @@ test.describe("reading sections", () => {
     ).toBeVisible();
   });
 
-  test("ends each point with its own source links, naming who a source quotes", async ({
-    page,
-  }) => {
+  test("ends each point with its own sources, naming who a source quotes", async ({ page }) => {
     await openLoggedIn(page, "/en/surah/1");
     const published = section(page, "1:1–2");
-    const book = "[Fixture author], [Fixture source]";
+    const book = "[Fixture author], [Fixture source] ([Fixture edition])";
+    const newTab = en.surah.feedback.newTab;
     const point = (text: string) => published.getByRole("listitem").filter({ hasText: text });
 
+    // A passage with a link: the chip opens it in a new tab, named by the full citation.
     const first = point("[meaning 1a en]");
-    await expect(
-      first.getByRole("link", { name: `Source 1: ${book}, vol. 1, p. 10` }),
-    ).toHaveAttribute("href", "/en/sources/fx-passage-1");
-    await expect(
-      first.getByRole("link", { name: `Source 2: ${FIXTURE_NARRATOR}, via ${book}, on 1:2` }),
-    ).toHaveAttribute("href", "/en/sources/fx-passage-2");
-    await expect(first.getByRole("link", { name: /^Source / })).toHaveCount(2);
+    const linked = first.getByRole("link", { name: `Source 1: ${book}, vol. 1, p. 10 ${newTab}` });
+    await expect(linked).toHaveAttribute("href", FIXTURE_PASSAGE_URL);
+    await expect(linked).toHaveAttribute("target", "_blank");
+    await expect(linked).toHaveAttribute("rel", "noopener noreferrer");
+    await expect(linked).toHaveAttribute("title", `${book}, vol. 1, p. 10`);
+    await expect(linked).toHaveText("Source 1");
+
+    // A passage without a link: the chip cites it and links nowhere.
+    const unlinked = first.getByTitle(`${FIXTURE_NARRATOR}, via ${book}, on 1:2`);
+    await expect(unlinked).toBeVisible();
+    await expect(unlinked).toContainText(`Source 2: ${FIXTURE_NARRATOR}, via ${book}, on 1:2`);
+    await expect(first.getByRole("link", { name: /^Source / })).toHaveCount(1);
 
     // A passage keeps its number across the explanation.
+    await expect(point("[meaning 1b en]").getByTitle(`${book}, on 1:2`)).toContainText("Source 2");
     await expect(
-      point("[meaning 1b en]").getByRole("link", { name: `Source 2: ${book}, on 1:2` }),
-    ).toBeVisible();
-    await expect(
-      point("[background 1 en]").getByRole("link", { name: `Source 1: ${book}, vol. 1, p. 10` }),
-    ).toBeVisible();
+      point("[background 1 en]").getByRole("link", { name: new RegExp(`^Source 1: `) }),
+    ).toHaveAttribute("href", FIXTURE_PASSAGE_URL);
+  });
+
+  test("no link on the page leads to a page that isn't built", async ({ page }) => {
+    await openLoggedIn(page, "/en/surah/1");
+    // With the word popover open, so its source links count too.
+    await firstWord(page).click();
+    await expect(page.getByRole("dialog")).toBeVisible();
+    await expectNoBrokenLinks(page, /^Source \d+: /);
   });
 
   test("shows related verses as text, and as links once that verse is imported", async ({
@@ -127,7 +139,7 @@ test.describe("reading sections", () => {
     const notImported = published.getByRole("listitem").filter({ hasText: "40:6" });
     await expect(notImported).toContainText("40:6: [why 40:6 en]");
     await expect(notImported.getByRole("link", { name: /40:6/ })).toHaveCount(0);
-    await expect(notImported.getByRole("link", { name: /^Source 2: / })).toBeVisible();
+    await expect(notImported.getByText(/^Source 2: /)).toHaveCount(1);
   });
 
   test("keeps the Listen button disabled until audio arrives", async ({ page }) => {
@@ -225,7 +237,7 @@ test.describe("word popover", () => {
     await openLoggedIn(page, "/en/surah/1");
     await firstWord(page).click();
     const popover = page.getByRole("dialog");
-    const book = "[Fixture author], [Fixture source]";
+    const book = "[Fixture author], [Fixture source] ([Fixture edition])";
 
     await expect(popover.getByText("[meaning of 1:1:1 en]")).toBeVisible();
     await expect(popover.getByText(en.surah.word.elsewhere)).toBeVisible();
@@ -240,13 +252,14 @@ test.describe("word popover", () => {
     // The root lookup is gone: another word's meaning with the same root isn't listed.
     await expect(popover.getByText("[meaning of 2:1:1 en]")).toHaveCount(0);
 
-    await expect(popover.getByRole("link", { name: `${book}, vol. 1, p. 10` })).toHaveAttribute(
-      "href",
-      "/en/sources/fx-passage-1",
-    );
-    await expect(
-      popover.getByRole("link", { name: `${FIXTURE_NARRATOR}, via ${book}, on 1:2` }),
-    ).toHaveAttribute("href", "/en/sources/fx-passage-2");
+    // A source with a link opens it in a new tab; one without is cited as text.
+    const linked = popover.getByRole("link", {
+      name: `${book}, vol. 1, p. 10 ${en.surah.feedback.newTab}`,
+    });
+    await expect(linked).toHaveAttribute("href", FIXTURE_PASSAGE_URL);
+    await expect(linked).toHaveAttribute("target", "_blank");
+    await expect(popover.getByText(`${FIXTURE_NARRATOR}, via ${book}, on 1:2`)).toBeVisible();
+    await expect(popover.getByRole("link").filter({ hasText: FIXTURE_NARRATOR })).toHaveCount(0);
   });
 
   test("opens from the keyboard, moves focus inside, and Escape returns focus", async ({

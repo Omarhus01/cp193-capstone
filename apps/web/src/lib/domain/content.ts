@@ -61,6 +61,8 @@ export type Passage = {
   verse: VerseRef | null;
   textAr: string | null;
   summary: Localized;
+  /** Where a reader can open the cited pages (https), or null. */
+  url: string | null;
 };
 
 export type ExplanationKind = "phrase_note" | "verse_explanation" | "reading_section";

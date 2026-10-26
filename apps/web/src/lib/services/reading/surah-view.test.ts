@@ -77,6 +77,7 @@ function passage(id: string, overrides: Partial<Passage> = {}): Passage {
     verse: null,
     textAr: null,
     summary: { en: null, ko: null },
+    url: null,
     ...overrides,
   };
 }
@@ -334,18 +335,31 @@ describe("passageLabel", () => {
     expect(passageLabel(passage("a", { volume: "1", page: "70" }))).toEqual({
       key: "volumePage",
       values: { ...book, volume: "1", page: "70" },
+      edition: null,
     });
     expect(passageLabel(passage("b", { volume: "1", page: "101–111" }))).toEqual({
       key: "volumePages",
       values: { ...book, volume: "1", page: "101–111" },
+      edition: null,
     });
     expect(passageLabel(passage("c", { page: "9–24" }))).toEqual({
       key: "pages",
       values: { ...book, page: "9–24" },
+      edition: null,
     });
     expect(passageLabel(passage("d", { page: null, verse: { surah: 1, ayah: 4 } }))).toEqual({
       key: "verse",
       values: { ...book, verse: "1:4" },
+      edition: null,
+    });
+  });
+
+  it("gives the source's edition, for the page to put after the title", () => {
+    const withEdition = passage("e", { volume: "1", page: "18–30" });
+    withEdition.source = { ...withEdition.source, edition: "[Publisher, city, 1st ed., 1998]" };
+    expect(passageLabel(withEdition)).toMatchObject({
+      key: "volumePages",
+      edition: "[Publisher, city, 1st ed., 1998]",
     });
   });
 });

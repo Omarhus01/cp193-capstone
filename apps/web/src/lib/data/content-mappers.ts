@@ -99,6 +99,7 @@ export type PassageRow = {
   text_ar: string | null;
   summary_en: string | null;
   summary_ko: string | null;
+  url: string | null;
   source: {
     id: string;
     title_ar: string | null;
@@ -233,5 +234,6 @@ export function toPassage(row: PassageRow): Passage {
     verse: verseRef(row.verse_surah, row.verse_ayah),
     textAr: row.text_ar,
     summary: localized(row.summary_en, row.summary_ko),
+    url: row.url,
   };
 }

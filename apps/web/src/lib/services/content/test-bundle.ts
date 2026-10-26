@@ -204,6 +204,7 @@ export function testBundle(): ContentBundle {
             verse: null,
             textAr: null,
             summary: both("passage 1"),
+            url: "https://example.com/book/1/10",
           },
           {
             id: "passage-2",
@@ -212,6 +213,7 @@ export function testBundle(): ContentBundle {
             verse: "2:1",
             textAr: null,
             summary: both("passage 2"),
+            url: null,
           },
         ],
       },

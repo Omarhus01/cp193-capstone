@@ -5,17 +5,18 @@
     "titleAr": "أيسر التفاسير",
     "titleEn": "Aysar al-Tafāsīr",
     "author": "al-Jazāʾirī",
-    "edition": null,
+    "edition": "Maktabat al-ʿUlūm wa-l-Ḥikam, Medina, 5th ed., 1424/2003",
     "type": "tafsir"
   },
   "passages": [
     {
-      "id": "jazairi-1-14-17",
+      "id": "jazairi-1-11-17",
       "volume": "1",
-      "page": "14–17",
+      "page": "11–17",
       "verse": null,
       "textAr": null,
-      "summary": { "en": null, "ko": null }
+      "summary": { "en": null, "ko": null },
+      "url": "https://shamela.ws/book/10088/8"
     }
   ]
 }

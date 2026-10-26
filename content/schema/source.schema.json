@@ -52,9 +52,13 @@
             "required": ["en", "ko"],
             "additionalProperties": false,
             "description": "English and Korean. null until written."
+          },
+          "url": {
+            "anyOf": [{ "type": "string", "format": "uri" }, { "type": "null" }],
+            "description": "Where readers can open these pages, for example on Shamela (https only). The page's source chip opens it in a new tab; with null, the chip cites the passage without a link."
           }
         },
-        "required": ["id", "volume", "page", "verse", "textAr", "summary"],
+        "required": ["id", "volume", "page", "verse", "textAr", "summary", "url"],
         "additionalProperties": false
       }
     }

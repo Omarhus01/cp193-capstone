@@ -5,41 +5,18 @@
     "titleAr": "الجامع لأحكام القرآن",
     "titleEn": "al-Jāmiʿ li-Aḥkām al-Qurʾān",
     "author": "al-Qurṭubī",
-    "edition": null,
+    "edition": "Dār al-Kutub al-Miṣriyya, Cairo, 2nd ed., 1384/1964, eds. Aḥmad al-Bardūnī and Ibrāhīm Aṭfīsh",
     "type": "tafsir"
   },
   "passages": [
     {
-      "id": "qurtubi-on-1-1",
-      "volume": null,
-      "page": null,
-      "verse": "1:1",
+      "id": "qurtubi-1-108-153",
+      "volume": "1",
+      "page": "108–153",
+      "verse": null,
       "textAr": null,
-      "summary": { "en": null, "ko": null }
-    },
-    {
-      "id": "qurtubi-on-1-2",
-      "volume": null,
-      "page": null,
-      "verse": "1:2",
-      "textAr": null,
-      "summary": { "en": null, "ko": null }
-    },
-    {
-      "id": "qurtubi-on-1-3",
-      "volume": null,
-      "page": null,
-      "verse": "1:3",
-      "textAr": null,
-      "summary": { "en": null, "ko": null }
-    },
-    {
-      "id": "qurtubi-on-1-7",
-      "volume": null,
-      "page": null,
-      "verse": "1:7",
-      "textAr": null,
-      "summary": { "en": null, "ko": null }
+      "summary": { "en": null, "ko": null },
+      "url": "https://shamela.ws/book/20855/114"
     }
   ]
 }

@@ -5,25 +5,27 @@
     "titleAr": "تفسير القرآن العظيم",
     "titleEn": "Tafsīr al-Qurʾān al-ʿAẓīm",
     "author": "Ibn Kathīr",
-    "edition": null,
+    "edition": "Dār al-Kutub al-ʿIlmiyya, Beirut, 1st ed., 1419/1998, notes by Muḥammad Ḥusayn Shams al-Dīn",
     "type": "tafsir"
   },
   "passages": [
     {
-      "id": "ibn-kathir-1-101-111",
+      "id": "ibn-kathir-1-18-30",
       "volume": "1",
-      "page": "101–111",
+      "page": "18–30",
       "verse": null,
       "textAr": null,
-      "summary": { "en": null, "ko": null }
+      "summary": { "en": null, "ko": null },
+      "url": null
     },
     {
-      "id": "ibn-kathir-1-139-149",
+      "id": "ibn-kathir-1-50-60",
       "volume": "1",
-      "page": "139–149",
+      "page": "50–60",
       "verse": null,
       "textAr": null,
-      "summary": { "en": null, "ko": null }
+      "summary": { "en": null, "ko": null },
+      "url": "https://shamela.ws/book/23604/47"
     }
   ]
 }

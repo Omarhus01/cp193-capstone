@@ -364,22 +364,30 @@ export function referencedVerses(content: SurahContent): VerseRef[] {
   return [...refs.values()].sort((a, b) => a.surah - b.surah || a.ayah - b.ayah);
 }
 
-/** How a source is named: a message key of "surah.passage" and its values. */
+/**
+ * How a source is named: a message key of "surah.passage" and its values, and the edition, which
+ * the page puts in parentheses after the title ("surah.passage.titleEdition").
+ */
 export function passageLabel(passage: Passage): {
   key: "volumePage" | "volumePages" | "page" | "pages" | "verse";
   values: Record<string, string>;
+  edition: string | null;
 } {
-  const { author, titleEn, titleAr } = passage.source;
+  const { author, titleEn, titleAr, edition } = passage.source;
   const book = { author, title: titleEn ?? titleAr ?? "" };
   const { page, volume } = passage;
   if (page) {
     // "101–111" is a range of pages: "pp." rather than "p.".
     const range = /[–-]/.test(page);
     if (volume) {
-      return { key: range ? "volumePages" : "volumePage", values: { ...book, volume, page } };
+      return {
+        key: range ? "volumePages" : "volumePage",
+        values: { ...book, volume, page },
+        edition,
+      };
     }
-    return { key: range ? "pages" : "page", values: { ...book, page } };
+    return { key: range ? "pages" : "page", values: { ...book, page }, edition };
   }
   const verse = passage.verse ? verseKey(passage.verse) : "";
-  return { key: "verse", values: { ...book, verse } };
+  return { key: "verse", values: { ...book, verse }, edition };
 }

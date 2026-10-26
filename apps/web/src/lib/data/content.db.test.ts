@@ -75,6 +75,7 @@ function dbBundle() {
     verse: null,
     textAr: null,
     summary: { en: null, ko: null },
+    url: null,
   });
   return bundle;
 }
@@ -263,6 +264,14 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
       expect(await getPassages([])).toEqual([]);
     });
 
+    it("getPassages gives each passage its link, or null", async () => {
+      const passages = await getPassages(["passage-1", "passage-2"]);
+      expect(passages.map((p) => [p.id, p.url])).toEqual([
+        ["passage-1", "https://example.com/book/1/10"],
+        ["passage-2", null],
+      ]);
+    });
+
     it("getExplanationsForSpan finds overlapping published explanations, in order", async () => {
       const verse3 = await getExplanationsForSpan({
         start: { surah: 1, ayah: 3, word: null },
@@ -368,6 +377,16 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
       });
       expect(error).not.toBeNull();
     });
+  });
+
+  it("stores only https links for passages", async () => {
+    const update = await service
+      .from("passage")
+      .update({ url: "http://example.com/book/1/10" })
+      .eq("id", "passage-1");
+    expect(update.error?.message).toMatch(/check constraint/);
+    const { data } = await service.from("passage").select("url").eq("id", "passage-1");
+    expect(data).toEqual([{ url: "https://example.com/book/1/10" }]);
   });
 
   it("has no tester preview left (dropped in 20261029120000)", async () => {

@@ -5,17 +5,18 @@
     "titleAr": "معالم التنزيل",
     "titleEn": "Maʿālim al-Tanzīl",
     "author": "al-Baghawī",
-    "edition": null,
+    "edition": "Dār Ṭayba, 4th ed., 1417/1997, eds. al-Nimr, Ḍumayriyya, al-Ḥarsh",
     "type": "tafsir"
   },
   "passages": [
     {
-      "id": "baghawi-1-70",
+      "id": "baghawi-1-49",
       "volume": "1",
-      "page": "70",
+      "page": "49",
       "verse": null,
       "textAr": null,
-      "summary": { "en": null, "ko": null }
+      "summary": { "en": null, "ko": null },
+      "url": "https://shamela.ws/book/41/45"
     }
   ]
 }

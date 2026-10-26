@@ -5,17 +5,18 @@
     "titleAr": "تفسير العثيمين: الفاتحة والبقرة",
     "titleEn": "Tafsīr al-Fātiḥah wa-l-Baqarah",
     "author": "Ibn ʿUthaymīn",
-    "edition": null,
+    "edition": "Dār Ibn al-Jawzī, Saudi Arabia, 1st ed., 1423",
     "type": "tafsir"
   },
   "passages": [
     {
-      "id": "ibn-uthaymin-9-24",
-      "volume": null,
-      "page": "9–24",
+      "id": "ibn-uthaymin-1-3-20",
+      "volume": "1",
+      "page": "3–20",
       "verse": null,
       "textAr": null,
-      "summary": { "en": null, "ko": null }
+      "summary": { "en": null, "ko": null },
+      "url": "https://shamela.ws/book/544/69"
     }
   ]
 }

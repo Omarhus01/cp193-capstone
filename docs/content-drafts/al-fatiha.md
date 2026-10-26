@@ -21,11 +21,11 @@ This is the content for Surat Al-Fatiha on the site: English approved by Omar, K
 
 **English**
 
-Al-Fatiha opens the Quran: the written mushaf begins with it, and every unit of prayer begins with its recitation. It has 7 verses and was revealed in Makkah, according to most scholars. It is also called Umm al-Qurʼan (the Mother of the Quran), al-Sabʿ al-Mathānī (the Seven Oft-Repeated), al-Ḥamd, al-Ṣalāh, al-Ruqyah and al-Shifāʼ. **\[Ibn Kathīr, vol. 1, pp. 101–111; al-Baghawī, vol. 1, p. 70\]**
+Al-Fatiha opens the Quran: the written mushaf begins with it, and every unit of prayer begins with its recitation. It has 7 verses and was revealed in Makkah, according to most scholars. It is also called Umm al-Qurʼan (the Mother of the Quran), al-Sabʿ al-Mathānī (the Seven Oft-Repeated), al-Ḥamd, al-Ṣalāh, al-Ruqyah and al-Shifāʼ. **\[Ibn Kathīr, vol. 1, pp. 18–30; al-Baghawī, vol. 1, p. 49\]**
 
-The Prophet ﷺ called it the greatest surah in the Quran. **\[al-Bukhārī, via Ibn Kathīr, vol. 1, pp. 101–111\]** Scholars note that it gathers the Quran's meanings: the oneness of Allah, His rulings, the recompense, and the paths people take. **\[Ibn ʿUthaymīn, pp. 9–24\]**
+The Prophet ﷺ called it the greatest surah in the Quran. **\[al-Bukhārī, via Ibn Kathīr, vol. 1, pp. 18–30\]** Scholars note that it gathers the Quran's meanings: the oneness of Allah, His rulings, the recompense, and the paths people take. **\[Ibn ʿUthaymīn, vol. 1, pp. 3–20\]**
 
-In a hadith qudsi, Allah divides it between Himself and His servant: the verses of praise belong to Allah, 1:5 is shared between them, and the request for guidance belongs to the servant. The reading sections on this page follow that division. **\[Muslim, via Ibn Kathīr, vol. 1, pp. 101–111; Ibn ʿUthaymīn\]**
+In a hadith qudsi, Allah divides it between Himself and His servant: the verses of praise belong to Allah, 1:5 is shared between them, and the request for guidance belongs to the servant. The reading sections on this page follow that division. **\[Muslim, via Ibn Kathīr, vol. 1, pp. 18–30; Ibn ʿUthaymīn\]**
 
 **한국어 (초안)**
 
@@ -47,16 +47,16 @@ In a hadith qudsi, Allah divides it between Himself and His servant: the verses 
 
 **Meaning**
 
-- "In the name of Allah" implies a verb that isn't said: "I begin in the name of Allah", or the act at hand, like "In the name of Allah I eat". **\[al-Baghawī, vol. 1, p. 70; Ibn ʿUthaymīn, pp. 9–24\]**
+- "In the name of Allah" implies a verb that isn't said: "I begin in the name of Allah", or the act at hand, like "In the name of Allah I eat". **\[al-Baghawī, vol. 1, p. 49; Ibn ʿUthaymīn, vol. 1, pp. 3–20\]**
 - The name of Allah comes before the implied verb for two reasons: to begin with His name for blessing, and to limit the act to Him, meaning "only in the name of Allah". **\[Ibn ʿUthaymīn\]**
-- **Allah** is His own name, given to no one else. All His other names follow it. **\[Ibn ʿUthaymīn; al-Qurṭubī, pages to confirm\]**
+- **Allah** is His own name, given to no one else. All His other names follow it. **\[Ibn ʿUthaymīn; al-Qurṭubī, vol. 1, pp. 108–153\]**
 - **al-Raḥmān** means the One whose mercy is vast; the word's form (faʿlān) signals fullness. **al-Raḥīm** means the One who brings His mercy to whom He wills; its form (faʿīl) signals the act. Together: al-Raḥmān is His attribute, al-Raḥīm is His action. **\[Ibn ʿUthaymīn\]**
 - Another explanation: al-Raḥmān covers all of creation, al-Raḥīm is specific to the believers. **\[al-Qurṭubī, quoting Abū ʿAlī al-Fārisī\]**
 
 **Background**
 
 - Muslims say the Basmala before eating, drinking, slaughtering and other acts, following the Prophet ﷺ, who told a boy: "Say the name of Allah, and eat with your right hand." **\[al-Qurṭubī\]**
-- Scholars differ on whether the Basmala is a verse of Al-Fatiha. In the Kufan count, which the common Hafs mushaf follows, it is verse 1. **\[Ibn Kathīr, vol. 1, pp. 101–111\]** Mālik and the scholars of Madinah do not count it; Ibn ʿUthaymīn and al-Qurṭubī hold this view, citing the hadith in which Allah divides Al-Fatiha starting from "al-ḥamdu lillāh". **\[Ibn ʿUthaymīn; al-Qurṭubī\]** All agree it is part of the Quran in Surat al-Naml. **\[al-Qurṭubī\]**
+- Scholars differ on whether the Basmala is a verse of Al-Fatiha. In the Kufan count, which the common Hafs mushaf follows, it is verse 1. **\[Ibn Kathīr, vol. 1, pp. 18–30\]** Mālik and the scholars of Madinah do not count it; Ibn ʿUthaymīn and al-Qurṭubī hold this view, citing the hadith in which Allah divides Al-Fatiha starting from "al-ḥamdu lillāh". **\[Ibn ʿUthaymīn; al-Qurṭubī\]** All agree it is part of the Quran in Surat al-Naml. **\[al-Qurṭubī\]**
 
 **Related verses**
 
@@ -95,9 +95,9 @@ In a hadith qudsi, Allah divides it between Himself and His servant: the verses 
 
 **Meaning**
 
-- **al-Ḥamd** is describing the One praised as perfect, with love and veneration. Praise without love and veneration is only *madḥ* (commendation), like a poet flattering a ruler for money. The "al-" means all praise, every kind of it. **\[Ibn ʿUthaymīn, pp. 9–24\]**
+- **al-Ḥamd** is describing the One praised as perfect, with love and veneration. Praise without love and veneration is only *madḥ* (commendation), like a poet flattering a ruler for money. The "al-" means all praise, every kind of it. **\[Ibn ʿUthaymīn, vol. 1, pp. 3–20\]**
 - **li-llāh**: all of that praise belongs to Allah and is His right. **\[Ibn ʿUthaymīn\]**
-- **Rabb** is the One who combines three things: He creates, He owns, and He manages all affairs. **\[Ibn ʿUthaymīn\]** al-Qurṭubī defines it as the Owner. **\[al-Qurṭubī, pages to confirm\]**
+- **Rabb** is the One who combines three things: He creates, He owns, and He manages all affairs. **\[Ibn ʿUthaymīn\]** al-Qurṭubī defines it as the Owner. **\[al-Qurṭubī, vol. 1, pp. 108–153\]**
 - **al-ʿĀlamīn** is everything other than Allah. They are called *ʿālam* because each is a sign (*ʿalam*) pointing to its Creator. **\[Ibn ʿUthaymīn; al-Qurṭubī, quoting Qatādah\]**
 - **1:3** comes right after "Lord of the worlds" as if to answer: what kind of lordship? A lordship of mercy, not of seizing and punishment. **\[Ibn ʿUthaymīn\]**
 - **1:4:** *Yawm al-Dīn* is the Day of Judgment. *Al-Dīn* here means recompense; elsewhere it means deeds or religion, as in 109:6. **\[Ibn ʿUthaymīn; al-Qāsimī, vol. 1, pp. 228–230\]**
@@ -106,8 +106,8 @@ In a hadith qudsi, Allah divides it between Himself and His servant: the verses 
 
 **Background**
 
-- In a hadith qudsi, Allah answers each verse when the servant recites: at 1:2 "My servant has praised Me", at 1:3 "My servant has extolled Me", at 1:4 "My servant has glorified Me". **\[Muslim, via Ibn Kathīr, vol. 1, pp. 101–111; al-Qurṭubī\]**
-- Allah praised Himself and taught His servants to praise Him, and He named the reasons for the praise: He is Lord of the worlds, the Merciful, and Master of the Day of Judgment. **\[al-Jazāʾirī, vol. 1, pp. 14–17\]**
+- In a hadith qudsi, Allah answers each verse when the servant recites: at 1:2 "My servant has praised Me", at 1:3 "My servant has extolled Me", at 1:4 "My servant has glorified Me". **\[Muslim, via Ibn Kathīr, vol. 1, pp. 18–30; al-Qurṭubī\]**
+- Allah praised Himself and taught His servants to praise Him, and He named the reasons for the praise: He is Lord of the worlds, the Merciful, and Master of the Day of Judgment. **\[al-Jazāʾirī, vol. 1, pp. 11–17\]**
 - When something pleasing happened, the Prophet ﷺ said "Praise be to Allah, by whose grace good things are completed", and otherwise "Praise be to Allah in every state". **\[Ibn ʿUthaymīn\]**
 
 **Related verses**
@@ -151,8 +151,8 @@ In a hadith qudsi, Allah divides it between Himself and His servant: the verses 
 
 **Meaning**
 
-- **Iyyāka** ("You") comes before the verb to restrict it: we worship none but You, and we seek help from none but You. **\[Ibn ʿUthaymīn, pp. 9–24; al-Shinqīṭī, vol. 1, pp. 50–53\]**
-- **Naʿbudu** means we humble ourselves before You with complete humility. In Arabic, *ʿubūdiyyah* is rooted in humility: a road worn smooth by feet is called *muʿabbad*. **\[Ibn ʿUthaymīn; al-Ṭabarī, quoted by al-Qāsimī, vol. 1, pp. 228–230\]** Al-Jazāʾirī defines it as obeying with utmost humility, veneration and love. **\[al-Jazāʾirī, vol. 1, pp. 14–17\]**
+- **Iyyāka** ("You") comes before the verb to restrict it: we worship none but You, and we seek help from none but You. **\[Ibn ʿUthaymīn, vol. 1, pp. 3–20; al-Shinqīṭī, vol. 1, pp. 5–9\]**
+- **Naʿbudu** means we humble ourselves before You with complete humility. In Arabic, *ʿubūdiyyah* is rooted in humility: a road worn smooth by feet is called *muʿabbad*. **\[Ibn ʿUthaymīn; al-Ṭabarī, quoted by al-Qāsimī, vol. 1, pp. 228–230\]** Al-Jazāʾirī defines it as obeying with utmost humility, veneration and love. **\[al-Jazāʾirī, vol. 1, pp. 11–17\]**
 - Worship means doing all that Allah commanded and leaving all He forbade, and no one can do that without His help. That is why "we seek help" follows "we worship". **\[Ibn ʿUthaymīn\]**
 - Placing help after worship also teaches that one relies only on the One who deserves worship, since the matter is in His hand alone. **\[al-Shinqīṭī\]**
 - Seeking help has two kinds. Entrusting oneself fully and relying on someone is for Allah alone. Asking a living person for help with something they are able to do is allowed: "Cooperate in righteousness and piety" (5:2). **\[Ibn ʿUthaymīn\]**
@@ -160,7 +160,7 @@ In a hadith qudsi, Allah divides it between Himself and His servant: the verses 
 
 **Background**
 
-- In the same hadith qudsi, at this verse Allah says: "This is between Me and My servant, and My servant shall have what he asked." It is the middle verse, shared between Allah and the servant. **\[Muslim, via Ibn Kathīr, vol. 1, pp. 101–111; Ibn ʿUthaymīn\]**
+- In the same hadith qudsi, at this verse Allah says: "This is between Me and My servant, and My servant shall have what he asked." It is the middle verse, shared between Allah and the servant. **\[Muslim, via Ibn Kathīr, vol. 1, pp. 18–30; Ibn ʿUthaymīn\]**
 
 **Related verses**
 
@@ -199,16 +199,16 @@ In a hadith qudsi, Allah divides it between Himself and His servant: the verses 
 
 **Meaning**
 
-- **Ihdinā** asks for two kinds of guidance: guidance of knowledge, being shown the way, and guidance of success, being enabled to follow it. **\[Ibn ʿUthaymīn, pp. 9–24\]** Al-Jazāʾirī: guide us, and keep us guided. **\[al-Jazāʾirī, vol. 1, pp. 14–17\]**
-- Why ask for guidance when already guided? Because a believer needs, every hour, to stay firm on it, grow in it, and continue on it. **\[Ibn Kathīr, vol. 1, pp. 139–149\]**
+- **Ihdinā** asks for two kinds of guidance: guidance of knowledge, being shown the way, and guidance of success, being enabled to follow it. **\[Ibn ʿUthaymīn, vol. 1, pp. 3–20\]** Al-Jazāʾirī: guide us, and keep us guided. **\[al-Jazāʾirī, vol. 1, pp. 11–17\]**
+- Why ask for guidance when already guided? Because a believer needs, every hour, to stay firm on it, grow in it, and continue on it. **\[Ibn Kathīr, vol. 1, pp. 50–60\]**
 - **al-Ṣirāṭ** is the path, and **al-Mustaqīm** means without any crookedness. **\[Ibn ʿUthaymīn\]** Early scholars explained it as Islam, the Quran, the truth, or the way of the Prophet ﷺ and his two companions; Ibn Kathīr says all are correct and lead to each other. **\[Ibn Kathīr\]**
-- **Those You blessed** are named in 4:69: the prophets, the truthful, the martyrs and the righteous. **\[Ibn ʿUthaymīn; Ibn Kathīr; al-Shinqīṭī, vol. 1, pp. 50–53; al-Jazāʾirī\]**
+- **Those You blessed** are named in 4:69: the prophets, the truthful, the martyrs and the righteous. **\[Ibn ʿUthaymīn; Ibn Kathīr; al-Shinqīṭī, vol. 1, pp. 5–9; al-Jazāʾirī\]**
 - **Those who earned anger** and **those astray:** in the hadith of ʿAdī ibn Ḥātim, the Prophet ﷺ identified them as the Jews and the Christians, and Ibn Abī Ḥātim said he knew of no disagreement among the commentators on this. **\[Ibn Kathīr; al-Shinqīṭī\]** The scholars also give the principle behind it: whoever knows the truth and leaves it earns anger, and whoever acts without knowledge goes astray. **\[Ibn ʿUthaymīn; Ibn Kathīr\]**
 - The blessing is attributed to Allah directly ("You blessed"), while the anger is in the passive ("those who earned anger"). **\[Ibn Kathīr\]**
 
 **Background**
 
-- At these verses Allah says in the hadith qudsi: "This is for My servant, and My servant shall have what he asked." **\[Muslim, via Ibn Kathīr, vol. 1, pp. 101–111\]**
+- At these verses Allah says in the hadith qudsi: "This is for My servant, and My servant shall have what he asked." **\[Muslim, via Ibn Kathīr, vol. 1, pp. 18–30\]**
 - *Āmīn* is not part of Al-Fatiha. It is recommended to say it after the recitation, and it means "O Allah, answer us". **\[al-Jazāʾirī; Ibn Kathīr\]**
 
 **Related verses**
