@@ -22,7 +22,7 @@ There is one Supabase project, holding real accounts and the content in review.
   - It installs from the repository root with `npm ci`, as CI does (`installCommand` in `apps/web/vercel.json`). Its default install runs inside `apps/web`, which leaves out the root devDependencies; the first deploy failed on that (`docs/deploy.md`, section 8).
   - Production is `main`, and Node.js is 22.x.
 - **Secrets:**
-  - Vercel holds only `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`, which are public by design.
+  - Vercel holds only `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`, which are public by design. Since #35 it may also hold `NEXT_PUBLIC_FEEDBACK_URL`, the public link to the feedback form.
   - The service role key stays with the owner, in the shell, for `npm run content:seed`. A unit test fails if app code reads it.
   - A Vercel build without the two variables stops instead of deploying a site whose every page fails.
 - **No preview deployments for now:** `apps/web/vercel.json` skips builds for every branch except `main`. A preview would run unmerged code against the real database and accounts, and would need a wildcard redirect URL in Supabase Auth.

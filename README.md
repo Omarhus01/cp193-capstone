@@ -67,47 +67,19 @@ $env:SUPABASE_SERVICE_ROLE_KEY="..."; npm run content:seed               # Power
 
 [`content/README.md`](content/README.md) explains the files, the review steps, and how to try migrations and the seed on a local Supabase in Docker first.
 
-### Tester accounts
-
-Testers see content that is still in review on the surah pages: explanations, briefs and word meanings from `en_approved` on, and draft transliterations. A banner and "Draft" badges mark it. Everyone else sees published content only ([ADR 0016](docs/decisions/0016-tester-preview.md)).
-
-Only the database owner can change who is a tester. Run these in the Supabase dashboard's **SQL Editor**:
-
-```sql
--- Make an account a tester:
-insert into public.tester (user_id, note)
-select id, 'tester' from auth.users where email = 'someone@example.com'
-on conflict (user_id) do nothing;
-
--- Remove it:
-delete from public.tester
-where user_id = (select id from auth.users where email = 'someone@example.com');
-
--- List the testers:
-select u.email, t.added_on, t.note
-from public.tester t join auth.users u on u.id = t.user_id
-order by t.added_on;
-```
-
-A change takes effect on the tester's next page load. Keep the account used by `e2e/real-account.spec.ts` off the list: that spec checks it sees no drafts.
-
 ### Auth settings (Supabase dashboard)
 
 1. **Authentication → URL Configuration**
    - Set **Site URL** to `http://localhost:3000` for local work, or to the Vercel URL once deployed.
    - Add `http://localhost:3000/auth/confirm**` and `https://<your-vercel-domain>/auth/confirm**` to **Redirect URLs**. The `**` matters: the redirect carries `?locale=…&next=…`, and Supabase sends users to the Site URL instead when the full URL doesn't match.
 
-The default **Confirm signup** email works as is. Its `{{ .ConfirmationURL }}` link confirms the address and then redirects to `/auth/confirm?code=…`, where the app exchanges the code for a session (PKCE). Signup sets that redirect target (`emailRedirectTo`), including the user's language and where to go next. The code exchange only works in the browser the user signed up in. If they open the link somewhere else, the address is still confirmed, but they see the login page with a "link invalid" message and need to log in by hand.
+2. **Email:** **Confirm email** is on (**Authentication → Sign In / Providers → Email**). Auth emails go through custom SMTP with a Gmail account (**Authentication → Emails → SMTP Settings**).
+3. **Authentication → Emails → Confirm signup:** the template in [`docs/deploy.md`](docs/deploy.md), section 4.
 
-**Only once custom SMTP is set up** (Supabase allows template edits only with custom SMTP), you can switch the template to a direct link, which works in any browser. Under **Authentication → Emails → Confirm signup**, change the link to:
+**How the confirmation link works:**
 
-```
-{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email&locale={{ .Data.language_pref }}
-```
-
-The `/auth/confirm` route handles both link shapes, so this is optional.
-
-If you turn **Confirm email** off under **Authentication → Sign In / Providers → Email**, new users are logged in right after signup and no email is sent.
+- **The template's link:** it goes straight to `/auth/confirm?…&token_hash=…&type=email`. The app verifies the token on the server (`verifyOtp`), so the link works in any browser. Signup sets the start of the link (`emailRedirectTo`), which carries the user's language and where to go next.
+- **The default link (`?code=`):** the route still accepts it. That link only completes the login in the browser where the user signed up (PKCE). Opened elsewhere, the address is confirmed anyway, and the login page says to try logging in.
 
 ## Run
 
@@ -162,7 +134,9 @@ A [husky](https://typicode.github.io/husky/) pre-push hook runs the same checks 
 
 ## Deploy (Vercel)
 
-[`docs/deploy.md`](docs/deploy.md) is the step-by-step checklist: the Vercel project (Root Directory `apps/web`, the two public variables, production from `main`, no previews), the Supabase Auth URLs, tester sign-ups, a smoke test, and the release order for every later change (database first, then the merge; [ADR 0017](docs/decisions/0017-vercel-hosting-and-release-order.md)).
+[`docs/deploy.md`](docs/deploy.md) is the step-by-step checklist: the Vercel project (Root Directory `apps/web`, the two public variables, production from `main`, no previews), the Supabase Auth URLs, sign-ups and the Confirm signup email template, a smoke test, the release order for every later change (database first, then the merge; [ADR 0017](docs/decisions/0017-vercel-hosting-and-release-order.md)), and the daily keep-alive that stops the free Supabase project from pausing (`.github/workflows/keep-alive.yml`).
+
+**The feedback form:** the surah page's feedback button opens `NEXT_PUBLIC_FEEDBACK_URL` (optional, set in Vercel). Without it, the button reads "Feedback form coming soon".
 
 ## Project history
 
