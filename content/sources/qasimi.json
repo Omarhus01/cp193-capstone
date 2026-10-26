@@ -5,7 +5,7 @@
     "titleAr": "محاسن التأويل",
     "titleEn": "Maḥāsin al-Taʾwīl",
     "author": "al-Qāsimī",
-    "edition": null,
+    "edition": "Dār al-Kutub al-ʿIlmiyya, Beirut, 1st ed., 1418, ed. Muḥammad Bāsil ʿUyūn al-Sūd",
     "type": "tafsir"
   },
   "passages": [
@@ -15,7 +15,8 @@
       "page": "228–230",
       "verse": null,
       "textAr": null,
-      "summary": { "en": null, "ko": null }
+      "summary": { "en": null, "ko": null },
+      "url": "https://shamela.ws/book/23631/227"
     }
   ]
 }

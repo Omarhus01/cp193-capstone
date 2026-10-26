@@ -5,17 +5,18 @@
     "titleAr": "أضواء البيان",
     "titleEn": "Aḍwāʾ al-Bayān",
     "author": "al-Shinqīṭī",
-    "edition": null,
+    "edition": "Dār al-Fikr, Beirut, 1415/1995",
     "type": "tafsir"
   },
   "passages": [
     {
-      "id": "shinqiti-1-50-53",
+      "id": "shinqiti-1-5-9",
       "volume": "1",
-      "page": "50–53",
+      "page": "5–9",
       "verse": null,
       "textAr": null,
-      "summary": { "en": null, "ko": null }
+      "summary": { "en": null, "ko": null },
+      "url": "https://shamela.ws/book/22918/2"
     }
   ]
 }
