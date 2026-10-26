@@ -62,7 +62,7 @@
         ]
       },
       "contextLinks": [],
-      "status": "ko_drafted",
+      "status": "published",
       "review": [
         { "status": "en_approved", "reviewer": "Omar Ibrahim", "date": "2026-10-24" },
         {
@@ -70,6 +70,18 @@
           "reviewer": "Omar Ibrahim",
           "date": "2026-10-24",
           "notes": "Korean drafted with AI assistance; pending review by Korean readers"
+        },
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
         }
       ]
     },
@@ -160,7 +172,7 @@
         ]
       },
       "contextLinks": [],
-      "status": "ko_drafted",
+      "status": "published",
       "review": [
         { "status": "en_approved", "reviewer": "Omar Ibrahim", "date": "2026-10-24" },
         {
@@ -168,6 +180,18 @@
           "reviewer": "Omar Ibrahim",
           "date": "2026-10-24",
           "notes": "Korean drafted with AI assistance; pending review by Korean readers"
+        },
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
         }
       ]
     },
@@ -239,7 +263,7 @@
         ]
       },
       "contextLinks": [],
-      "status": "ko_drafted",
+      "status": "published",
       "review": [
         { "status": "en_approved", "reviewer": "Omar Ibrahim", "date": "2026-10-24" },
         {
@@ -247,6 +271,18 @@
           "reviewer": "Omar Ibrahim",
           "date": "2026-10-24",
           "notes": "Korean drafted with AI assistance; pending review by Korean readers"
+        },
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
         }
       ]
     },
@@ -326,7 +362,7 @@
         ]
       },
       "contextLinks": [],
-      "status": "ko_drafted",
+      "status": "published",
       "review": [
         { "status": "en_approved", "reviewer": "Omar Ibrahim", "date": "2026-10-24" },
         {
@@ -334,6 +370,18 @@
           "reviewer": "Omar Ibrahim",
           "date": "2026-10-24",
           "notes": "Korean drafted with AI assistance; pending review by Korean readers"
+        },
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
         }
       ]
     }
