@@ -2,7 +2,10 @@ import { existsSync } from "node:fs";
 import { defineConfig, devices } from "@playwright/test";
 
 const PORT = 3100;
-const baseURL = `http://localhost:${PORT}`;
+// E2E_BASE_URL points the tests at a deployed site (npm run test:smoke, docs/deploy.md). Then no
+// local server is built or started.
+const deployedURL = process.env.E2E_BASE_URL?.replace(/\/$/, "");
+const baseURL = deployedURL ?? `http://localhost:${PORT}`;
 
 // Placeholder Supabase settings for when .env.local is missing (the logged-out tests never contact
 // Supabase). They must not be set otherwise: variables in the environment override .env.local in
@@ -27,11 +30,13 @@ export default defineConfig({
     trace: "on-first-retry",
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
-  webServer: {
-    command: `npm run build && npm run start -- --port ${PORT}`,
-    url: `${baseURL}/en`,
-    timeout: 240_000,
-    reuseExistingServer: !process.env.CI,
-    env: placeholderSupabaseEnv,
-  },
+  webServer: deployedURL
+    ? undefined
+    : {
+        command: `npm run build && npm run start -- --port ${PORT}`,
+        url: `${baseURL}/en`,
+        timeout: 240_000,
+        reuseExistingServer: !process.env.CI,
+        env: placeholderSupabaseEnv,
+      },
 });

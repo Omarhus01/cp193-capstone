@@ -125,6 +125,7 @@ npm run lint           # ESLint
 npm run typecheck      # generates Next route types, then runs tsc
 npm test               # Vitest unit tests
 npm run test:e2e       # Playwright end-to-end tests (builds and starts the app on port 3100)
+E2E_BASE_URL=https://<domain> npm run test:smoke   # read-only checks against a deployed site
 ```
 
 Before the first end-to-end run, install the browser once:
@@ -161,10 +162,7 @@ A [husky](https://typicode.github.io/husky/) pre-push hook runs the same checks 
 
 ## Deploy (Vercel)
 
-1. Import the GitHub repository in Vercel.
-2. Set **Root Directory** to `apps/web`. Vercel detects Next.js and installs from the workspace root.
-3. Add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` under **Settings → Environment Variables**.
-4. Deploy. Then add the Vercel domain to the Supabase Site URL and Redirect URLs, as described above.
+[`docs/deploy.md`](docs/deploy.md) is the step-by-step checklist: the Vercel project (Root Directory `apps/web`, the two public variables, production from `main`, no previews), the Supabase Auth URLs, tester sign-ups, a smoke test, and the release order for every later change (database first, then the merge; [ADR 0017](docs/decisions/0017-vercel-hosting-and-release-order.md)).
 
 ## Project history
 
