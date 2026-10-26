@@ -20,6 +20,8 @@ The hosted database must be up to date: every migration pushed (`npx supabase db
 
    Never add the secret key (`sb_secret_…`), the legacy `service_role` key, or `SUPABASE_SERVICE_ROLE_KEY` to Vercel: they bypass row level security, and the site doesn't need them. If either variable above is missing, the Vercel build stops with a message naming them, instead of deploying a site whose every page fails.
 
+   **Optional:** `NEXT_PUBLIC_FEEDBACK_URL`, the link to the user-testing feedback form, for example a Google Form. The surah page's feedback button opens it in a new tab. Without it, the button reads "Feedback form coming soon". Like the other two, it's built into the site, so redeploy after adding or changing it (**Deployments** → the latest → **Redeploy**).
+
 5. Click **Deploy**. When it finishes, note the production domain, `<project>.vercel.app`. Below, `<domain>` means that domain.
 6. **Settings → Git → Production Branch:** `main`.
 7. **Settings → Build and Deployment → Node.js Version:** 22.x.
@@ -30,18 +32,44 @@ The hosted database must be up to date: every migration pushed (`npx supabase db
 1. **Site URL:** `https://<domain>`
 2. **Redirect URLs:** add `https://<domain>/auth/confirm**`. Keep `http://localhost:3000/auth/confirm**` for local work. The `**` matters: the confirmation link carries `?locale=…&next=…`. No wildcard for previews.
 
-## 4. Tester sign-ups
+## 4. Sign-ups and the confirmation email
 
-Two things testers can run into when they create an account:
+**The current setup:** **Confirm email** is on (**Authentication → Sign In / Providers → Email**). Supabase sends auth emails through custom SMTP with a Gmail account (**Authentication → Emails → SMTP Settings**: `smtp.gmail.com`, the Gmail address as the username, and a Google app password, never the account password). That lifts the built-in sender's limits: it delivers to any address, not only to members of the Supabase organization.
 
-- **Email limit.** Supabase's built-in email sender only sends a few emails per hour per project. When several testers sign up at once, the next ones see "We could not create the account. Try again." / "계정을 만들지 못했습니다. 다시 시도하세요." #16 makes that message clearer, and #18 sets up our own sender.
-- **Opening the confirmation link in another browser.** The link completes the login only in the browser where the account was created (PKCE). Checked on a local Supabase with confirmation turned on:
-  - **Same browser:** the link confirms the address and the tester lands logged in, on the page they started from.
-  - **Different browser** (for example the Gmail app's built-in browser on a phone): the address **is confirmed anyway**, but the tester lands on the login page with "The confirmation link is invalid or has expired." / "확인 링크가 올바르지 않거나 만료되었습니다.". They can simply log in there with their email and password. The message is misleading; #17 makes it gentler.
+**Things to know:**
 
-  Tell testers: "If the link says it's invalid, just log in."
+- **Spam folder:** mail sent through Gmail for another site can land in spam. The sign-up page tells new users to look there. A sender on our own domain (#18) would help.
+- **Rate limit:** Supabase still caps how many auth emails it sends per hour. Check **Authentication → Rate Limits** before a group session. When the cap is hit, the sign-up page shows "We could not create the account. Try again." / "계정을 만들지 못했습니다. 다시 시도하세요." (#16 makes that message clearer).
 
-**Option for the testing window (your decision).** Turn **Confirm email** off under **Authentication → Sign In / Providers → Email**. New accounts are then logged in right after sign-up and no email is sent, which avoids both problems. Turn it back on once our own sender (#18) is set up. Nothing in the app needs to change either way.
+### The Confirm signup template
+
+Supabase's default email link confirms the address and then redirects with a PKCE `code`. That only completes the login in the browser where the account was created. With this template, the link carries a `token_hash` instead, which `/auth/confirm` verifies on the server (`verifyOtp`), so it works in any browser, including the Gmail app on a phone.
+
+Paste it under **Authentication → Emails → Confirm signup**:
+
+**Subject:**
+
+```
+Confirm your email / 이메일 인증
+```
+
+**Message body:**
+
+```html
+<h2>Confirm your email / 이메일 인증</h2>
+<p>Click the link below to confirm your email and log in.</p>
+<p>아래 링크를 눌러 이메일 인증을 완료하고 로그인하세요.</p>
+<p><a href="{{ .RedirectTo }}&token_hash={{ .TokenHash }}&type=email">Confirm my email / 이메일 인증하기</a></p>
+<p>If you didn't sign up, you can ignore this email.</p>
+<p>가입하지 않으셨다면 이 이메일을 무시하셔도 됩니다.</p>
+```
+
+**How the link works:**
+
+- `{{ .RedirectTo }}` is the address the sign-up form asks for: `https://<domain>/auth/confirm?locale=…&next=…`, on the site where the user signed up. It keeps the user's language and the page they started from. The template adds the token to it.
+- **It relies on the Redirect URL in section 3** (`https://<domain>/auth/confirm**`). If the address isn't on that list, Supabase puts the Site URL there instead, and the link breaks.
+- **Links already sent keep working:** the route still accepts the old `?code=` link. Opened in another browser, that one confirms the address but can't log in. The login page then says the email may already be confirmed and to try logging in.
+- `src/lib/services/auth/confirm.test.ts` checks the template above against the route, so the two can't drift apart.
 
 ## 5. Check it worked
 
@@ -49,26 +77,35 @@ Two things testers can run into when they create an account:
 
 ```bash
 E2E_BASE_URL=https://<domain> npm run test:smoke
-# also logs in and opens the surah page, with an existing account that is not a tester:
+# also logs in and opens the surah page, with an existing account:
 E2E_BASE_URL=https://<domain> E2E_EMAIL=… E2E_PASSWORD=… npm run test:smoke
 ```
 
 ```powershell
-$env:E2E_BASE_URL="https://<domain>"; npm run test:smoke
-$env:E2E_EMAIL="…"; $env:E2E_PASSWORD="…"; npm run test:smoke
+$env:E2E_BASE_URL="https://<domain>"; npm run test:smoke; Remove-Item Env:E2E_BASE_URL
+# also logs in and opens the surah page, with an existing account:
+$env:E2E_BASE_URL="https://<domain>"; $env:E2E_EMAIL="…"; $env:E2E_PASSWORD="…"; npm run test:smoke; Remove-Item Env:E2E_BASE_URL, Env:E2E_EMAIL, Env:E2E_PASSWORD
 ```
 
-It checks the redirect from `/`, both home pages, the Tanzil credit, the login redirect of a surah page, the confirm route, `/health`, and, with the account, that Al-Fatiha shows four sections with no tester banner or "Draft" badge.
+In PowerShell, `$env:` variables stay set for the rest of the window, so each line removes them again, even when the run fails. A leftover `E2E_BASE_URL` would send every later `npm run test:e2e` to the deployed site instead of a local build of your branch. Every run prints its target first (`e2e target: …`); check it says `http://localhost:3100` when you mean to test the branch.
+
+**What it checks:**
+
+- the redirect from `/`, both home pages and the Tanzil credit
+- the login redirect of a surah page
+- the sign-up page's email note
+- the confirm route, with its message
+- `/health`
+- **with the account:** Al-Fatiha in both languages, with the note at the top, every section's explanation and sources, and the feedback button (or "Feedback form coming soon")
 
 **By hand:**
 
-1. Sign up a new account at `https://<domain>/ko/signup`.
-2. Open the confirmation email **in the same browser**. The link goes through Supabase to `https://<domain>/auth/confirm…`, and you land logged in.
-3. Log out (계정 → 로그아웃), then log in again.
-4. Open `/ko/surah/1` as a non-tester: no banner, no "초안" badge, every section "해설 준비 중".
-5. Make the account a tester with the SQL in the README ("Tester accounts") and reload: the banner, the badges and the drafts appear. Remove it again if you want.
-6. Check the footer's Tanzil link and the English / 한국어 switch.
-7. **Cross-browser confirmation:** sign up another account on a laptop and open its confirmation email on a phone (or in another browser). You should see the login page with the "invalid or expired" message (section 4); logging in there works.
+1. **Sign up:** create a new account at `https://<domain>/ko/signup` on a phone, with any address. The page asks you to check your inbox and spam folder.
+2. **Confirm in another app:** open the confirmation email in the phone's mail app, so the link opens in a different browser from the one you signed up in. You land logged in, on the page you started from.
+3. **Log out and back in:** log out (계정 → 로그아웃), then log in again.
+4. **Read the surah:** open `/ko/surah/1`. Check the note at the top, the explanation of all four sections, the word meanings, and the pronunciation line.
+5. **Feedback:** check the button at the end of the page on the phone, and in the right column on a laptop. It opens the form in a new tab, or says "설문 곧 제공" until `NEXT_PUBLIC_FEEDBACK_URL` is set.
+6. **Footer and language:** check the footer's Tanzil link and the English / 한국어 switch.
 
 ## 6. Releasing from now on
 
@@ -112,3 +149,23 @@ Error: [BUILD_UTILS_SPAWN_127] Command "npm install" exited with 127
   - skips when `VERCEL` or `CI` is set
   - prints a note and exits 0 when husky isn't installed
   - otherwise installs the hooks as before (`git config core.hooksPath` is `.husky/_`)
+
+## 9. Keeping the Supabase project awake
+
+Supabase pauses a free project after a week without activity. `.github/workflows/keep-alive.yml` prevents that. Once a day, it makes one read-only request: it reads the number of one surah through the REST API, with the public key. It can also be run by hand.
+
+**Add the two repository secrets once.** On GitHub, go to the repository → **Settings → Secrets and variables → Actions → New repository secret**:
+
+| Name | Value |
+|---|---|
+| `SUPABASE_URL` | The same value as `NEXT_PUBLIC_SUPABASE_URL` in Vercel |
+| `SUPABASE_ANON_KEY` | The same value as `NEXT_PUBLIC_SUPABASE_ANON_KEY` in Vercel (the publishable or legacy anon key) |
+
+Never put the secret key or the service role key there; the request needs only public access.
+
+**Run it by hand:** **Actions → Keep Supabase awake → Run workflow**, on `main`. A green run means Supabase answered.
+
+**When it runs:**
+
+- GitHub runs scheduled workflows only from the default branch, so the schedule starts once the workflow is on `main`.
+- GitHub turns schedules off in a repository with no activity for 60 days. **Actions** then shows a banner to turn it back on.

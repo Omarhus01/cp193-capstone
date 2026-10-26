@@ -29,7 +29,7 @@ The full proposal, with the market research, sprint plan, and user-testing plan,
   - The Korean terms for إله and رب come from the Islamic terms glossary once the owner's reviewers approve it (#8). Don't invent them.
   - `findBannedTerms` (`src/lib/services/terminology.ts`) flags 하나님 and capitalized "God" used as a name. Lowercase "god" passes. A unit test runs it over the message files.
 - **Never write Quran verses, translations, explanations, or word meanings.** The project owner provides and validates all religious content in `content/`. Don't generate placeholder verses, explanations or meanings either. The Quran text comes only from Tanzil, through `npm run content:import-tanzil`, and is never edited by hand.
-- **Only published content reaches readers.** Explanations, word meanings and surah briefs go draft → en_approved → ko_drafted → ko_approved → published, one step at a time ([ADR 0011](docs/decisions/0011-content-in-git-seeded-into-supabase.md), `content/README.md`). Testers also see content from en_approved on, marked "Draft" ([ADR 0016](docs/decisions/0016-tester-preview.md)); row level security decides, not the UI.
+- **Only published content reaches readers.** Explanations, word meanings and surah briefs go draft → en_approved → ko_drafted → ko_approved → published, one step at a time ([ADR 0011](docs/decisions/0011-content-in-git-seeded-into-supabase.md), `content/README.md`).
 
 ## Stack (fixed for all sprints)
 
@@ -54,8 +54,8 @@ apps/web/                 Next.js site (npm workspace)
   src/lib/services/       business logic: auth/ (paths, validation, accounts, requireUserId), surah, terminology,
                           review (review steps and tracks), content/ (content file schema, loading, validation,
                           seed payload), reading/ (surah page view, reading preferences)
-  src/lib/data/           all database access: auth, session, content (cached, published), content-preview
-                          (testers, uncached), content-queries (shared); the only importers of lib/supabase
+  src/lib/data/           all database access: auth, session, content (cached, published only), health; the only
+                          importers of lib/supabase
   src/lib/supabase/       browser, server, proxy and public (cookie-less, for published content) client factories
   scripts/                content tooling run with tsx: import-tanzil, import-tanzil-metadata, write-content-schema,
                           seed-content
@@ -96,6 +96,8 @@ npm run content:schema # rewrite content/schema/ after changing the Zod schemas
 E2E_BASE_URL=https://<domain> npm run test:smoke   # read-only smoke run against a deployed site
 npm run content:import-tanzil-metadata -- <quran-data.xml>  # rewrite content/quran-metadata.json
 ```
+
+`.github/workflows/keep-alive.yml` reads one public row from Supabase once a day so the free project doesn't pause (`docs/deploy.md`, section 9).
 
 `.github/workflows/ci.yml` runs format:check, lint, typecheck, and test on every push and PR. Its job, `Format, lint, typecheck, unit tests`, is a required check on `main`. A husky pre-push hook (`.husky/pre-push`) runs the same checks locally as a safety net and blocks the push if any fail. `npm install` sets it up through the `prepare` script. Don't bypass the hook with `--no-verify`.
 
@@ -148,8 +150,7 @@ app/ (routes, pages, server actions) → components/ → lib/services/ → lib/d
 - **Tanzil credit:** every page that shows Quran text must credit the Tanzil Project with a link to tanzil.net. The global `SiteFooter` does this; don't remove it.
 - **Layout:** pages with columns use `PageLayout` (`sidebar` and `aside` props). The right column shows on wide screens only, so a page puts its phone version inline.
 - **e2e with content:** tests that need content seed fixtures into a local Supabase (`e2e/local-supabase.ts`), and are skipped unless `E2E_LOCAL_SUPABASE=1` with a local URL. Never point them at the hosted project.
-- **Drafts never touch the cache:** published content is read in `lib/data/content.ts` (anon client, `"use cache"`); testers' drafts only through `lib/data/content-preview.ts` (session client, never cached). Don't add `"use cache"` to the preview path or a session client to the cached one; `content-cache.test.ts` checks both. The tester list (`public.tester`) is changed only with SQL by the owner (README, "Tester accounts").
 - **Database:** every table has row level security enabled with explicit policies. Change the schema only through a new migration file. Never edit an applied migration. The database changes before the code (db push, seed, then merge), so a migration must keep working with the code already on `main`.
-- **Secrets:** the deployed site holds only `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`. The service role key is never read by app code (`src/deploy.test.ts`) and never goes to Vercel.
+- **Secrets:** the deployed site holds only public values: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and the optional `NEXT_PUBLIC_FEEDBACK_URL`. The service role key is never read by app code (`src/deploy.test.ts`) and never goes to Vercel or GitHub. The keep-alive workflow uses only the `SUPABASE_URL` and `SUPABASE_ANON_KEY` repository secrets.
 - **Test data stays local:** helpers that write data (`e2e/local-supabase.ts`) refuse a non-local Supabase URL, and before signing up or logging in through the app they check the server's `/health` (`assertLocalTestServer`). Use them in any new script that writes test data; never sign up test accounts through a server you haven't checked.
 - **Code style:** keep components small and clearly named. Other people read this code. Put pure logic in `src/lib/services/`, with a colocated `*.test.ts`.

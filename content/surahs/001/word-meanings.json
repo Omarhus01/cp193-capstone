@@ -15,7 +15,7 @@
           "ko": "\"알라\"라는 이름과 나란히 불림"
         }
       ],
-      "status": "ko_drafted",
+      "status": "published",
       "review": [
         { "status": "en_approved", "reviewer": "Omar Ibrahim", "date": "2026-10-24" },
         {
@@ -23,6 +23,18 @@
           "reviewer": "Omar Ibrahim",
           "date": "2026-10-24",
           "notes": "Korean drafted with AI assistance; pending review by Korean readers"
+        },
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
         }
       ]
     },
@@ -40,7 +52,7 @@
           "ko": "\"믿는 이들에게 자비로우신\""
         }
       ],
-      "status": "ko_drafted",
+      "status": "published",
       "review": [
         { "status": "en_approved", "reviewer": "Omar Ibrahim", "date": "2026-10-24" },
         {
@@ -48,6 +60,18 @@
           "reviewer": "Omar Ibrahim",
           "date": "2026-10-24",
           "notes": "Korean drafted with AI assistance; pending review by Korean readers"
+        },
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
         }
       ]
     },
@@ -59,7 +83,7 @@
       },
       "citations": ["ibn-uthaymin-9-24", "qurtubi-on-1-2"],
       "elsewhere": [],
-      "status": "ko_drafted",
+      "status": "published",
       "review": [
         { "status": "en_approved", "reviewer": "Omar Ibrahim", "date": "2026-10-24" },
         {
@@ -67,6 +91,18 @@
           "reviewer": "Omar Ibrahim",
           "date": "2026-10-24",
           "notes": "Korean drafted with AI assistance; pending review by Korean readers"
+        },
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
         }
       ]
     },
@@ -81,7 +117,7 @@
           "ko": "사람들 (\"알알라민 가운데에서\")"
         }
       ],
-      "status": "ko_drafted",
+      "status": "published",
       "review": [
         { "status": "en_approved", "reviewer": "Omar Ibrahim", "date": "2026-10-24" },
         {
@@ -89,6 +125,18 @@
           "reviewer": "Omar Ibrahim",
           "date": "2026-10-24",
           "notes": "Korean drafted with AI assistance; pending review by Korean readers"
+        },
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
         }
       ]
     },
@@ -106,7 +154,7 @@
           "ko": "\"알라\"라는 이름과 나란히 불림"
         }
       ],
-      "status": "ko_drafted",
+      "status": "published",
       "review": [
         { "status": "en_approved", "reviewer": "Omar Ibrahim", "date": "2026-10-24" },
         {
@@ -114,6 +162,18 @@
           "reviewer": "Omar Ibrahim",
           "date": "2026-10-24",
           "notes": "Korean drafted with AI assistance; pending review by Korean readers"
+        },
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
         }
       ]
     },
@@ -131,7 +191,7 @@
           "ko": "\"믿는 이들에게 자비로우신\""
         }
       ],
-      "status": "ko_drafted",
+      "status": "published",
       "review": [
         { "status": "en_approved", "reviewer": "Omar Ibrahim", "date": "2026-10-24" },
         {
@@ -139,6 +199,18 @@
           "reviewer": "Omar Ibrahim",
           "date": "2026-10-24",
           "notes": "Korean drafted with AI assistance; pending review by Korean readers"
+        },
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
         }
       ]
     },
@@ -150,7 +222,7 @@
       },
       "citations": ["ibn-uthaymin-9-24", "qasimi-1-228-230"],
       "elsewhere": [{ "verse": "109:6", "en": "religion, deeds", "ko": "종교, 행위" }],
-      "status": "ko_drafted",
+      "status": "published",
       "review": [
         { "status": "en_approved", "reviewer": "Omar Ibrahim", "date": "2026-10-24" },
         {
@@ -158,6 +230,18 @@
           "reviewer": "Omar Ibrahim",
           "date": "2026-10-24",
           "notes": "Korean drafted with AI assistance; pending review by Korean readers"
+        },
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
         }
       ]
     },
@@ -179,7 +263,7 @@
           "ko": "아랍어 용례: 발길에 닳아 반들반들해진 길을 \"무압바드\"라고 부름"
         }
       ],
-      "status": "ko_drafted",
+      "status": "published",
       "review": [
         { "status": "en_approved", "reviewer": "Omar Ibrahim", "date": "2026-10-24" },
         {
@@ -187,6 +271,18 @@
           "reviewer": "Omar Ibrahim",
           "date": "2026-10-24",
           "notes": "Korean drafted with AI assistance; pending review by Korean readers"
+        },
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
         }
       ]
     },
@@ -204,7 +300,7 @@
           "ko": "\"그들을 지옥 불의 길로 인도하라\" (벌로 이끄는 경우에도 쓰임)"
         }
       ],
-      "status": "ko_drafted",
+      "status": "published",
       "review": [
         { "status": "en_approved", "reviewer": "Omar Ibrahim", "date": "2026-10-24" },
         {
@@ -212,6 +308,18 @@
           "reviewer": "Omar Ibrahim",
           "date": "2026-10-24",
           "notes": "Korean drafted with AI assistance; pending review by Korean readers"
+        },
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
         }
       ]
     },
@@ -229,7 +337,7 @@
           "ko": "사라지다, 없어지다 (\"우리가 땅속에서 사라졌을 때\")"
         }
       ],
-      "status": "ko_drafted",
+      "status": "published",
       "review": [
         { "status": "en_approved", "reviewer": "Omar Ibrahim", "date": "2026-10-24" },
         {
@@ -237,6 +345,18 @@
           "reviewer": "Omar Ibrahim",
           "date": "2026-10-24",
           "notes": "Korean drafted with AI assistance; pending review by Korean readers"
+        },
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
         }
       ]
     }

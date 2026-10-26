@@ -1,6 +1,7 @@
 import { expect, test, type BrowserContext, type Page } from "@playwright/test";
 import en from "../messages/en.json";
 import ko from "../messages/ko.json";
+import { expectPublishedAlFatiha } from "./al-fatiha";
 
 // Tests that log in with a real account on the Supabase project in .env.local. They run only when
 // E2E_EMAIL and E2E_PASSWORD are set in the environment (never commit them):
@@ -127,8 +128,9 @@ test.describe("with a real account", () => {
     await expect(page.getByText(en.home.accountHint)).toHaveCount(0);
   });
 
-  test("the test account is not a tester: no banner and no draft badges", async ({ page }) => {
-    // Testers see content in review (ADR 0016); this account must see what every reader sees.
+  test("Al-Fatiha is published: the review note, every section's explanation, the feedback button", async ({
+    page,
+  }) => {
     await page.goto("/en/login?next=%2Fen%2Fsurah%2F1");
     await submitLogin(page, en);
     await expect(page).toHaveURL(/\/en\/surah\/1$/, AFTER_LOGIN);
@@ -138,10 +140,7 @@ test.describe("with a real account", () => {
       ["/ko/surah/1", ko],
     ] as const) {
       await page.goto(path);
-      await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-      await page.waitForLoadState("networkidle");
-      await expect(page.getByText(messages.tester.bannerTitle)).toHaveCount(0);
-      await expect(page.getByTitle(messages.tester.draftLabel)).toHaveCount(0);
+      await expectPublishedAlFatiha(page, messages);
     }
   });
 });

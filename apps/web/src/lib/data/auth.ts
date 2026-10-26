@@ -22,21 +22,6 @@ export async function getCurrentUserId(): Promise<string | null> {
   return data?.claims.sub ?? null;
 }
 
-/**
- * Whether the logged-in user is on the tester list (ADR 0016). The database function answers for
- * the caller only. False when logged out, and on any error, so a failure never shows drafts.
- */
-export async function isTester(): Promise<boolean> {
-  await connection();
-  const supabase = await createClient();
-  return testerFromRpc(await supabase.rpc("is_tester"));
-}
-
-/** The result of the is_tester() call: true only for an explicit true. */
-export function testerFromRpc(result: { data: unknown; error: unknown }): boolean {
-  return result.error === null && result.data === true;
-}
-
 /** Logs in with email and password. On failure, returns Supabase's error code. */
 export async function signInWithPassword(
   credentials: Credentials,

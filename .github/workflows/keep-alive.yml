@@ -1,0 +1,29 @@
+name: Keep Supabase awake
+
+# Supabase pauses a free project after a week without activity. Once a day, this reads one row of
+# a public table through the REST API, with the public key only (docs/deploy.md, section 9).
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ping:
+    name: Read one surah
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Read one surah from the REST API
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "::error::Add the SUPABASE_URL and SUPABASE_ANON_KEY repository secrets (docs/deploy.md, section 9)."
+            exit 1
+          fi
+          curl --fail-with-body --silent --show-error --max-time 30 \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            "${SUPABASE_URL%/}/rest/v1/surah?select=number&limit=1"

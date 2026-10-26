@@ -1,5 +1,6 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { confirmRedirectUrl, readConfirmParams } from "./confirm";
+import { CONFIRM_PATH, confirmRedirectUrl, readConfirmParams } from "./confirm";
 
 const read = (query: string) => readConfirmParams(new URLSearchParams(query));
 
@@ -61,5 +62,44 @@ describe("confirmRedirectUrl", () => {
       next: "/en/surah/3",
       credential: { kind: "code", code: "abc" },
     });
+  });
+});
+
+describe("the Confirm signup email template (docs/deploy.md)", () => {
+  // The owner pastes this template into Supabase. Its link must keep reaching this route with
+  // everything the route needs, in any browser.
+  const deployDoc = readFileSync(
+    new URL("../../../../../../docs/deploy.md", import.meta.url),
+    "utf8",
+  );
+  const template = [...deployDoc.matchAll(/```html\n([\s\S]*?)```/g)]
+    .map((match) => match[1])
+    .find((block) => block.includes("{{ .TokenHash }}"));
+
+  /** The link as Supabase sends it, for a sign-up that asked for `redirectTo`. */
+  function emailLink(redirectTo: string, tokenHash: string): URL {
+    const href = template?.match(/<a href="([^"]+)"/)?.[1];
+    expect(href).toBeDefined();
+    const filled = href!
+      .replace("{{ .RedirectTo }}", redirectTo)
+      .replace("{{ .TokenHash }}", tokenHash)
+      .replaceAll("&amp;", "&");
+    return new URL(filled);
+  }
+
+  it("links to the confirm route with a token hash, keeping the language and next page", () => {
+    const signup = confirmRedirectUrl("https://cp193-capstone.vercel.app", "ko", "/ko/surah/1");
+    const link = emailLink(signup, "pkce_0123abcd");
+    expect(link.origin + link.pathname).toBe(`https://cp193-capstone.vercel.app${CONFIRM_PATH}`);
+    expect(readConfirmParams(link.searchParams)).toEqual({
+      locale: "ko",
+      next: "/ko/surah/1",
+      credential: { kind: "otp", tokenHash: "pkce_0123abcd", type: "email" },
+    });
+  });
+
+  it("uses only the token hash, so it works in a browser other than the one that signed up", () => {
+    expect(template).not.toContain("{{ .ConfirmationURL }}");
+    expect(template).not.toContain("code=");
   });
 });

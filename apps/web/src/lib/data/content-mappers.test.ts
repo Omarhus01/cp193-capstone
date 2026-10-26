@@ -54,7 +54,6 @@ describe("toExplanation", () => {
   const row: ExplanationRow = {
     id: "note",
     kind: "phrase_note",
-    status: "ko_drafted",
     span: span("1:2:1-1:2:3", [1, 2, 1], [1, 2, 3]),
     explanation_item: [
       {
@@ -126,9 +125,8 @@ describe("toExplanation", () => {
     ]);
   });
 
-  it("keeps the explanation's status, passages and context links in their order", () => {
+  it("keeps the explanation's passages and context links in their order", () => {
     const explanation = toExplanation(row);
-    expect(explanation.status).toBe("ko_drafted");
     expect(explanation.span).toEqual({
       start: { surah: 1, ayah: 2, word: 1 },
       end: { surah: 1, ayah: 2, word: 3 },
@@ -140,45 +138,32 @@ describe("toExplanation", () => {
 
 describe("toVerse", () => {
   it("orders the words by position", () => {
-    const verse = toVerse(
-      {
-        surah: 1,
-        ayah: 1,
-        text_ar: "ابت ثجح",
-        word: [
-          { position: 2, text_ar: "ثجح", root: null },
-          { position: 1, text_ar: "ابت", root: null },
-        ],
-        verse_transliteration: [],
-      },
-      "published",
-    );
+    const verse = toVerse({
+      surah: 1,
+      ayah: 1,
+      text_ar: "ابت ثجح",
+      word: [
+        { position: 2, text_ar: "ثجح", root: null },
+        { position: 1, text_ar: "ابت", root: null },
+      ],
+      verse_transliteration: [],
+    });
     expect(verse.words.map((w) => w.position)).toEqual([1, 2]);
     expect(verse.transliteration).toEqual({ en: null, ko: null });
-    expect(verse.transliterationStatus).toEqual({ en: null, ko: null });
   });
 
-  const withDraft = {
-    surah: 1,
-    ayah: 1,
-    text_ar: "ابت",
-    word: [{ position: 1, text_ar: "ابت", root: null }],
-    verse_transliteration: [
-      { language: "ko" as const, text: "[ko]", status: "published" as const },
-      { language: "en" as const, text: "[en draft]", status: "draft" as const },
-    ],
-  };
-
-  it("keeps only published transliterations on the published path", () => {
-    const verse = toVerse(withDraft, "published");
+  it("keeps only published transliterations, by language", () => {
+    const verse = toVerse({
+      surah: 1,
+      ayah: 1,
+      text_ar: "ابت",
+      word: [{ position: 1, text_ar: "ابت", root: null }],
+      verse_transliteration: [
+        { language: "ko", text: "[ko]", status: "published" },
+        { language: "en", text: "[en draft]", status: "draft" },
+      ],
+    });
     expect(verse.transliteration).toEqual({ en: null, ko: "[ko]" });
-    expect(verse.transliterationStatus).toEqual({ en: null, ko: "published" });
-  });
-
-  it("keeps a tester's draft transliteration on the preview path, with its status", () => {
-    const verse = toVerse(withDraft, "preview");
-    expect(verse.transliteration).toEqual({ en: "[en draft]", ko: "[ko]" });
-    expect(verse.transliterationStatus).toEqual({ en: "draft", ko: "published" });
   });
 });
 
@@ -190,7 +175,6 @@ describe("toWordMeaning", () => {
       position: 4,
       meaning_en: "[en]",
       meaning_ko: "[ko]",
-      status: "en_approved",
       word_meaning_citation: [{ passage_id: "p", sort_order: 0, quoting: "[narrator]" }],
       word_meaning_elsewhere: [
         { sort_order: 1, verse_surah: null, verse_ayah: null, text_en: "[usage]", text_ko: null },
@@ -199,7 +183,6 @@ describe("toWordMeaning", () => {
     });
     expect(meaning).toEqual({
       word: { surah: 2, ayah: 3, word: 4 },
-      status: "en_approved",
       meaning: { en: "[en]", ko: "[ko]" },
       citations: [{ passageId: "p", quoting: "[narrator]" }],
       elsewhere: [
@@ -211,27 +194,21 @@ describe("toWordMeaning", () => {
 });
 
 describe("toBrief", () => {
-  it("keeps the status and orders the paragraphs and their citations", () => {
+  it("orders the paragraphs and their citations", () => {
     expect(
-      toBrief({
-        status: "ko_drafted",
-        surah_brief_item: [
-          { sort_order: 1, text_en: "b", text_ko: null, surah_brief_item_citation: [] },
-          {
-            sort_order: 0,
-            text_en: "a",
-            text_ko: "가",
-            surah_brief_item_citation: [{ sort_order: 0, passage_id: "p", quoting: null }],
-          },
-        ],
-      }),
-    ).toEqual({
-      status: "ko_drafted",
-      items: [
-        { text: { en: "a", ko: "가" }, citations: [{ passageId: "p", quoting: null }] },
-        { text: { en: "b", ko: null }, citations: [] },
-      ],
-    });
+      toBrief([
+        { sort_order: 1, text_en: "b", text_ko: null, surah_brief_item_citation: [] },
+        {
+          sort_order: 0,
+          text_en: "a",
+          text_ko: "가",
+          surah_brief_item_citation: [{ sort_order: 0, passage_id: "p", quoting: null }],
+        },
+      ]),
+    ).toEqual([
+      { text: { en: "a", ko: "가" }, citations: [{ passageId: "p", quoting: null }] },
+      { text: { en: "b", ko: null }, citations: [] },
+    ]);
   });
 });
 

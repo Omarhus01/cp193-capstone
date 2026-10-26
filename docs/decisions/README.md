@@ -21,7 +21,6 @@ Records are not rewritten when a decision changes. Add a new record and set the 
 | [0013](0013-public-reading-structure-and-transliteration.md) | Reading structure is public; transliteration is reviewed per language | Accepted |
 | [0014](0014-page-layout-preferences-and-caching.md) | Page layout slots, reading preferences in cookies, cached published content | Accepted |
 | [0015](0015-explanation-items-and-verse-references.md) | Explanations are items with their own citations; related verses are references | Accepted |
-| [0016](0016-tester-preview.md) | Tester preview: a service-role tester list, RLS policies, and an uncached draft path | Accepted |
 | [0017](0017-vercel-hosting-and-release-order.md) | Hosting on Vercel; database first, then code | Accepted |
 
 ## Template

@@ -5,10 +5,8 @@ import type {
   Localized,
   Passage,
   ReadingSectionSummary,
-  ReviewStatus,
   Span,
   Surah,
-  SurahBrief,
   SurahContent,
   Verse,
   VerseRef,
@@ -31,10 +29,8 @@ export type VerseView = VerseRef & {
   anchor: string;
   /** Joined with single spaces, the tokens are the verse text exactly as Tanzil has it. */
   tokens: VerseToken[];
-  /** Transliteration per language, or null. Testers also get drafts. */
+  /** Published transliteration per language, or null. */
   transliteration: Localized;
-  /** Per language: whether the transliteration is a draft, shown with a "Draft" badge (ADR 0016). */
-  transliterationDraft: { en: boolean; ko: boolean };
 };
 
 /**
@@ -87,8 +83,6 @@ export type SectionView = {
   verses: VerseView[];
   /** Whether its explanation is published. When false, the section list says it is in review. */
   published: boolean;
-  /** Whether a tester sees its explanation before it is published: it gets a "Draft" badge. */
-  draft: boolean;
   /** The section's words that have a published meaning, for their popovers. */
   words: Record<string, WordDetail>;
   /** Null when there is nothing to show yet: the page says the explanation is coming soon. */
@@ -110,8 +104,6 @@ export type WordDetail = {
   ref: VerseRef & { word: number };
   textAr: string;
   root: string | null;
-  /** Whether the meaning is still in review (testers only): the popover shows a "Draft" badge. */
-  draft: boolean;
   meaning: Localized;
   sources: SourceView[];
   elsewhere: ElsewhereView[];
@@ -119,8 +111,8 @@ export type WordDetail = {
 
 export type SurahPageView = {
   surah: Surah;
-  /** The brief's paragraphs with their sources, or null. `draft` when a tester sees it in review. */
-  brief: { draft: boolean; items: ItemView[] } | null;
+  /** The published brief's paragraphs with their sources, or null. */
+  brief: ItemView[] | null;
   sections: SectionView[];
   /** Keyed by "surah:ayah:word". Only words with a published meaning are here. */
   words: Record<string, WordDetail>;
@@ -186,9 +178,6 @@ function sourceNumbering(passages: ReadonlyMap<string, Passage>) {
 
 const written = (text: Localized) => Boolean(text.en || text.ko);
 
-/** Content a tester sees before it is published (ADR 0016). Missing content isn't a draft. */
-const isDraft = (status: ReviewStatus | null) => status !== null && status !== "published";
-
 function verseLink(verse: VerseRef, available: ReadonlySet<string>): VerseLink {
   return {
     label: verseKey(verse),
@@ -239,16 +228,13 @@ export function explanationView(
 
 /** The brief's paragraphs with their sources, numbered within the brief. */
 export function briefView(
-  brief: SurahBrief,
+  brief: readonly ContentItem[],
   passages: ReadonlyMap<string, Passage>,
-): { draft: boolean; items: ItemView[] } {
+): ItemView[] {
   const sources = sourceNumbering(passages);
-  return {
-    draft: brief.status !== "published",
-    items: brief.items
-      .filter(({ text }) => written(text))
-      .map(({ text, citations }) => ({ text, sources: sources(citations) })),
-  };
+  return brief
+    .filter(({ text }) => written(text))
+    .map(({ text, citations }) => ({ text, sources: sources(citations) }));
 }
 
 /** A surah without reading sections still shows every verse: one block per verse. */
@@ -302,13 +288,8 @@ export function buildSurahPageView(
           meanings.has(wordKey({ surah: verse.surah, ayah: verse.ayah, word })),
         ),
         transliteration: verse.transliteration,
-        transliterationDraft: {
-          en: isDraft(verse.transliterationStatus.en),
-          ko: isDraft(verse.transliterationStatus.ko),
-        },
       })),
-      published: section.explanation?.status === "published",
-      draft: isDraft(section.explanation?.status ?? null),
+      published: section.explanation !== null,
       words: {},
       explanation: section.explanation
         ? explanationView(section.explanation, passagesById, available)
@@ -330,7 +311,6 @@ export function buildSurahPageView(
         ref,
         textAr: word.textAr,
         root: word.root,
-        draft: isDraft(meaning.status),
         meaning: meaning.meaning,
         sources: sourceNumbering(passagesById)(meaning.citations),
         elsewhere: meaning.elsewhere.map((note) => ({
@@ -362,7 +342,7 @@ export function citedPassageIds(content: SurahContent): string[] {
   const ids = new Set([
     ...content.readingSections.flatMap((section) => section.explanation?.passageIds ?? []),
     ...content.wordMeanings.flatMap((meaning) => meaning.citations.map((c) => c.passageId)),
-    ...(content.brief?.items ?? []).flatMap((item) => item.citations.map((c) => c.passageId)),
+    ...(content.brief ?? []).flatMap((item) => item.citations.map((c) => c.passageId)),
   ]);
   return [...ids].sort();
 }

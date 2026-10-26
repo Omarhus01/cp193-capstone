@@ -1,6 +1,5 @@
 import type { ContentBundle, SurahFiles } from "../../src/lib/services/content/load";
 import type { ItemEntry } from "../../src/lib/services/content/schema";
-import type { ReviewEntry } from "../../src/lib/services/review";
 import {
   explanation,
   testMetadata,
@@ -63,12 +62,6 @@ const point = (label: string, citations: ItemEntry["citations"]): ItemEntry => (
   citations,
 });
 
-/** The review history of content in review: English approved, Korean drafted. */
-const IN_REVIEW: ReviewEntry[] = [
-  { status: "en_approved", reviewer: "[Reviewer]", date: "2026-10-01" },
-  { status: "ko_drafted", reviewer: "[Reviewer]", date: "2026-10-02" },
-];
-
 /** The name the fixture's quoting citations give. */
 export const FIXTURE_NARRATOR = "[Fixture narrator]";
 
@@ -77,12 +70,10 @@ export const FIXTURE_NARRATOR = "[Fixture narrator]";
  * - 1:1–2, published: two meaning points (the first with **bold**, *italic*, and two sources, one
  *   of them quoting), a background point, a word meanings part (never shown), and related verses
  *   2:1 (imported, so a link) and 40:6 (not imported, so text)
- * - 1:3, in review (ko_drafted): readers see "explanation coming soon", testers see it as a draft
+ * - 1:3, a draft: "explanation coming soon"
  * - 1:4–5, published, with one meaning point
- * Word meanings: 1:1:1 with elsewhere notes (2:1, and one without a verse); 1:2:2 with none;
- * 1:3:1 in review (testers only); 1:4:2 a plain draft (nobody sees it).
- * Transliterations: 1:1 in both languages, 1:4 in Korean only, 1:2 a Latin draft (testers only).
- * The brief is in review (testers only).
+ * Word meanings: 1:1:1 with elsewhere notes (2:1, and one without a verse); 1:2:2 with none.
+ * Transliterations: 1:1 in both languages, 1:4 in Korean only, 1:2 a Latin draft (hidden).
  */
 export function fixtureBundle(): ContentBundle {
   const first = surahFiles(1, 5);
@@ -113,11 +104,11 @@ export function fixtureBundle(): ContentBundle {
     context: [point("meaning 3", ["fx-passage-1"])],
   };
 
-  const inReview = explanation("fx-reading-2", "reading_section", "1:3", "1:3", "ko_drafted");
-  inReview.parts = { ...inReview.parts, context: [point("draft meaning 2", ["fx-passage-1"])] };
-  inReview.review = IN_REVIEW;
-
-  first.explanations = [full, inReview, short];
+  first.explanations = [
+    full,
+    explanation("fx-reading-2", "reading_section", "1:3", "1:3", "draft"),
+    short,
+  ];
   first.readingSections = ["fx-reading-1", "fx-reading-2", "fx-reading-3"];
   first.wordMeanings = [
     {
@@ -130,17 +121,11 @@ export function fixtureBundle(): ContentBundle {
       ],
     },
     { ...wordMeaning("1:2:2"), meaning: both("meaning of 1:2:2"), citations: ["fx-passage-2"] },
-    {
-      ...wordMeaning("1:3:1", "ko_drafted"),
-      meaning: both("draft meaning of 1:3:1"),
-      review: IN_REVIEW,
-    },
-    { ...wordMeaning("1:4:2", "draft"), meaning: { en: "[plain draft meaning en]", ko: null } },
   ];
   first.transliterations = [
     { ...transliteration("1:1", "en"), text: "[latin 1:1]" },
     { ...transliteration("1:1", "ko"), text: "[hangul 1:1]" },
-    { ...transliteration("1:2", "en", "draft"), text: "[latin draft 1:2]" },
+    transliteration("1:2", "en", "draft"),
     { ...transliteration("1:4", "ko"), text: "[hangul 1:4]" },
   ];
   first.surah = {
@@ -150,8 +135,8 @@ export function fixtureBundle(): ContentBundle {
         point("brief 1", ["fx-passage-1"]),
         point("brief 2", [{ passage: "fx-passage-2", quoting: FIXTURE_NARRATOR }]),
       ],
-      status: "ko_drafted",
-      review: IN_REVIEW,
+      status: "published",
+      review: full.review.map((entry) => ({ ...entry })),
     },
   };
   second.wordMeanings = [

@@ -190,8 +190,6 @@ The validation test fails when:
 
 The history is seeded into private tables; readers never see reviewer names or notes.
 
-**Who sees what:** readers see published items only. Testers (README, "Tester accounts") also see explanations, briefs and word meanings from `en_approved` on, and draft transliterations, marked "Draft" on the page; plain `draft` items stay hidden from everyone ([ADR 0016](../docs/decisions/0016-tester-preview.md)).
-
 ## Checking and seeding
 
 ```bash

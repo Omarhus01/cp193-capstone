@@ -1,4 +1,4 @@
-// Guards for tooling that writes data (test sign-ups, test users, testers, fixture seeds): it must
+// Guards for tooling that writes data (test sign-ups, test users, fixture seeds): it must
 // only ever touch a local Supabase. A hosted project URL, or an app server that talks to one, is
 // refused before anything is written. Used by e2e/local-supabase.ts; the app's /health route
 // reports which kind of Supabase it uses, without revealing the URL.

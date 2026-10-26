@@ -5,99 +5,281 @@
       "verse": "1:1",
       "language": "en",
       "text": "Bismillāhir-raḥmānir-raḥīm",
-      "status": "draft",
-      "review": []
+      "status": "published",
+      "review": [
+        {
+          "status": "en_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        }
+      ]
     },
     {
       "verse": "1:1",
       "language": "ko",
       "text": "비스밀라히 르라흐마니 르라힘",
-      "status": "draft",
-      "review": []
+      "status": "published",
+      "review": [
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        }
+      ]
     },
     {
       "verse": "1:2",
       "language": "en",
       "text": "Al-ḥamdu lillāhi rabbil-ʿālamīn",
-      "status": "draft",
-      "review": []
+      "status": "published",
+      "review": [
+        {
+          "status": "en_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        }
+      ]
     },
     {
       "verse": "1:2",
       "language": "ko",
       "text": "알함두 릴라히 랍빌 알라민",
-      "status": "draft",
-      "review": []
+      "status": "published",
+      "review": [
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        }
+      ]
     },
     {
       "verse": "1:3",
       "language": "en",
       "text": "Ar-raḥmānir-raḥīm",
-      "status": "draft",
-      "review": []
+      "status": "published",
+      "review": [
+        {
+          "status": "en_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        }
+      ]
     },
     {
       "verse": "1:3",
       "language": "ko",
       "text": "아르라흐마니 르라힘",
-      "status": "draft",
-      "review": []
+      "status": "published",
+      "review": [
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        }
+      ]
     },
     {
       "verse": "1:4",
       "language": "en",
       "text": "Māliki yawmid-dīn",
-      "status": "draft",
-      "review": []
+      "status": "published",
+      "review": [
+        {
+          "status": "en_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        }
+      ]
     },
     {
       "verse": "1:4",
       "language": "ko",
       "text": "말리키 야우미딘",
-      "status": "draft",
-      "review": []
+      "status": "published",
+      "review": [
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        }
+      ]
     },
     {
       "verse": "1:5",
       "language": "en",
       "text": "Iyyāka naʿbudu wa-iyyāka nastaʿīn",
-      "status": "draft",
-      "review": []
+      "status": "published",
+      "review": [
+        {
+          "status": "en_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        }
+      ]
     },
     {
       "verse": "1:5",
       "language": "ko",
       "text": "이야카 나으부두 와 이야카 나스타인",
-      "status": "draft",
-      "review": []
+      "status": "published",
+      "review": [
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        }
+      ]
     },
     {
       "verse": "1:6",
       "language": "en",
       "text": "Ihdinaṣ-ṣirāṭal-mustaqīm",
-      "status": "draft",
-      "review": []
+      "status": "published",
+      "review": [
+        {
+          "status": "en_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        }
+      ]
     },
     {
       "verse": "1:6",
       "language": "ko",
       "text": "이흐디나스 시라땄 무스타낌",
-      "status": "draft",
-      "review": []
+      "status": "published",
+      "review": [
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        }
+      ]
     },
     {
       "verse": "1:7",
       "language": "en",
       "text": "Ṣirāṭal-ladhīna anʿamta ʿalayhim ghayril-maghḍūbi ʿalayhim wa-laḍ-ḍāllīn",
-      "status": "draft",
-      "review": []
+      "status": "published",
+      "review": [
+        {
+          "status": "en_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        }
+      ]
     },
     {
       "verse": "1:7",
       "language": "ko",
       "text": "시라땄라지나 안암타 알라이힘 가이릴 마그두비 알라이힘 왈랏 달린",
-      "status": "draft",
-      "review": []
+      "status": "published",
+      "review": [
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-10-26",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        }
+      ]
     }
   ]
 }

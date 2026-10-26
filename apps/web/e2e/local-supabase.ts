@@ -83,14 +83,25 @@ export async function createTestUser(): Promise<TestUser> {
   return { id: data.user.id, email, password };
 }
 
-/** Puts the account on the tester list (ADR 0016), as the service role. */
-export async function makeTester(user: TestUser) {
-  const { error } = await serviceClient("make a tester")
-    .from("tester")
-    .insert({ user_id: user.id });
-  if (error) {
-    throw new Error(`Couldn't make the test user a tester: ${error.message}`);
+/**
+ * A new, unconfirmed account and the token hash its confirmation email would carry, as the Confirm
+ * signup template sends it (docs/deploy.md, section 4).
+ */
+export async function createUnconfirmedUser(): Promise<{ user: TestUser; tokenHash: string }> {
+  const email = `e2e-confirm-${Date.now()}-${Math.random().toString(36).slice(2, 8)}@example.com`;
+  const password = "e2e-test-password";
+  const { data, error } = await serviceClient("sign up a test user").auth.admin.generateLink({
+    type: "signup",
+    email,
+    password,
+  });
+  if (error || !data.user) {
+    throw new Error(`Couldn't sign up the test user: ${error?.message}`);
   }
+  return {
+    user: { id: data.user.id, email, password },
+    tokenHash: data.properties.hashed_token,
+  };
 }
 
 export async function deleteTestUser(user: TestUser) {
