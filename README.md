@@ -10,22 +10,26 @@ A platform that explains the Quran to Korean-speaking learners who don't read Ar
 
 The project proposal is in [`docs/proposal.pdf`](docs/proposal.pdf).
 
-Sprint 1 so far: the site shell, English/Korean routing, email-and-password accounts, the content model (Quran text, explanations, review steps, sources) with Al-Fatiha's text, and the surah page with reading sections, word meanings, and English and pronunciation toggles. Explanations arrive as the owner writes and reviews them.
+Sprint 1 so far: the site shell, English/Korean routing, email-and-password accounts, the content model (Quran text, explanations, review steps, sources), and the surah page with reading sections, word meanings, English and pronunciation toggles, and source chips that open the passage on Shamela. Al-Fatiha is published: its explanations, brief, word meanings and transliterations have passed review. The Vercel deploy setup (checklist, build guard, smoke tests) and a feedback button for user testing are in place. Next up: the Q&A panel with prepared answers (#5), surah navigation and search (#6), and the Islamic terms glossary (#8).
 
 ## Repository layout
 
 | Path                   | What it holds                                                              |
 | ---------------------- | -------------------------------------------------------------------------- |
 | `apps/web/`            | Next.js site (App Router, TypeScript, Tailwind, next-intl)                 |
-| `services/ai/`         | Python FastAPI service for the Q&A panel (sprint 2, empty for now)         |
-| `experiments/`         | Model and retrieval trials (empty for now)                                 |
 | `content/`             | Quran text, explanations and sources as JSON ([README](content/README.md)) |
 | `supabase/migrations/` | Database schema as SQL migrations                                          |
-| `prompts/`             | Prompts for the Q&A model (placeholder)                                    |
-| `.github/workflows/`   | CI: format check, lint, typecheck, unit tests on every push and PR         |
-| `.husky/`              | Pre-push hook that runs the same checks locally                            |
+| `.github/workflows/`   | CI (`ci.yml`) on every push and PR; daily Supabase ping (`keep-alive.yml`) |
 | `docs/decisions/`      | Architecture decision records (ADRs)                                       |
-| `CONTRIBUTING.md`      | Issue → branch → pull request workflow and definition of done              |
+
+## Documentation
+
+- [Project proposal](docs/proposal.pdf): scope, market research, sprint plan and the user-testing plan
+- [`docs/deploy.md`](docs/deploy.md): Vercel and Supabase setup, the release order, and the daily keep-alive
+- [`docs/decisions/`](docs/decisions/README.md): architecture decision records (ADRs), one file per decision
+- [`docs/design/`](docs/design/): approved designs of the surah page (English, Korean, phone)
+- [`content/README.md`](content/README.md): the content files, the review steps, and how to seed the database
+- [`docs/content-drafts/`](docs/content-drafts/): the owner's content drafts under review (not loaded by the site)
 
 ## Requirements
 
@@ -126,11 +130,28 @@ NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321 NEXT_PUBLIC_SUPABASE_ANON_KEY=..
   SUPABASE_SERVICE_ROLE_KEY=... E2E_LOCAL_SUPABASE=1 npm run test:e2e
 ```
 
-### CI and the pre-push hook
+### CI
 
-`.github/workflows/ci.yml` runs `format:check`, `lint`, `typecheck` and `npm test` on every push and pull request. `main` is protected: changes arrive only through a pull request, and the CI job must pass first. See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow.
+`.github/workflows/ci.yml` runs `format:check`, `lint`, `typecheck`, `npm test` and `npm run build` (with placeholder Supabase values) on every push and pull request. `main` is protected: changes arrive only through a pull request, and the CI job must pass first. See [How I work](#how-i-work) for the workflow.
 
-A [husky](https://typicode.github.io/husky/) pre-push hook runs the same checks before every `git push` and blocks the push if any of them fails, so problems show up before CI. `npm install` installs the hook.
+## How I work
+
+- **Issue first.** Stories read "As a Korean-speaking learner, I want …, so that …", with acceptance criteria as a checklist. Each issue has one type label (`story`, `bug`, `chore`), one priority label (`priority:high`, `priority:medium`, `priority:low`), `decision` if it needs an ADR, and a milestone (`Sprint 1` or `Sprint 2`). The [project board](https://github.com/users/Omarhus01/projects/1) runs Backlog → Ready → In progress → In review → Done.
+- **One branch per issue**, from an up-to-date `main`: `feat/`, `fix/` or `chore/` + `<issue number>-<short-name>`.
+- **Small commits** in [Conventional Commits](https://www.conventionalcommits.org/) style, with a scope where it helps (`fix(i18n): …`). The body says why, not what the diff already shows.
+- **Pull request:** the description says `Closes #<issue>` and fills in the [template](.github/pull_request_template.md). The CI job `Format, lint, typecheck, unit tests` must pass and the branch must be up to date with `main`; branch protection enforces both, for admins too. Never push to `main` directly.
+- **Merge** with `gh pr merge --merge --delete-branch`: merge commits only, so each commit stays in the history.
+- **Decisions get an ADR.** When a pull request picks between real alternatives (a library, a data shape, a rule, a trade-off someone might later question), add a record to [`docs/decisions/`](docs/decisions/README.md) from the template there.
+- **Content is the owner's.** Never write Quran verses, translations, explanations or word meanings, even as placeholders. The project owner provides and validates them in `content/`, and Islamic terms follow the Arabic word ([ADR 0008](docs/decisions/0008-terms-follow-the-arabic-word.md)).
+
+**Definition of done.** A pull request is done when:
+
+- the acceptance criteria in the issue are met
+- unit tests (Vitest) and e2e tests (Playwright) are added for the change, and both suites pass
+- every new UI string is in both `messages/en.json` and `messages/ko.json`
+- there are no Supabase calls outside `src/lib/data` (the ESLint layer rules enforce this)
+- an ADR is written if a decision was made
+- the pull request is merged with a merge commit, and the issue is closed
 
 ## Deploy (Vercel)
 

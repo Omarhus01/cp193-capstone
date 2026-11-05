@@ -1,6 +1,6 @@
 # 0007. Run the CI checks in a husky pre-push hook
 
-- Status: Accepted
+- Status: Superseded: CI on GitHub runs these checks.
 - Date: 2026-10-22
 
 ## Context

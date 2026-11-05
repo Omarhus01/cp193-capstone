@@ -1,16 +1,7 @@
 import { cacheLife, cacheTag } from "next/cache";
-import type {
-  Explanation,
-  Passage,
-  ReadingSection,
-  Span,
-  SurahContent,
-  VerseRef,
-  VerseText,
-} from "@/lib/domain/content";
+import type { Passage, SurahContent, VerseRef, VerseText } from "@/lib/domain/content";
 import { createPublicClient } from "@/lib/supabase/public";
 import {
-  spanKeys,
   toBrief,
   toExplanation,
   toPassage,
@@ -141,79 +132,6 @@ export async function getSurahContent(surah: number): Promise<SurahContent | nul
       explanation: published.get(section.explanation_id) ?? null,
     })),
   };
-}
-
-/**
- * Published explanations whose span overlaps `span`, in the order they start: what a reader gets
- * after selecting part of a verse, a verse, or several verses.
- */
-export async function getExplanationsForSpan(span: Span): Promise<Explanation[]> {
-  "use cache";
-  cachePublishedContent();
-  const keys = spanKeys(span);
-  const result = await createPublicClient()
-    .from("explanation")
-    .select(EXPLANATION)
-    .eq("status", "published")
-    .lte("span.start_key", keys.end)
-    .gte("span.end_key", keys.start);
-  return rows<ExplanationRow[]>(result, "explanations")
-    .map(toExplanation)
-    .sort((a, b) => {
-      const [x, y] = [spanKeys(a.span), spanKeys(b.span)];
-      return x.start - y.start || x.end - y.end;
-    });
-}
-
-/** A published reading section with the verses it covers, or null. */
-export async function getReadingSection(
-  surah: number,
-  position: number,
-): Promise<ReadingSection | null> {
-  "use cache";
-  cachePublishedContent();
-  const db = createPublicClient();
-  const section = rows<{ explanation: ExplanationRow } | null>(
-    await db
-      .from("reading_section")
-      .select(`explanation!inner(${EXPLANATION}, status)`)
-      .eq("surah", surah)
-      .eq("position", position)
-      .eq("explanation.status", "published")
-      .maybeSingle(),
-    `reading section ${position} of surah ${surah}`,
-  );
-  if (!section) {
-    return null;
-  }
-  const explanation = toExplanation(section.explanation);
-  const verses = rows<VerseRow[]>(
-    await db
-      .from("verse")
-      .select(VERSE)
-      .eq("surah", surah)
-      .eq("verse_transliteration.status", "published")
-      .gte("ayah", explanation.span.start.ayah)
-      .lte("ayah", explanation.span.end.ayah)
-      .order("ayah"),
-    `the verses of reading section ${position} of surah ${surah}`,
-  );
-  return { surah, position, explanation, verses: verses.map(toVerse) };
-}
-
-/** The passages a published explanation cites, in order, with their sources. */
-export async function getPassagesForExplanation(explanationId: string): Promise<Passage[]> {
-  "use cache";
-  cachePublishedContent();
-  const result = await createPublicClient()
-    .from("explanation_citation")
-    .select(`sort_order, explanation!inner(status), passage!inner(${PASSAGE})`)
-    .eq("explanation_id", explanationId)
-    .eq("explanation.status", "published")
-    .order("sort_order");
-  return rows<{ passage: PassageRow }[]>(result, `the passages of ${explanationId}`).map((row) =>
-    toPassage(row.passage),
-  );
 }
 
 /**

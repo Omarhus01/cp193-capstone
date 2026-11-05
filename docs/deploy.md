@@ -145,10 +145,7 @@ Error: [BUILD_UTILS_SPAWN_127] Command "npm install" exited with 127
 **Two fixes:**
 
 - **The install runs at the root.** `apps/web/vercel.json` sets `"installCommand": "cd ../.. && npm ci"`, the same install CI runs. Without it, the build failed next: `next build` type-checks `apps/web/scripts/json-file.ts`, which imports Prettier.
-- **`prepare` can't fail an install.** It runs `node .husky/install.mjs`. That script:
-  - skips when `VERCEL` or `CI` is set
-  - prints a note and exits 0 when husky isn't installed
-  - otherwise installs the hooks as before (`git config core.hooksPath` is `.husky/_`)
+- **No `prepare` script.** The root `prepare` script, which ran husky, was removed together with the pre-push hook, so an install can't fail that way any more.
 
 ## 9. Keeping the Supabase project awake
 

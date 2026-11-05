@@ -1,6 +1,6 @@
 # Architecture decision records
 
-Each file records one decision: why it was needed, what was chosen, what else was considered, and what follows from it. Write one whenever a pull request makes a decision someone might later ask "why?" about (see the definition of done in [`CONTRIBUTING.md`](../../CONTRIBUTING.md)).
+Each file records one decision: why it was needed, what was chosen, what else was considered, and what follows from it. Write one whenever a pull request makes a decision someone might later ask "why?" about (see the definition of done in [How I work](../../README.md#how-i-work)).
 
 Records are not rewritten when a decision changes. Add a new record and set the old one's status to `Superseded by NNNN`. Small clarifications, such as a note that a constraint went away, can go under the old record's Consequences.
 
@@ -12,7 +12,7 @@ Records are not rewritten when a decision changes. Add a new record and set the 
 | [0004](0004-proxy-auth-with-cache-components.md)   | Session refresh in the proxy, session checks in pages, under Cache Components | Accepted |
 | [0005](0005-translate-no.md)                       | Opt pages out of browser translation                                | Accepted |
 | [0006](0006-local-logout.md)                       | Log out of the current browser only                                 | Accepted |
-| [0007](0007-husky-pre-push-hook.md)                | Run the CI checks in a husky pre-push hook                          | Accepted |
+| [0007](0007-husky-pre-push-hook.md)                | Run the CI checks in a husky pre-push hook                          | Superseded: CI on GitHub runs these checks. |
 | [0008](0008-terms-follow-the-arabic-word.md)       | Islamic terms follow the Arabic word (الله → Allah, never 하나님)   | Accepted |
 | [0009](0009-layered-architecture.md)               | Layered architecture with a data layer and AI provider interfaces   | Accepted |
 | [0010](0010-github-workflow.md)                    | Issue branches, pull requests with merge commits, protected `main`  | Accepted |
@@ -21,6 +21,7 @@ Records are not rewritten when a decision changes. Add a new record and set the 
 | [0013](0013-public-reading-structure-and-transliteration.md) | Reading structure is public; transliteration is reviewed per language | Accepted |
 | [0014](0014-page-layout-preferences-and-caching.md) | Page layout slots, reading preferences in cookies, cached published content | Accepted |
 | [0015](0015-explanation-items-and-verse-references.md) | Explanations are items with their own citations; related verses are references | Accepted |
+| [0016](0016-tester-preview.md) | Tester preview: a service-role tester list, RLS policies, and an uncached draft path | Superseded by #35 |
 | [0017](0017-vercel-hosting-and-release-order.md) | Hosting on Vercel; database first, then code | Accepted |
 
 ## Template

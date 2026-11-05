@@ -1,6 +1,0 @@
-# Same checks as .github/workflows/ci.yml. GitHub Actions is unavailable on this account for now,
-# so they run here before every push; any failure blocks the push.
-npm run format:check
-npm run lint
-npm run typecheck
-npm test

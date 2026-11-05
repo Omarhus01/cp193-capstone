@@ -21,3 +21,9 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
+      - run: npm run build
+        env:
+          # The build needs the two public Supabase variables but never contacts Supabase, so the
+          # placeholders from apps/web/playwright.config.ts are enough.
+          NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key

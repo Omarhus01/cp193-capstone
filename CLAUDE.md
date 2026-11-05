@@ -35,7 +35,7 @@ The full proposal, with the market research, sprint plan, and user-testing plan,
 
 - **Web:** Next.js 16 (App Router, TypeScript strict), Tailwind CSS 4, next-intl with locale routes `/en` and `/ko` (default `en`)
 - **Backend:** Supabase for auth and Postgres, through `@supabase/ssr`. The schema lives in `supabase/migrations/`.
-- **AI (sprint 2):** a Python FastAPI service in `services/ai/`
+- **AI (sprint 2):** a Python FastAPI service in `services/ai/` (created when #10 starts)
 - **Hosting:** Vercel (root directory `apps/web`, production from `main`, no previews). Setup and release order: [`docs/deploy.md`](docs/deploy.md), [ADR 0017](docs/decisions/0017-vercel-hosting-and-release-order.md)
 - **Tests:** Vitest for unit tests, Playwright for end-to-end tests
 - **CI:** GitHub Actions, a required check on `main`
@@ -56,7 +56,7 @@ apps/web/                 Next.js site (npm workspace)
                           seed payload), reading/ (surah page view, reading preferences)
   src/lib/data/           all database access: auth, session, content (cached, published only), health; the only
                           importers of lib/supabase
-  src/lib/supabase/       browser, server, proxy and public (cookie-less, for published content) client factories
+  src/lib/supabase/       server, proxy and public (cookie-less, for published content) client factories
   scripts/                content tooling run with tsx: import-tanzil, import-tanzil-metadata, write-content-schema,
                           seed-content
   src/lib/domain/         domain types shared by every layer
@@ -68,16 +68,12 @@ apps/web/                 Next.js site (npm workspace)
                           surah/ (surah page: sections, word popover, toggles, Q&A shell), auth/ (forms),
                           text/ArabicText
   e2e/fixtures/           content seeded by the surah page e2e tests (placeholder text only)
-services/ai/              placeholder (sprint 2)
-experiments/              placeholder
 content/                  Quran text (Tanzil), explanations, word meanings, sources as JSON; see content/README.md
 supabase/migrations/      SQL migrations
-prompts/                  model prompts (placeholder)
 docs/proposal.pdf         project proposal
 docs/design/              approved page designs (surah page, desktop and phone)
 docs/content-drafts/      the owner's content drafts under review (not loaded by the site)
 docs/decisions/           architecture decision records (ADRs)
-CONTRIBUTING.md           workflow and definition of done
 ```
 
 ## Commands (from the repo root)
@@ -99,11 +95,11 @@ npm run content:import-tanzil-metadata -- <quran-data.xml>  # rewrite content/qu
 
 `.github/workflows/keep-alive.yml` reads one public row from Supabase once a day so the free project doesn't pause (`docs/deploy.md`, section 9).
 
-`.github/workflows/ci.yml` runs format:check, lint, typecheck, and test on every push and PR. Its job, `Format, lint, typecheck, unit tests`, is a required check on `main`. A husky pre-push hook (`.husky/pre-push`) runs the same checks locally as a safety net and blocks the push if any fail. `npm install` sets it up through the `prepare` script. Don't bypass the hook with `--no-verify`.
+`.github/workflows/ci.yml` runs format:check, lint, typecheck, test, and build (with placeholder Supabase values) on every push and PR. Its job, `Format, lint, typecheck, unit tests`, is a required check on `main`. The job keeps that name even though it also builds, because branch protection matches the name.
 
 ## Workflow
 
-Details are in [`CONTRIBUTING.md`](CONTRIBUTING.md).
+Details are in the README, under [How I work](README.md#how-i-work).
 
 - Work starts from a GitHub issue on the board "CP193 Capstone" (Backlog → Ready → In progress → In review → Done), with milestones `Sprint 1` and `Sprint 2`.
 - One branch per issue: `feat/<issue>-<short-name>`, `fix/…` or `chore/…`.
@@ -150,7 +146,7 @@ app/ (routes, pages, server actions) → components/ → lib/services/ → lib/d
 - **Tanzil credit:** every page that shows Quran text must credit the Tanzil Project with a link to tanzil.net. The global `SiteFooter` does this; don't remove it.
 - **Layout:** pages with columns use `PageLayout` (`sidebar` and `aside` props). The right column shows on wide screens only, so a page puts its phone version inline.
 - **e2e with content:** tests that need content seed fixtures into a local Supabase (`e2e/local-supabase.ts`), and are skipped unless `E2E_LOCAL_SUPABASE=1` with a local URL. Never point them at the hosted project.
-- **Database:** every table has row level security enabled with explicit policies. Change the schema only through a new migration file. Never edit an applied migration. The database changes before the code (db push, seed, then merge), so a migration must keep working with the code already on `main`.
+- **Database:** every table has row level security enabled. Quran text, source records and the reading structure are public to read. Explanations, word meanings, briefs, transliterations, their citations and the passages they cite are readable only when published. `profiles` lets a user read and update their own row. The four `*_review` tables have no policies and no grants, so they deny everything to `anon` and `authenticated`. Content is written only by `seed_content`, with the service role. Change the schema only through a new migration file. Never edit an applied migration. The database changes before the code (db push, seed, then merge), so a migration must keep working with the code already on `main`.
 - **Secrets:** the deployed site holds only public values: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and the optional `NEXT_PUBLIC_FEEDBACK_URL`. The service role key is never read by app code (`src/deploy.test.ts`) and never goes to Vercel or GitHub. The keep-alive workflow uses only the `SUPABASE_URL` and `SUPABASE_ANON_KEY` repository secrets.
 - **Test data stays local:** helpers that write data (`e2e/local-supabase.ts`) refuse a non-local Supabase URL, and before signing up or logging in through the app they check the server's `/health` (`assertLocalTestServer`). Use them in any new script that writes test data; never sign up test accounts through a server you haven't checked.
 - **Code style:** keep components small and clearly named. Other people read this code. Put pure logic in `src/lib/services/`, with a colocated `*.test.ts`.
