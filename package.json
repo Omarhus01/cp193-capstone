@@ -18,14 +18,12 @@
     "test:smoke": "npm run test:smoke -w apps/web",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "node .husky/install.mjs",
     "content:schema": "npm run content:schema -w apps/web",
     "content:import-tanzil": "npm run content:import-tanzil -w apps/web --",
     "content:import-tanzil-metadata": "npm run content:import-tanzil-metadata -w apps/web --",
     "content:seed": "npm run content:seed -w apps/web"
   },
   "devDependencies": {
-    "husky": "^9.1.7",
     "prettier": "^3.9.10",
     "supabase": "^2.121.0"
   }

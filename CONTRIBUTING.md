@@ -38,7 +38,7 @@ The body explains why, not what the diff already shows. Each commit stays becaus
 ## 4. Open a pull request
 
 ```bash
-git push -u origin feat/2-verse-page     # the husky hook runs format, lint, typecheck, unit tests
+git push -u origin feat/2-verse-page
 gh pr create --fill                      # then complete the template
 ```
 
@@ -52,7 +52,7 @@ gh pr create --fill                      # then complete the template
 gh pr merge --merge --delete-branch
 ```
 
-Merge commits only. Squash and rebase merging are turned off. The issue closes and its card moves to **Done**. Never push to `main` directly, and never bypass the hook with `--no-verify`.
+Merge commits only. Squash and rebase merging are turned off. The issue closes and its card moves to **Done**. Never push to `main` directly.
 
 ## Definition of done
 

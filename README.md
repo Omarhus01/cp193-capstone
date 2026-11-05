@@ -23,7 +23,6 @@ Sprint 1 so far: the site shell, English/Korean routing, email-and-password acco
 | `supabase/migrations/` | Database schema as SQL migrations                                          |
 | `prompts/`             | Prompts for the Q&A model (placeholder)                                    |
 | `.github/workflows/`   | CI: format check, lint, typecheck, unit tests on every push and PR         |
-| `.husky/`              | Pre-push hook that runs the same checks locally                            |
 | `docs/decisions/`      | Architecture decision records (ADRs)                                       |
 | `CONTRIBUTING.md`      | Issue → branch → pull request workflow and definition of done              |
 
@@ -126,11 +125,9 @@ NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321 NEXT_PUBLIC_SUPABASE_ANON_KEY=..
   SUPABASE_SERVICE_ROLE_KEY=... E2E_LOCAL_SUPABASE=1 npm run test:e2e
 ```
 
-### CI and the pre-push hook
+### CI
 
 `.github/workflows/ci.yml` runs `format:check`, `lint`, `typecheck` and `npm test` on every push and pull request. `main` is protected: changes arrive only through a pull request, and the CI job must pass first. See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow.
-
-A [husky](https://typicode.github.io/husky/) pre-push hook runs the same checks before every `git push` and blocks the push if any of them fails, so problems show up before CI. `npm install` installs the hook.
 
 ## Deploy (Vercel)
 

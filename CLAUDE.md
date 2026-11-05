@@ -99,7 +99,7 @@ npm run content:import-tanzil-metadata -- <quran-data.xml>  # rewrite content/qu
 
 `.github/workflows/keep-alive.yml` reads one public row from Supabase once a day so the free project doesn't pause (`docs/deploy.md`, section 9).
 
-`.github/workflows/ci.yml` runs format:check, lint, typecheck, and test on every push and PR. Its job, `Format, lint, typecheck, unit tests`, is a required check on `main`. A husky pre-push hook (`.husky/pre-push`) runs the same checks locally as a safety net and blocks the push if any fail. `npm install` sets it up through the `prepare` script. Don't bypass the hook with `--no-verify`.
+`.github/workflows/ci.yml` runs format:check, lint, typecheck, and test on every push and PR. Its job, `Format, lint, typecheck, unit tests`, is a required check on `main`.
 
 ## Workflow
 
