@@ -136,7 +136,7 @@ NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321 NEXT_PUBLIC_SUPABASE_ANON_KEY=..
 
 ### CI
 
-`.github/workflows/ci.yml` runs `format:check`, `lint`, `typecheck` and `npm test` on every push and pull request. `main` is protected: changes arrive only through a pull request, and the CI job must pass first. See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow.
+`.github/workflows/ci.yml` runs `format:check`, `lint`, `typecheck`, `npm test` and `npm run build` (with placeholder Supabase values) on every push and pull request. `main` is protected: changes arrive only through a pull request, and the CI job must pass first. See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow.
 
 ## Deploy (Vercel)
 

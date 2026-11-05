@@ -99,7 +99,7 @@ npm run content:import-tanzil-metadata -- <quran-data.xml>  # rewrite content/qu
 
 `.github/workflows/keep-alive.yml` reads one public row from Supabase once a day so the free project doesn't pause (`docs/deploy.md`, section 9).
 
-`.github/workflows/ci.yml` runs format:check, lint, typecheck, and test on every push and PR. Its job, `Format, lint, typecheck, unit tests`, is a required check on `main`.
+`.github/workflows/ci.yml` runs format:check, lint, typecheck, test, and build (with placeholder Supabase values) on every push and PR. Its job, `Format, lint, typecheck, unit tests`, is a required check on `main`. The job keeps that name even though it also builds, because branch protection matches the name.
 
 ## Workflow
 
