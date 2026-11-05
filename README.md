@@ -10,7 +10,7 @@ A platform that explains the Quran to Korean-speaking learners who don't read Ar
 
 The project proposal is in [`docs/proposal.pdf`](docs/proposal.pdf).
 
-Sprint 1 so far: the site shell, English/Korean routing, email-and-password accounts, the content model (Quran text, explanations, review steps, sources) with Al-Fatiha's text, and the surah page with reading sections, word meanings, and English and pronunciation toggles. Explanations arrive as the owner writes and reviews them.
+Sprint 1 so far: the site shell, English/Korean routing, email-and-password accounts, the content model (Quran text, explanations, review steps, sources), and the surah page with reading sections, word meanings, English and pronunciation toggles, and source chips that open the passage on Shamela. Al-Fatiha is published: its explanations, brief, word meanings and transliterations have passed review. The Vercel deploy setup (checklist, build guard, smoke tests) and a feedback button for user testing are in place. Next up: the Q&A panel with prepared answers (#5), surah navigation and search (#6), and the Islamic terms glossary (#8).
 
 ## Repository layout
 
@@ -22,9 +22,18 @@ Sprint 1 so far: the site shell, English/Korean routing, email-and-password acco
 | `content/`             | Quran text, explanations and sources as JSON ([README](content/README.md)) |
 | `supabase/migrations/` | Database schema as SQL migrations                                          |
 | `prompts/`             | Prompts for the Q&A model (placeholder)                                    |
-| `.github/workflows/`   | CI: format check, lint, typecheck, unit tests on every push and PR         |
+| `.github/workflows/`   | CI (`ci.yml`) on every push and PR; daily Supabase ping (`keep-alive.yml`) |
 | `docs/decisions/`      | Architecture decision records (ADRs)                                       |
 | `CONTRIBUTING.md`      | Issue → branch → pull request workflow and definition of done              |
+
+## Documentation
+
+- [Project proposal](docs/proposal.pdf): scope, market research, sprint plan and the user-testing plan
+- [`docs/deploy.md`](docs/deploy.md): Vercel and Supabase setup, the release order, and the daily keep-alive
+- [`docs/decisions/`](docs/decisions/README.md): architecture decision records (ADRs), one file per decision
+- [`docs/design/`](docs/design/): approved designs of the surah page (English, Korean, phone)
+- [`content/README.md`](content/README.md): the content files, the review steps, and how to seed the database
+- [`docs/content-drafts/`](docs/content-drafts/): the owner's content drafts under review (not loaded by the site)
 
 ## Requirements
 
