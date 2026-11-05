@@ -63,15 +63,6 @@ export function checkTransition(
   return notes?.trim() ? null : `sending an item back from ${from} to ${to} needs notes saying why`;
 }
 
-export function canTransition(
-  from: ReviewStatus,
-  to: ReviewStatus,
-  notes?: string,
-  track: ReviewTrack = "bilingual",
-): boolean {
-  return checkTransition(from, to, notes, track) === null;
-}
-
 export type ReplayResult =
   { ok: true; status: ReviewStatus } | { ok: false; step: number; message: string };
 
@@ -97,21 +88,6 @@ export function replayReview(
     previousDate = entry.date;
   }
   return { ok: true, status };
-}
-
-/**
- * Adds a review step to an item. Throws when the move isn't allowed, so a step can't be skipped.
- */
-export function recordReview<T extends { status: ReviewStatus; review: readonly ReviewEntry[] }>(
-  item: T,
-  entry: ReviewEntry,
-  track: ReviewTrack = "bilingual",
-): T {
-  const problem = checkTransition(item.status, entry.status, entry.notes, track);
-  if (problem) {
-    throw new Error(problem);
-  }
-  return { ...item, status: entry.status, review: [...item.review, entry] };
 }
 
 /** Only published items reach readers. */

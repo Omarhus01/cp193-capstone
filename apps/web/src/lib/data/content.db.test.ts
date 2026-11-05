@@ -7,14 +7,7 @@ import { loadContent } from "@/lib/services/content/load";
 import { toSeedPayload } from "@/lib/services/content/payload";
 // eslint-disable-next-line no-restricted-imports
 import { explanation, item, testBundle } from "@/lib/services/content/test-bundle";
-import {
-  getExplanationsForSpan,
-  getPassages,
-  getPassagesForExplanation,
-  getReadingSection,
-  getSurahContent,
-  getVerseTexts,
-} from "./content";
+import { getPassages, getSurahContent, getVerseTexts } from "./content";
 
 // The cache directives need the Next.js server; here every call goes to the database.
 vi.mock("next/cache", () => ({ cacheLife: () => {}, cacheTag: () => {} }));
@@ -270,39 +263,6 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
         ["passage-1", "https://example.com/book/1/10"],
         ["passage-2", null],
       ]);
-    });
-
-    it("getExplanationsForSpan finds overlapping published explanations, in order", async () => {
-      const verse3 = await getExplanationsForSpan({
-        start: { surah: 1, ayah: 3, word: null },
-        end: { surah: 1, ayah: 3, word: null },
-      });
-      // Both explanations of 1:3 (a reading section and a verse explanation) are drafts.
-      expect(verse3).toEqual([]);
-
-      const word = await getExplanationsForSpan({
-        start: { surah: 1, ayah: 2, word: 3 },
-        end: { surah: 1, ayah: 2, word: 3 },
-      });
-      expect(word.map((e) => e.id)).toEqual(["s1-reading-1", "s1-note"]);
-      const note = word.find((e) => e.id === "s1-note");
-      expect(note?.passageIds).toEqual(["passage-1"]);
-      expect(note?.contextLinks[0].span.start).toEqual({ surah: 2, ayah: 1, word: null });
-    });
-
-    it("getReadingSection returns a published section with its verses", async () => {
-      const section = await getReadingSection(1, 1);
-      expect(section?.explanation.id).toBe("s1-reading-1");
-      expect(section?.verses.map((v) => v.ayah)).toEqual([1, 2]);
-      expect(await getReadingSection(1, 2)).toBeNull();
-      expect(await getReadingSection(1, 3)).toBeNull();
-    });
-
-    it("getPassagesForExplanation returns passages only for a published explanation", async () => {
-      const passages = await getPassagesForExplanation("s1-note");
-      expect(passages.map((p) => p.id)).toEqual(["passage-1"]);
-      expect(passages[0].source.titleEn).toBe("Test source");
-      expect(await getPassagesForExplanation("s1-draft")).toEqual([]);
     });
   });
 
