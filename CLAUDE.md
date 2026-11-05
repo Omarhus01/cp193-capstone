@@ -105,6 +105,11 @@ Details are in the README, under [How I work](README.md#how-i-work).
 - One branch per issue: `feat/<issue>-<short-name>`, `fix/…` or `chore/…`.
 - Changes reach `main` only through a pull request that says `Closes #<issue>` and uses `.github/pull_request_template.md`. `main` is protected: a PR and a passing CI check are required, admins included.
 - Merge with a merge commit (`gh pr merge --merge`), never squash or rebase, so each commit stays in the history. Commit messages follow the existing Conventional Commits style.
+- **Write PRs, issue comments and commit messages for a reader who doesn't know the repo.**
+  - Use plain words.
+  - Never use a code or number on its own: an ADR number, an issue number, an abbreviation, or a status or file name (ADR 0017, #35, RLS, ko_approved).
+  - Say what it means first, then add the link or code after it if useful. For example: "Release order: database first, then content, then merge (decision record: hosting on Vercel)."
+  - `Closes #<issue>` stays, because GitHub needs it to close the issue, but the text around it says what the issue is.
 
 ## Definition of done
 
