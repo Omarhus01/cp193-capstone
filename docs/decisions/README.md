@@ -1,6 +1,6 @@
 # Architecture decision records
 
-Each file records one decision: why it was needed, what was chosen, what else was considered, and what follows from it. Write one whenever a pull request makes a decision someone might later ask "why?" about (see the definition of done in [`CONTRIBUTING.md`](../../CONTRIBUTING.md)).
+Each file records one decision: why it was needed, what was chosen, what else was considered, and what follows from it. Write one whenever a pull request makes a decision someone might later ask "why?" about (see the definition of done in [How I work](../../README.md#how-i-work)).
 
 Records are not rewritten when a decision changes. Add a new record and set the old one's status to `Superseded by NNNN`. Small clarifications, such as a note that a constraint went away, can go under the old record's Consequences.
 

@@ -74,7 +74,6 @@ docs/proposal.pdf         project proposal
 docs/design/              approved page designs (surah page, desktop and phone)
 docs/content-drafts/      the owner's content drafts under review (not loaded by the site)
 docs/decisions/           architecture decision records (ADRs)
-CONTRIBUTING.md           workflow and definition of done
 ```
 
 ## Commands (from the repo root)
@@ -100,7 +99,7 @@ npm run content:import-tanzil-metadata -- <quran-data.xml>  # rewrite content/qu
 
 ## Workflow
 
-Details are in [`CONTRIBUTING.md`](CONTRIBUTING.md).
+Details are in the README, under [How I work](README.md#how-i-work).
 
 - Work starts from a GitHub issue on the board "CP193 Capstone" (Backlog → Ready → In progress → In review → Done), with milestones `Sprint 1` and `Sprint 2`.
 - One branch per issue: `feat/<issue>-<short-name>`, `fix/…` or `chore/…`.

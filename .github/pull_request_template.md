@@ -10,6 +10,8 @@ Closes #
 
 ## Definition of done
 
+See [How I work](https://github.com/Omarhus01/cp193-capstone/blob/main/README.md#how-i-work).
+
 - [ ] Acceptance criteria in the issue are met
 - [ ] Unit tests added or updated, and `npm test` passes
 - [ ] e2e tests added or updated, and `npm run test:e2e` passes

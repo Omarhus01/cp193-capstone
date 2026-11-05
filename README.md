@@ -21,7 +21,6 @@ Sprint 1 so far: the site shell, English/Korean routing, email-and-password acco
 | `supabase/migrations/` | Database schema as SQL migrations                                          |
 | `.github/workflows/`   | CI (`ci.yml`) on every push and PR; daily Supabase ping (`keep-alive.yml`) |
 | `docs/decisions/`      | Architecture decision records (ADRs)                                       |
-| `CONTRIBUTING.md`      | Issue → branch → pull request workflow and definition of done              |
 
 ## Documentation
 
@@ -133,7 +132,26 @@ NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321 NEXT_PUBLIC_SUPABASE_ANON_KEY=..
 
 ### CI
 
-`.github/workflows/ci.yml` runs `format:check`, `lint`, `typecheck`, `npm test` and `npm run build` (with placeholder Supabase values) on every push and pull request. `main` is protected: changes arrive only through a pull request, and the CI job must pass first. See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow.
+`.github/workflows/ci.yml` runs `format:check`, `lint`, `typecheck`, `npm test` and `npm run build` (with placeholder Supabase values) on every push and pull request. `main` is protected: changes arrive only through a pull request, and the CI job must pass first. See [How I work](#how-i-work) for the workflow.
+
+## How I work
+
+- **Issue first.** Stories read "As a Korean-speaking learner, I want …, so that …", with acceptance criteria as a checklist. Each issue has one type label (`story`, `bug`, `chore`), one priority label (`priority:high`, `priority:medium`, `priority:low`), `decision` if it needs an ADR, and a milestone (`Sprint 1` or `Sprint 2`). The [project board](https://github.com/users/Omarhus01/projects/1) runs Backlog → Ready → In progress → In review → Done.
+- **One branch per issue**, from an up-to-date `main`: `feat/`, `fix/` or `chore/` + `<issue number>-<short-name>`.
+- **Small commits** in [Conventional Commits](https://www.conventionalcommits.org/) style, with a scope where it helps (`fix(i18n): …`). The body says why, not what the diff already shows.
+- **Pull request:** the description says `Closes #<issue>` and fills in the [template](.github/pull_request_template.md). The CI job `Format, lint, typecheck, unit tests` must pass and the branch must be up to date with `main`; branch protection enforces both, for admins too. Never push to `main` directly.
+- **Merge** with `gh pr merge --merge --delete-branch`: merge commits only, so each commit stays in the history.
+- **Decisions get an ADR.** When a pull request picks between real alternatives (a library, a data shape, a rule, a trade-off someone might later question), add a record to [`docs/decisions/`](docs/decisions/README.md) from the template there.
+- **Content is the owner's.** Never write Quran verses, translations, explanations or word meanings, even as placeholders. The project owner provides and validates them in `content/`, and Islamic terms follow the Arabic word ([ADR 0008](docs/decisions/0008-terms-follow-the-arabic-word.md)).
+
+**Definition of done.** A pull request is done when:
+
+- the acceptance criteria in the issue are met
+- unit tests (Vitest) and e2e tests (Playwright) are added for the change, and both suites pass
+- every new UI string is in both `messages/en.json` and `messages/ko.json`
+- there are no Supabase calls outside `src/lib/data` (the ESLint layer rules enforce this)
+- an ADR is written if a decision was made
+- the pull request is merged with a merge commit, and the issue is closed
 
 ## Deploy (Vercel)
 
