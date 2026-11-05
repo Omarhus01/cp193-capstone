@@ -2,7 +2,13 @@ import type { ReviewStatus } from "@/lib/domain/content";
 import type { ReviewEntry } from "@/lib/services/review";
 import type { ContentBundle, SurahFiles } from "./load";
 import type { SurahMetadata } from "./schema";
-import type { ExplanationEntry, ItemEntry, TransliterationEntry, WordMeaningEntry } from "./schema";
+import type {
+  ExplanationEntry,
+  ItemEntry,
+  QaEntry,
+  TransliterationEntry,
+  WordMeaningEntry,
+} from "./schema";
 
 // A small valid bundle for tests. Its "verses" are made-up Arabic letter strings, not Quran text,
 // and every explanation is a neutral placeholder: no religious content.
@@ -34,6 +40,7 @@ function surahFiles(number: number, verseCount: number): SurahFiles {
     readingSections: [],
     wordMeanings: [],
     transliterations: [],
+    qa: [],
   };
 }
 
@@ -116,6 +123,26 @@ export function transliteration(
   };
 }
 
+/** A fixed question about whole verses, its answer citing passage-1 unless told otherwise. */
+export function question(
+  id: string,
+  from: string,
+  to: string,
+  status: ReviewStatus = "published",
+  citations: QaEntry["citations"] = ["passage-1"],
+): QaEntry {
+  const published = status === "published";
+  return {
+    id,
+    span: { from, to },
+    question: published ? both(`question ${id}`) : { en: `question ${id} (en)`, ko: null },
+    answer: published ? both(`answer ${id}`) : { en: `answer ${id} (en)`, ko: null },
+    citations,
+    status,
+    review: published ? publishedHistory() : [],
+  };
+}
+
 /**
  * Metadata for all 114 surahs, like quran-metadata.json, matching the given surahs' text. The
  * others get 10 verses, so references to surahs that aren't imported can be tested.
@@ -135,8 +162,9 @@ export function testMetadata(surahs: readonly SurahFiles[]): SurahMetadata[] {
 /**
  * Surah 1 with 4 verses and surah 2 with 3, one source with two passages, two reading sections
  * covering surah 1, a phrase note with a context link into surah 2, a published word meaning,
- * a published brief, a draft verse explanation, and transliterations of 1:1 (published in both
- * languages) and 1:2 (a draft in Latin).
+ * a published brief, a draft verse explanation, transliterations of 1:1 (published in both
+ * languages) and 1:2 (a draft in Latin), and fixed questions: two published (1:1–1:2 and 1:3) and
+ * a draft.
  */
 export function testBundle(): ContentBundle {
   const first = surahFiles(1, 4);
@@ -173,6 +201,14 @@ export function testBundle(): ContentBundle {
     transliteration("1:1", "en"),
     transliteration("1:1", "ko"),
     transliteration("1:2", "en", "draft"),
+  ];
+  first.qa = [
+    question("s1-qa-1", "1:1", "1:2"),
+    question("s1-qa-2", "1:3", "1:3", "published", [
+      "passage-2",
+      { passage: "passage-1", quoting: "[narrator]" },
+    ]),
+    question("s1-qa-draft", "1:4", "1:4", "draft"),
   ];
   first.surah = {
     names: { en: "Test", ko: "테스트" },

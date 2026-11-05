@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "A stable id, such as \"001-reading-1\". Never reuse one for something else."
+          },
+          "span": {
+            "type": "object",
+            "properties": {
+              "from": {
+                "type": "string",
+                "pattern": "^([1-9]\\d{0,2}):([1-9]\\d{0,2})(?::([1-9]\\d{0,2}))?$"
+              },
+              "to": {
+                "type": "string",
+                "pattern": "^([1-9]\\d{0,2}):([1-9]\\d{0,2})(?::([1-9]\\d{0,2}))?$"
+              }
+            },
+            "required": ["from", "to"],
+            "additionalProperties": false,
+            "description": "The whole verses the question is about: { \"from\": \"1:2\", \"to\": \"1:4\" }. The page lists it under the reading section where the span starts."
+          },
+          "question": {
+            "type": "object",
+            "properties": {
+              "en": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] },
+              "ko": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] }
+            },
+            "required": ["en", "ko"],
+            "additionalProperties": false,
+            "description": "English and Korean. null until written."
+          },
+          "answer": {
+            "type": "object",
+            "properties": {
+              "en": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] },
+              "ko": { "anyOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] }
+            },
+            "required": ["en", "ko"],
+            "additionalProperties": false,
+            "description": "English and Korean. null until written."
+          },
+          "citations": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                  "description": "A stable id, such as \"001-reading-1\". Never reuse one for something else."
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "passage": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                      "description": "A stable id, such as \"001-reading-1\". Never reuse one for something else."
+                    },
+                    "quoting": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "Who the passage quotes or narrates from, as the draft names them: \"Muslim\"."
+                    }
+                  },
+                  "required": ["passage", "quoting"],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "description": "Passages in content/sources/ behind the answer. Every question needs at least one, whatever its status: an answer is never shown without a source."
+          },
+          "status": {
+            "type": "string",
+            "enum": ["draft", "en_approved", "ko_drafted", "ko_approved", "published"],
+            "description": "Must be where the review history ends (draft when it's empty)."
+          },
+          "review": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "enum": ["draft", "en_approved", "ko_drafted", "ko_approved", "published"]
+                },
+                "reviewer": { "type": "string", "minLength": 1 },
+                "date": {
+                  "type": "string",
+                  "format": "date",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                },
+                "notes": { "type": "string", "minLength": 1 }
+              },
+              "required": ["status", "reviewer", "date"],
+              "additionalProperties": false,
+              "description": "One review step. Sending an item back to an earlier step needs notes."
+            }
+          }
+        },
+        "required": ["id", "span", "question", "answer", "citations", "status", "review"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["questions"],
+  "additionalProperties": false
+}

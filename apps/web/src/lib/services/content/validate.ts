@@ -261,6 +261,7 @@ export function validateContent(bundle: ContentBundle): ContentError[] {
 
   // Explanations, reading sections, word meanings and briefs.
   const explanationIds = new Set<string>();
+  const questionIds = new Set<string>();
   for (const surah of bundle.surahs) {
     const { number, dir } = surah;
     const file = `${dir}/explanations.json`;
@@ -460,6 +461,39 @@ export function validateContent(bundle: ContentBundle): ContentError[] {
       }
       const text = { en: null, ko: null, [item.language]: item.text };
       checkText(transliterationsFile, `${path}.text`, text);
+    });
+
+    // Fixed questions: whole verses of this surah, and an answer that always cites a source.
+    const qaFile = `${dir}/qa.json`;
+    surah.qa.forEach((entry, i) => {
+      const path = `questions[${i}]`;
+      if (questionIds.has(entry.id)) {
+        report(qaFile, `${path}.id`, `"${entry.id}" is used by another question`);
+      }
+      questionIds.add(entry.id);
+      const span = checkSpan(qaFile, `${path}.span`, entry.span);
+      if (span) {
+        if (span.start.surah !== number) {
+          report(
+            qaFile,
+            `${path}.span`,
+            `starts in surah ${span.start.surah}, so it belongs in that surah's folder`,
+          );
+        }
+        if (span.start.word !== null || span.end.word !== null) {
+          report(qaFile, `${path}.span`, 'a question covers whole verses ("1:2", not "1:2:3")');
+        }
+      }
+      if (entry.citations.length === 0) {
+        report(qaFile, `${path}.citations`, "every answer needs at least one citation");
+      }
+      checkCitations(qaFile, `${path}.citations`, entry.citations);
+      checkText(qaFile, `${path}.question`, entry.question);
+      checkText(qaFile, `${path}.answer`, entry.answer);
+      checkReview(qaFile, path, entry, [entry.question, entry.answer]);
+      if (entry.status !== "draft" && (!entry.question.en || !entry.answer.en)) {
+        report(qaFile, path, `is ${entry.status}, so it needs its English question and answer`);
+      }
     });
 
     const surahFile = `${dir}/surah.json`;

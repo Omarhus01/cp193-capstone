@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { loadContent, type ContentBundle, type ContentError } from "./load";
-import { explanation, testBundle, transliteration } from "./test-bundle";
+import { explanation, question, testBundle, transliteration } from "./test-bundle";
 import { validateContent } from "./validate";
 
 describe("content/", () => {
@@ -331,6 +331,90 @@ describe("validateContent", () => {
       });
       expect(messages(errors)).toContainEqual(
         expect.stringContaining("transliterations[1].text.ko"),
+      );
+    });
+  });
+
+  describe("fixed questions", () => {
+    it("rejects an answer without a citation, even in a draft", () => {
+      const errors = errorsAfter((b) => {
+        b.surahs[0].qa[2].citations = [];
+      });
+      expect(messages(errors)).toContainEqual(
+        "surahs/001/qa.json questions[2].citations: every answer needs at least one citation",
+      );
+    });
+
+    it("rejects a citation of a passage that doesn't exist", () => {
+      const errors = errorsAfter((b) => {
+        b.surahs[0].qa[0].citations = ["passage-9"];
+      });
+      expect(messages(errors)).toContainEqual(
+        'surahs/001/qa.json questions[0].citations[0]: no passage "passage-9" in content/sources/',
+      );
+    });
+
+    it("attaches a question to whole verses of its own surah", () => {
+      expect(
+        messages(
+          errorsAfter((b) => {
+            b.surahs[0].qa[0].span = { from: "1:1:1", to: "1:1:2" };
+          }),
+        ),
+      ).toContainEqual(expect.stringContaining("a question covers whole verses"));
+      expect(
+        messages(
+          errorsAfter((b) => {
+            b.surahs[0].qa[0].span = { from: "1:9", to: "1:9" };
+          }),
+        ),
+      ).toContainEqual(expect.stringContaining("verse 1:9 isn't in"));
+      expect(
+        messages(
+          errorsAfter((b) => {
+            b.surahs[1].qa = [question("s2-qa", "1:1", "1:1")];
+          }),
+        ),
+      ).toContainEqual(expect.stringContaining("belongs in that surah's folder"));
+    });
+
+    it("rejects a duplicate question id, across surahs too", () => {
+      const errors = errorsAfter((b) => {
+        b.surahs[1].qa = [question("s1-qa-1", "2:1", "2:1")];
+      });
+      expect(messages(errors)).toContainEqual(expect.stringContaining("used by another question"));
+    });
+
+    it("follows the explanations' review steps", () => {
+      expect(
+        messages(
+          errorsAfter((b) => {
+            b.surahs[0].qa[0].review.splice(2, 1);
+          }),
+        ),
+      ).toContainEqual(expect.stringContaining("questions[0].review[2]: can't skip"));
+      expect(
+        messages(
+          errorsAfter((b) => {
+            b.surahs[0].qa[0].answer.ko = null;
+          }),
+        ),
+      ).toContainEqual(expect.stringContaining("every English part needs its Korean"));
+      expect(
+        messages(
+          errorsAfter((b) => {
+            b.surahs[0].qa[0].answer.en = null;
+          }),
+        ),
+      ).toContainEqual(expect.stringContaining("needs its English question and answer"));
+    });
+
+    it("rejects 하나님 in a question or answer", () => {
+      const errors = errorsAfter((b) => {
+        b.surahs[0].qa[1].question.ko = "하나님";
+      });
+      expect(messages(errors)).toContainEqual(
+        expect.stringContaining('questions[1].question.ko: uses "하나님"'),
       );
     });
   });

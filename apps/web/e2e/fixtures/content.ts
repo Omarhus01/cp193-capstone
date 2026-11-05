@@ -51,6 +51,7 @@ function surahFiles(number: number, verseCount: number): SurahFiles {
     readingSections: [],
     wordMeanings: [],
     transliterations: [],
+    qa: [],
   };
 }
 

@@ -222,6 +222,32 @@ export const transliterationsFileSchema = z.strictObject({
   ),
 });
 
+/**
+ * qa.json: the surah's fixed questions, each answered from the sources, written by the owner
+ * (ADR 0018). A question attaches to the verses it is about, like an explanation.
+ */
+export const qaFileSchema = z.strictObject({
+  $schema,
+  questions: z.array(
+    z.strictObject({
+      id,
+      span: span.meta({
+        description:
+          'The whole verses the question is about: { "from": "1:2", "to": "1:4" }. The page lists ' +
+          "it under the reading section where the span starts.",
+      }),
+      question: localized,
+      answer: localized,
+      citations: citations.meta({
+        description:
+          "Passages in content/sources/ behind the answer. Every question needs at least one, " +
+          "whatever its status: an answer is never shown without a source.",
+      }),
+      ...reviewed,
+    }),
+  ),
+});
+
 /** sources/<id>.json: a source and the passages cited from it. */
 export const sourceFileSchema = z.strictObject({
   $schema,
@@ -270,6 +296,8 @@ export type WordMeaningsFile = z.infer<typeof wordMeaningsFileSchema>;
 export type WordMeaningEntry = WordMeaningsFile["wordMeanings"][number];
 export type TransliterationsFile = z.infer<typeof transliterationsFileSchema>;
 export type TransliterationEntry = TransliterationsFile["transliterations"][number];
+export type QaFile = z.infer<typeof qaFileSchema>;
+export type QaEntry = QaFile["questions"][number];
 export type SourceFile = z.infer<typeof sourceFileSchema>;
 
 /** A citation as { passage, quoting }, whichever way the file writes it. */
@@ -289,6 +317,7 @@ export const CONTENT_SCHEMAS = {
   "reading.schema.json": readingFileSchema,
   "word-meanings.schema.json": wordMeaningsFileSchema,
   "transliterations.schema.json": transliterationsFileSchema,
+  "qa.schema.json": qaFileSchema,
   "source.schema.json": sourceFileSchema,
 } as const;
 
