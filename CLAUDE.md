@@ -56,7 +56,7 @@ apps/web/                 Next.js site (npm workspace)
                           seed payload), reading/ (surah page view, reading preferences)
   src/lib/data/           all database access: auth, session, content (cached, published only), health; the only
                           importers of lib/supabase
-  src/lib/supabase/       browser, server, proxy and public (cookie-less, for published content) client factories
+  src/lib/supabase/       server, proxy and public (cookie-less, for published content) client factories
   scripts/                content tooling run with tsx: import-tanzil, import-tanzil-metadata, write-content-schema,
                           seed-content
   src/lib/domain/         domain types shared by every layer
