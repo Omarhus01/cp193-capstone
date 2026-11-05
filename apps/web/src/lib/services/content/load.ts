@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import type { z } from "zod";
 import {
   explanationsFileSchema,
+  qaFileSchema,
   quranMetadataFileSchema,
   readingFileSchema,
   sourceFileSchema,
@@ -13,6 +14,7 @@ import {
   wordMeaningsFileSchema,
   wordsFileSchema,
   type ExplanationEntry,
+  type QaEntry,
   type SourceFile,
   type SurahMetadata,
   type SurahFile,
@@ -40,6 +42,7 @@ export type SurahFiles = {
   readingSections: string[];
   wordMeanings: WordMeaningEntry[];
   transliterations: TransliterationEntry[];
+  qa: QaEntry[];
 };
 
 export type SourceFiles = SourceFile & { file: string };
@@ -57,6 +60,7 @@ const OPTIONAL_FILES = [
   "reading.json",
   "word-meanings.json",
   "transliterations.json",
+  "qa.json",
 ];
 
 /** "explanations[0].span.from" */
@@ -141,7 +145,8 @@ export function loadContent(dir: string = CONTENT_DIR): {
       `${surahDir}/transliterations.json`,
       transliterationsFileSchema,
     );
-    const optional = [explanations, reading, wordMeanings, transliterations];
+    const qa = readOptional(`${surahDir}/qa.json`, qaFileSchema);
+    const optional = [explanations, reading, wordMeanings, transliterations, qa];
     if (!text || !words || !surah || optional.includes(null)) {
       continue;
     }
@@ -155,6 +160,7 @@ export function loadContent(dir: string = CONTENT_DIR): {
       readingSections: reading?.sections ?? [],
       wordMeanings: wordMeanings?.wordMeanings ?? [],
       transliterations: transliterations?.transliterations ?? [],
+      qa: qa?.questions ?? [],
     });
   }
 

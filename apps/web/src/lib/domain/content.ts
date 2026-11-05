@@ -112,6 +112,18 @@ export type WordMeaning = {
   elsewhere: ElsewhereNote[];
 };
 
+/**
+ * A published fixed question about a span of whole verses, with the owner's answer and the sources
+ * behind it (ADR 0018).
+ */
+export type FixedQuestion = {
+  id: string;
+  span: Span;
+  question: Localized;
+  answer: Localized;
+  citations: Citation[];
+};
+
 /** A verse's Arabic text, for showing a referenced verse. */
 export type VerseText = VerseRef & { textAr: string };
 

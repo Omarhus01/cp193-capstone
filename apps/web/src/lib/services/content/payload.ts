@@ -5,7 +5,7 @@ import { readCitation, type CitationEntry, type ItemEntry } from "./schema";
 import { parseRef, parseSpan, spanId, type SpanRefs } from "./spans";
 
 // The argument of the seed_content database function (supabase/migrations/, last replaced in
-// …_reading_structure_and_transliteration.sql).
+// …_fixed_qa.sql).
 // Keys are table names and rows use the column names, so the function can read them with
 // jsonb_populate_recordset. Rows are sorted, so the same content always gives the same payload.
 
@@ -35,6 +35,9 @@ export type SeedPayload = {
   surah_brief_items: Row[];
   surah_brief_item_citations: Row[];
   word_meaning_elsewhere: Row[];
+  qa_questions: Row[];
+  qa_question_citations: Row[];
+  qa_question_reviews: Row[];
 };
 
 /** The database's name for each part of an explanation (enum explanation_part). */
@@ -106,6 +109,9 @@ export function toSeedPayload(bundle: ContentBundle): SeedPayload {
     surah_brief_items: [],
     surah_brief_item_citations: [],
     word_meaning_elsewhere: [],
+    qa_questions: [],
+    qa_question_citations: [],
+    qa_question_reviews: [],
   };
 
   const spans = new Map<string, Span>();
@@ -269,6 +275,23 @@ export function toSeedPayload(bundle: ContentBundle): SeedPayload {
       payload.verse_transliteration_reviews.push(...reviewRows(key, item.review));
     }
 
+    surah.qa.forEach((entry, sortOrder) => {
+      payload.qa_questions.push({
+        id: entry.id,
+        span_id: addSpan(entry.span),
+        sort_order: sortOrder,
+        question_en: entry.question.en,
+        question_ko: entry.question.ko,
+        answer_en: entry.answer.en,
+        answer_ko: entry.answer.ko,
+        status: entry.status,
+      });
+      payload.qa_question_citations.push(
+        ...citationRows({ question_id: entry.id }, entry.citations),
+      );
+      payload.qa_question_reviews.push(...reviewRows({ question_id: entry.id }, entry.review));
+    });
+
     const brief = surah.surah.brief;
     if (brief) {
       payload.surah_briefs.push({ surah: number, status: brief.status });
@@ -324,5 +347,8 @@ export function toSeedPayload(bundle: ContentBundle): SeedPayload {
   payload.surah_brief_item_citations.sort(byKeys("surah", "item_order", "sort_order"));
   payload.word_meaning_elsewhere.sort(byKeys("surah", "ayah", "position", "sort_order"));
   payload.verse_transliteration_reviews.sort(byKeys("surah", "ayah", "language", "step"));
+  payload.qa_questions.sort(byKeys("id"));
+  payload.qa_question_citations.sort(byKeys("question_id", "sort_order"));
+  payload.qa_question_reviews.sort(byKeys("question_id", "step"));
   return payload;
 }

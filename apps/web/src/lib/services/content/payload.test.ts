@@ -124,4 +124,34 @@ describe("toSeedPayload", () => {
       url: "https://example.com/book/1/10",
     });
   });
+
+  it("stores fixed questions with their spans, citations and review steps", () => {
+    const payload = toSeedPayload(testBundle());
+    expect(payload.qa_questions).toEqual([
+      {
+        id: "s1-qa-1",
+        span_id: "1:1-1:2",
+        sort_order: 0,
+        question_en: "question s1-qa-1 (en)",
+        question_ko: "question s1-qa-1 (ko)",
+        answer_en: "answer s1-qa-1 (en)",
+        answer_ko: "answer s1-qa-1 (ko)",
+        status: "published",
+      },
+      expect.objectContaining({ id: "s1-qa-2", span_id: "1:3-1:3", sort_order: 1 }),
+      expect.objectContaining({ id: "s1-qa-draft", sort_order: 2, status: "draft" }),
+    ]);
+    expect(
+      payload.qa_question_citations
+        .filter((c) => c.question_id === "s1-qa-2")
+        .map((c) => [c.sort_order, c.passage_id, c.quoting]),
+    ).toEqual([
+      [0, "passage-2", null],
+      [1, "passage-1", "[narrator]"],
+    ]);
+    expect(payload.spans.map((s) => s.id)).toContain("1:4-1:4");
+    expect(
+      payload.qa_question_reviews.filter((r) => r.question_id === "s1-qa-1").map((r) => r.status),
+    ).toEqual(["en_approved", "ko_drafted", "ko_approved", "published"]);
+  });
 });

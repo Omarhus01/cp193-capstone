@@ -1,16 +1,20 @@
 import { useTranslations } from "next-intl";
 import { PlayIcon } from "@/components/icons";
 import type { Locale } from "@/i18n/locale";
+import type { QuestionView } from "@/lib/services/qa";
 import type { SectionView } from "@/lib/services/reading/surah-view";
 import { ExplanationParts } from "./ExplanationParts";
 import { QaPanel } from "./QaPanel";
 import { SectionFrame } from "./SectionFrame";
 import { SectionVerses } from "./SectionVerses";
 
-type ReadingSectionCardProps = { section: SectionView; locale: Locale };
+type ReadingSectionCardProps = { section: SectionView; questions: QuestionView[]; locale: Locale };
 
-/** One reading section: its verses, then its explanation, or a note that it is coming soon. */
-export function ReadingSectionCard({ section, locale }: ReadingSectionCardProps) {
+/**
+ * One reading section: its verses, then its explanation, or a note that it is coming soon. On
+ * phones, its questions follow.
+ */
+export function ReadingSectionCard({ section, questions, locale }: ReadingSectionCardProps) {
   const t = useTranslations("surah");
   const { position, total, explanation } = section;
 
@@ -38,21 +42,21 @@ export function ReadingSectionCard({ section, locale }: ReadingSectionCardProps)
       <SectionVerses verses={section.verses} words={section.words} />
 
       {explanation ? (
-        <>
-          <div className="mt-6 border-t border-line pt-5">
-            <ExplanationParts explanation={explanation} locale={locale} />
-          </div>
-          {/* On phones the questions sit under each section instead of in a side panel. */}
-          <div className="mt-6 lg:hidden">
-            <QaPanel variant="inline" />
-          </div>
-        </>
+        <div className="mt-6 border-t border-line pt-5">
+          <ExplanationParts explanation={explanation} locale={locale} />
+        </div>
       ) : (
         <div className="mt-6 rounded-lg border border-dashed border-line bg-page p-4">
           <h3 className="font-semibold">{t("comingSoonTitle")}</h3>
           <p className="mt-1 text-sm text-ink-muted">{t("comingSoonBody")}</p>
         </div>
       )}
+      {/* On phones the questions sit under each section instead of in a side panel. */}
+      {explanation || questions.length > 0 ? (
+        <div className="mt-6 lg:hidden">
+          <QaPanel variant="inline" questions={questions} />
+        </div>
+      ) : null}
     </SectionFrame>
   );
 }

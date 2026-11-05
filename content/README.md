@@ -18,6 +18,7 @@ content/
     reading.json           the order of the reading sections. Owner.
     word-meanings.json     what words mean in their verse. Owner. Optional.
     transliterations.json  how each verse is pronounced, in Latin letters and Hangul. Owner. Optional.
+    qa.json                fixed questions and their answers, per reading section. Owner. Optional.
   sources/<source id>.json a source and the passages cited from it. Owner.
 ```
 
@@ -131,6 +132,30 @@ A word meaning has its meaning in this verse, its citations, and `elsewhere`: wh
 }
 ```
 
+## Fixed questions
+
+`qa.json` holds the questions the Q&A panel lists, each with the owner's answer in English and Korean and the sources behind it ([ADR 0018](../docs/decisions/0018-fixed-qa-as-stored-content.md)):
+
+```json
+{
+  "questions": [
+    {
+      "id": "001-qa-1",
+      "span": { "from": "1:1", "to": "1:1" },
+      "question": { "en": "…", "ko": "…" },
+      "answer": { "en": "…", "ko": "…" },
+      "citations": ["ibn-kathir-1-18-30"],
+      "status": "draft",
+      "review": []
+    }
+  ]
+}
+```
+
+- **The span** covers the whole verses the question is about. The page lists the question under the reading section that holds the span's first verse, in the order of the file.
+- **Every answer cites at least one passage**, whatever its status, so readers never see an answer without its sources. Citations work as in explanations, `quoting` included.
+- **Review** follows the same steps as explanations (below). Readers see a question only once it is published.
+
 ## Sources
 
 `sources/<source id>.json` holds one book and the passages cited from it:
@@ -192,7 +217,7 @@ A word meaning has its meaning in this verse, its citations, and `elsewhere`: wh
 
 ## Review
 
-Explanations, word meanings and surah briefs go through these steps, one at a time (transliterations have a shorter track, above):
+Explanations, word meanings, surah briefs and fixed questions go through these steps, one at a time (transliterations have a shorter track, above):
 
 ```
 draft → en_approved → ko_drafted → ko_approved → published
@@ -219,6 +244,7 @@ The validation test fails when:
 - the dates of the steps go backwards
 - the English is approved with no English text, or from `ko_drafted` on, an English point, elsewhere note or reason has no Korean
 - a point of a published explanation or brief has no citation, or a published word meaning has none
+- a fixed question's answer has no citation, at any status
 - a verse reference names a verse that doesn't exist, or a citation names a passage that doesn't
 - any text uses 하나님, or "God" as a name (CLAUDE.md, Content rules)
 

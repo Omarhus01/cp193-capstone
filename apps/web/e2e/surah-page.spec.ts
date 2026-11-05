@@ -387,6 +387,13 @@ test.describe("on a phone", () => {
     await expect(section(page, "1:1–2").getByLabel(ko.qa.askLabel)).toBeDisabled();
     // A section without a published explanation has no questions yet.
     await expect(section(page, "1:3").getByRole("heading", { name: ko.qa.title })).toHaveCount(0);
+    // Each section lists its own questions; tapping one opens its answer.
+    const questions = section(page, "1:1–2").getByRole("list", { name: ko.qa.questionsLabel });
+    await questions.getByRole("button", { name: "[question 1 ko]" }).tap();
+    await expect(questions.getByText("[answer 1 ko]")).toBeVisible();
+    await expect(
+      section(page, "1:4–5").getByRole("button", { name: "[question 3 ko]" }),
+    ).toBeAttached();
 
     await firstWord(page).tap();
     const popover = page.getByRole("dialog");
@@ -429,4 +436,45 @@ test("the questions panel follows the section in view", async ({ page }) => {
       name: /^1:4–5/,
     }),
   ).toHaveAttribute("aria-current", "location");
+});
+
+test("the questions panel lists the section's questions and opens each answer with its sources", async ({
+  page,
+}) => {
+  await openLoggedIn(page, "/en/surah/1");
+  const panel = page.getByRole("complementary");
+  const questions = panel.getByRole("list", { name: en.qa.questionsLabel });
+  const book = "[Fixture author], [Fixture source] ([Fixture edition])";
+  const first = questions.getByRole("button", { name: "[question 1 en]" });
+  const second = questions.getByRole("button", { name: "[question 2 en]" });
+
+  await expect(questions.getByRole("button")).toHaveCount(2);
+  await expect(first).toHaveAttribute("aria-expanded", "false");
+  await expect(panel.getByText("[answer 1 en]")).toBeHidden();
+
+  // The answer ends with its sources: a chip that opens the cited pages in a new tab.
+  await first.click();
+  await expect(first).toHaveAttribute("aria-expanded", "true");
+  await expect(panel.getByText("[answer 1 en]")).toBeVisible();
+  const chip = panel.getByRole("link", {
+    name: `Source 1: ${book}, vol. 1, p. 10 ${en.surah.feedback.newTab}`,
+  });
+  await expect(chip).toHaveAttribute("href", FIXTURE_PASSAGE_URL);
+  await expect(chip).toHaveAttribute("target", "_blank");
+
+  // One answer is open at a time; a source that quotes someone names them.
+  await second.click();
+  await expect(panel.getByText("[answer 1 en]")).toBeHidden();
+  await expect(panel.getByText("[answer 2 en]")).toBeVisible();
+  await expect(panel.getByTitle(`${FIXTURE_NARRATOR}, via ${book}, on 1:2`)).toBeVisible();
+
+  // Another section, other questions; the draft question of 1:3 never shows.
+  const nav = page.getByRole("navigation", { name: en.surah.readingSections });
+  await nav.getByRole("link", { name: /^1:3/ }).click();
+  await expect(panel.getByText("Reading now: 1:3")).toBeVisible();
+  await expect(panel.getByText(en.qa.noQuestions)).toBeVisible();
+  await nav.getByRole("link", { name: /^1:4–5/ }).click();
+  await expect(panel.getByText("Reading now: 1:4–5")).toBeVisible();
+  await expect(questions.getByRole("button")).toHaveText(["[question 3 en]"]);
+  await expect(panel.getByLabel(en.qa.askLabel)).toBeDisabled();
 });

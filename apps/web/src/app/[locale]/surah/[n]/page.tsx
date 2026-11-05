@@ -14,6 +14,7 @@ import { SurahReader } from "@/components/surah/SurahReader";
 import type { Locale } from "@/i18n/locale";
 import { requireUserId } from "@/lib/services/auth/require-user";
 import { feedbackFormUrl } from "@/lib/services/feedback";
+import { questionsForSection } from "@/lib/services/qa";
 import { parsePreferences } from "@/lib/services/reading/preferences";
 import { loadSurahPage } from "@/lib/services/reading/surah-page";
 import { parseSurahNumber } from "@/lib/services/surah";
@@ -80,6 +81,7 @@ async function SurahContent({ params }: Pick<SurahPageProps, "params">) {
             <QaPanel
               variant="panel"
               sectionLabels={Object.fromEntries(sections.map((s) => [s.position, s.label]))}
+              questions={view.questions}
             />
             <FeedbackButton url={feedbackUrl} />
           </div>
@@ -89,7 +91,12 @@ async function SurahContent({ params }: Pick<SurahPageProps, "params">) {
           <SurahHeader surah={view.surah} brief={view.brief} locale={locale} />
           <ReadingControls hasWordMeanings={Object.keys(view.words).length > 0} />
           {sections.map((section) => (
-            <ReadingSectionCard key={section.position} section={section} locale={locale} />
+            <ReadingSectionCard
+              key={section.position}
+              section={section}
+              questions={questionsForSection(view.questions, section.position)}
+              locale={locale}
+            />
           ))}
           {/* On phones the right column is hidden, so the feedback form comes at the end. */}
           <div className="lg:hidden">

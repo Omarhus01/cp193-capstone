@@ -29,7 +29,7 @@ The full proposal, with the market research, sprint plan, and user-testing plan,
   - The Korean terms for إله and رب come from the Islamic terms glossary once the owner's reviewers approve it (#8). Don't invent them.
   - `findBannedTerms` (`src/lib/services/terminology.ts`) flags 하나님 and capitalized "God" used as a name. Lowercase "god" passes. A unit test runs it over the message files.
 - **Never write Quran verses, translations, explanations, or word meanings.** The project owner provides and validates all religious content in `content/`. Don't generate placeholder verses, explanations or meanings either. The Quran text comes only from Tanzil, through `npm run content:import-tanzil`, and is never edited by hand.
-- **Only published content reaches readers.** Explanations, word meanings and surah briefs go draft → en_approved → ko_drafted → ko_approved → published, one step at a time ([ADR 0011](docs/decisions/0011-content-in-git-seeded-into-supabase.md), `content/README.md`).
+- **Only published content reaches readers.** Explanations, word meanings, surah briefs and fixed questions go draft → en_approved → ko_drafted → ko_approved → published, one step at a time ([ADR 0011](docs/decisions/0011-content-in-git-seeded-into-supabase.md), `content/README.md`).
 
 ## Stack (fixed for all sprints)
 
@@ -52,7 +52,7 @@ apps/web/                 Next.js site (npm workspace)
   src/proxy.ts            Next 16 "proxy" (formerly middleware): locale routing, session refresh, protected-route redirect
   src/i18n/               next-intl routing, navigation, request config, locale helpers
   src/lib/services/       business logic: auth/ (paths, validation, accounts, requireUserId), surah, terminology,
-                          review (review steps and tracks), content/ (content file schema, loading, validation,
+                          qa (fixed questions per section), review (review steps and tracks), content/ (content file schema, loading, validation,
                           seed payload), reading/ (surah page view, reading preferences)
   src/lib/data/           all database access: auth, session, content (cached, published only), health; the only
                           importers of lib/supabase
@@ -68,7 +68,7 @@ apps/web/                 Next.js site (npm workspace)
                           surah/ (surah page: sections, word popover, toggles, Q&A shell), auth/ (forms),
                           text/ArabicText
   e2e/fixtures/           content seeded by the surah page e2e tests (placeholder text only)
-content/                  Quran text (Tanzil), explanations, word meanings, sources as JSON; see content/README.md
+content/                  Quran text (Tanzil), explanations, word meanings, fixed Q&A, sources as JSON; see content/README.md
 supabase/migrations/      SQL migrations
 docs/proposal.pdf         project proposal
 docs/design/              approved page designs (surah page, desktop and phone)
@@ -105,6 +105,11 @@ Details are in the README, under [How I work](README.md#how-i-work).
 - One branch per issue: `feat/<issue>-<short-name>`, `fix/…` or `chore/…`.
 - Changes reach `main` only through a pull request that says `Closes #<issue>` and uses `.github/pull_request_template.md`. `main` is protected: a PR and a passing CI check are required, admins included.
 - Merge with a merge commit (`gh pr merge --merge`), never squash or rebase, so each commit stays in the history. Commit messages follow the existing Conventional Commits style.
+- **Write PRs, issue comments and commit messages for a reader who doesn't know the repo.**
+  - Use plain words.
+  - Never use a code or number on its own: an ADR number, an issue number, an abbreviation, or a status or file name (ADR 0017, #35, RLS, ko_approved).
+  - Say what it means first, then add the link or code after it if useful. For example: "Release order: database first, then content, then merge (decision record: hosting on Vercel)."
+  - `Closes #<issue>` stays, because GitHub needs it to close the issue, but the text around it says what the issue is.
 
 ## Definition of done
 
@@ -126,7 +131,7 @@ app/ (routes, pages, server actions) → components/ → lib/services/ → lib/d
 
 - **`lib/data`** holds all database access. It is the only code that imports `@/lib/supabase/*` or `@supabase/*`, and it returns plain results, not Supabase objects. `src/proxy.ts` is infrastructure and calls `lib/data/session` directly. The one exception outside `src` is `scripts/seed-content.mts`, which writes content with the service role key through the `seed_content` database function ([ADR 0011](docs/decisions/0011-content-in-git-seeded-into-supabase.md)).
 - **`lib/services`** holds the business logic. Pages and components use it and never import `lib/data` or `lib/ai`. Components may import server actions from `app/`.
-- **`lib/ai`**: AI features go through interfaces here. `RetrievalProvider` answers with citations or declines. The mock serves prepared answers now, and the real provider (#10) plugs in later without page changes.
+- **`lib/ai`**: AI features go through interfaces here. `RetrievalProvider` answers typed questions with citations or declines. The mock declines everything for now, and the real provider (#10) plugs in later without page changes. Fixed questions are stored content, not AI answers (`lib/services/qa.ts`, [ADR 0018](docs/decisions/0018-fixed-qa-as-stored-content.md)).
 - **`lib/domain`**: domain types live here, in one place, and every layer may import them. It imports no other layer.
 - **Enforced:** `no-restricted-imports` blocks in `apps/web/eslint.config.mjs`, checked by `src/architecture.test.ts`. Use the `@/` alias for imports across layers.
 
@@ -146,7 +151,7 @@ app/ (routes, pages, server actions) → components/ → lib/services/ → lib/d
 - **Tanzil credit:** every page that shows Quran text must credit the Tanzil Project with a link to tanzil.net. The global `SiteFooter` does this; don't remove it.
 - **Layout:** pages with columns use `PageLayout` (`sidebar` and `aside` props). The right column shows on wide screens only, so a page puts its phone version inline.
 - **e2e with content:** tests that need content seed fixtures into a local Supabase (`e2e/local-supabase.ts`), and are skipped unless `E2E_LOCAL_SUPABASE=1` with a local URL. Never point them at the hosted project.
-- **Database:** every table has row level security enabled. Quran text, source records and the reading structure are public to read. Explanations, word meanings, briefs, transliterations, their citations and the passages they cite are readable only when published. `profiles` lets a user read and update their own row. The four `*_review` tables have no policies and no grants, so they deny everything to `anon` and `authenticated`. Content is written only by `seed_content`, with the service role. Change the schema only through a new migration file. Never edit an applied migration. The database changes before the code (db push, seed, then merge), so a migration must keep working with the code already on `main`.
+- **Database:** every table has row level security enabled. Quran text, source records and the reading structure are public to read. Explanations, word meanings, briefs, transliterations, fixed questions, their citations and the passages they cite are readable only when published. `profiles` lets a user read and update their own row. The five `*_review` tables have no policies and no grants, so they deny everything to `anon` and `authenticated`. Content is written only by `seed_content`, with the service role. Change the schema only through a new migration file. Never edit an applied migration. The database changes before the code (db push, seed, then merge), so a migration must keep working with the code already on `main`.
 - **Secrets:** the deployed site holds only public values: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and the optional `NEXT_PUBLIC_FEEDBACK_URL`. The service role key is never read by app code (`src/deploy.test.ts`) and never goes to Vercel or GitHub. The keep-alive workflow uses only the `SUPABASE_URL` and `SUPABASE_ANON_KEY` repository secrets.
 - **Test data stays local:** helpers that write data (`e2e/local-supabase.ts`) refuse a non-local Supabase URL, and before signing up or logging in through the app they check the server's `/health` (`assertLocalTestServer`). Use them in any new script that writes test data; never sign up test accounts through a server you haven't checked.
 - **Code style:** keep components small and clearly named. Other people read this code. Put pure logic in `src/lib/services/`, with a colocated `*.test.ts`.
