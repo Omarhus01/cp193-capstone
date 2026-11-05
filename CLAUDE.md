@@ -35,7 +35,7 @@ The full proposal, with the market research, sprint plan, and user-testing plan,
 
 - **Web:** Next.js 16 (App Router, TypeScript strict), Tailwind CSS 4, next-intl with locale routes `/en` and `/ko` (default `en`)
 - **Backend:** Supabase for auth and Postgres, through `@supabase/ssr`. The schema lives in `supabase/migrations/`.
-- **AI (sprint 2):** a Python FastAPI service in `services/ai/`
+- **AI (sprint 2):** a Python FastAPI service in `services/ai/` (created when #10 starts)
 - **Hosting:** Vercel (root directory `apps/web`, production from `main`, no previews). Setup and release order: [`docs/deploy.md`](docs/deploy.md), [ADR 0017](docs/decisions/0017-vercel-hosting-and-release-order.md)
 - **Tests:** Vitest for unit tests, Playwright for end-to-end tests
 - **CI:** GitHub Actions, a required check on `main`
@@ -68,11 +68,8 @@ apps/web/                 Next.js site (npm workspace)
                           surah/ (surah page: sections, word popover, toggles, Q&A shell), auth/ (forms),
                           text/ArabicText
   e2e/fixtures/           content seeded by the surah page e2e tests (placeholder text only)
-services/ai/              placeholder (sprint 2)
-experiments/              placeholder
 content/                  Quran text (Tanzil), explanations, word meanings, sources as JSON; see content/README.md
 supabase/migrations/      SQL migrations
-prompts/                  model prompts (placeholder)
 docs/proposal.pdf         project proposal
 docs/design/              approved page designs (surah page, desktop and phone)
 docs/content-drafts/      the owner's content drafts under review (not loaded by the site)

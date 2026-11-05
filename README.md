@@ -17,11 +17,8 @@ Sprint 1 so far: the site shell, English/Korean routing, email-and-password acco
 | Path                   | What it holds                                                              |
 | ---------------------- | -------------------------------------------------------------------------- |
 | `apps/web/`            | Next.js site (App Router, TypeScript, Tailwind, next-intl)                 |
-| `services/ai/`         | Python FastAPI service for the Q&A panel (sprint 2, empty for now)         |
-| `experiments/`         | Model and retrieval trials (empty for now)                                 |
 | `content/`             | Quran text, explanations and sources as JSON ([README](content/README.md)) |
 | `supabase/migrations/` | Database schema as SQL migrations                                          |
-| `prompts/`             | Prompts for the Q&A model (placeholder)                                    |
 | `.github/workflows/`   | CI (`ci.yml`) on every push and PR; daily Supabase ping (`keep-alive.yml`) |
 | `docs/decisions/`      | Architecture decision records (ADRs)                                       |
 | `CONTRIBUTING.md`      | Issue → branch → pull request workflow and definition of done              |
