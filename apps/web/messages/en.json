@@ -107,6 +107,8 @@
   "qa": {
     "title": "Questions and answers",
     "readingNow": "Reading now: {range}",
+    "questionsLabel": "Questions about this section",
+    "noQuestions": "No questions for this section yet.",
     "askLabel": "Ask your own question",
     "askPlaceholder": "Coming soon",
     "declineNote": "If the sources don't support an answer, it says so instead of answering."

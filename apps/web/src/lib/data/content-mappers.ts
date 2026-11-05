@@ -3,6 +3,7 @@ import type {
   ContentItem,
   Explanation,
   ExplanationKind,
+  FixedQuestion,
   Localized,
   Passage,
   RevelationPlace,
@@ -88,6 +89,16 @@ export type WordMeaningRow = {
     text_en: string | null;
     text_ko: string | null;
   })[];
+};
+
+export type QaQuestionRow = {
+  id: string;
+  question_en: string | null;
+  question_ko: string | null;
+  answer_en: string | null;
+  answer_ko: string | null;
+  span: SpanRow;
+  qa_question_citation: CitationRow[];
 };
 
 export type PassageRow = {
@@ -235,5 +246,15 @@ export function toPassage(row: PassageRow): Passage {
     textAr: row.text_ar,
     summary: localized(row.summary_en, row.summary_ko),
     url: row.url,
+  };
+}
+
+export function toFixedQuestion(row: QaQuestionRow): FixedQuestion {
+  return {
+    id: row.id,
+    span: toSpan(row.span),
+    question: localized(row.question_en, row.question_ko),
+    answer: localized(row.answer_en, row.answer_ko),
+    citations: toCitations(row.qa_question_citation),
   };
 }

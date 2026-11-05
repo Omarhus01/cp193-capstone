@@ -107,6 +107,8 @@
   "qa": {
     "title": "질문과 답변",
     "readingNow": "지금 읽는 구간: {range}",
+    "questionsLabel": "이 구간에 대한 질문",
+    "noQuestions": "이 구간에 대한 질문은 아직 없습니다.",
     "askLabel": "직접 질문하기",
     "askPlaceholder": "곧 제공",
     "declineNote": "출처가 뒷받침하지 않는 질문에는 답하지 않고 그렇다고 알려 드립니다."

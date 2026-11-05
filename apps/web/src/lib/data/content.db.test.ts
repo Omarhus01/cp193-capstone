@@ -7,7 +7,7 @@ import { loadContent } from "@/lib/services/content/load";
 import { toSeedPayload } from "@/lib/services/content/payload";
 // eslint-disable-next-line no-restricted-imports
 import { explanation, item, testBundle } from "@/lib/services/content/test-bundle";
-import { getPassages, getSurahContent, getVerseTexts } from "./content";
+import { getPassages, getSurahContent, getSurahQuestions, getVerseTexts } from "./content";
 
 // The cache directives need the Next.js server; here every call goes to the database.
 vi.mock("next/cache", () => ({ cacheLife: () => {}, cacheTag: () => {} }));
@@ -46,13 +46,17 @@ const TABLES = [
   "surah_brief_item",
   "surah_brief_item_citation",
   "word_meaning_elsewhere",
+  "qa_question",
+  "qa_question_citation",
+  "qa_question_review",
 ];
 
 const noSession = { auth: { persistSession: false, autoRefreshToken: false } };
 
 /**
- * The test bundle with its second reading section left as a draft that already has a point, and a
- * passage no published content cites.
+ * The test bundle with its second reading section left as a draft that already has a point, a
+ * passage only that draft and a draft question cite (passage-3), and a passage only a published
+ * question cites (passage-4).
  */
 function dbBundle() {
   const bundle = testBundle();
@@ -70,6 +74,17 @@ function dbBundle() {
     summary: { en: null, ko: null },
     url: null,
   });
+  bundle.sources[0].passages.push({
+    id: "passage-4",
+    volume: null,
+    page: "4",
+    verse: null,
+    textAr: null,
+    summary: { en: null, ko: null },
+    url: null,
+  });
+  first.qa[0].citations = ["passage-1", "passage-4"];
+  first.qa[2].citations = ["passage-3"];
   return bundle;
 }
 
@@ -170,6 +185,16 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
     expect(await snapshot()).toEqual(before);
   });
 
+  it("still seeds a payload without fixed questions, as the seed on main sends", async () => {
+    const withoutQa = Object.fromEntries(
+      Object.entries(toSeedPayload(dbBundle())).filter(([table]) => !table.startsWith("qa_")),
+    );
+    await seed(withoutQa);
+    expect((await service.from("qa_question").select("id")).data).toEqual([]);
+    await seed(toSeedPayload(dbBundle()));
+    expect((await service.from("qa_question").select("id")).data).toHaveLength(3);
+  });
+
   describe("lib/data returns only published content", () => {
     it("getSurahContent", async () => {
       const content = await getSurahContent(1);
@@ -257,6 +282,33 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
       expect(await getPassages([])).toEqual([]);
     });
 
+    it("getSurahQuestions returns the published questions in order, with their citations", async () => {
+      const questions = await getSurahQuestions(1);
+      expect(questions.map((q) => q.id)).toEqual(["s1-qa-1", "s1-qa-2"]);
+      expect(questions[0]).toEqual({
+        id: "s1-qa-1",
+        span: {
+          start: { surah: 1, ayah: 1, word: null },
+          end: { surah: 1, ayah: 2, word: null },
+        },
+        question: { en: "question s1-qa-1 (en)", ko: "question s1-qa-1 (ko)" },
+        answer: { en: "answer s1-qa-1 (en)", ko: "answer s1-qa-1 (ko)" },
+        citations: [
+          { passageId: "passage-1", quoting: null },
+          { passageId: "passage-4", quoting: null },
+        ],
+      });
+      expect(questions[1].citations).toEqual([
+        { passageId: "passage-2", quoting: null },
+        { passageId: "passage-1", quoting: "[narrator]" },
+      ]);
+      expect(await getSurahQuestions(2)).toEqual([]);
+    });
+
+    it("getPassages returns a passage that only a published question cites", async () => {
+      expect((await getPassages(["passage-4"])).map((p) => p.id)).toEqual(["passage-4"]);
+    });
+
     it("getPassages gives each passage its link, or null", async () => {
       const passages = await getPassages(["passage-1", "passage-2"]);
       expect(passages.map((p) => [p.id, p.url])).toEqual([
@@ -295,11 +347,19 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
       expect(draftElsewhere.data).toEqual([]);
       const transliteration = await db.from("verse_transliteration").select("ayah").eq("ayah", 2);
       expect(transliteration.data).toEqual([]);
+      const draftQuestion = await db.from("qa_question").select("id").eq("id", "s1-qa-draft");
+      expect(draftQuestion.data).toEqual([]);
+      const draftQuestionCitations = await db
+        .from("qa_question_citation")
+        .select("sort_order")
+        .eq("question_id", "s1-qa-draft");
+      expect(draftQuestionCitations.data).toEqual([]);
       for (const table of [
         "explanation_review",
         "word_meaning_review",
         "surah_brief_review",
         "verse_transliteration_review",
+        "qa_question_review",
       ]) {
         const { data, error } = await db.from(table).select("*");
         expect(error !== null || data?.length === 0, table).toBe(true);
@@ -312,6 +372,8 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
       expect((await db.from("explanation").select("id")).data).toHaveLength(2);
       expect((await db.from("reading_section").select("position")).data).toHaveLength(2);
       expect((await db.from("verse_transliteration").select("language")).data).toHaveLength(2);
+      expect((await db.from("qa_question").select("id")).data).toHaveLength(2);
+      expect((await db.from("qa_question_citation").select("question_id")).data).toHaveLength(4);
     });
 
     it("can't insert, update or delete", async () => {

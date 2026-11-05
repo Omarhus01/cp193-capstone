@@ -1,9 +1,16 @@
 import { cacheLife, cacheTag } from "next/cache";
-import type { Passage, SurahContent, VerseRef, VerseText } from "@/lib/domain/content";
+import type {
+  FixedQuestion,
+  Passage,
+  SurahContent,
+  VerseRef,
+  VerseText,
+} from "@/lib/domain/content";
 import { createPublicClient } from "@/lib/supabase/public";
 import {
   toBrief,
   toExplanation,
+  toFixedQuestion,
   toPassage,
   toSpan,
   toSurah,
@@ -12,6 +19,7 @@ import {
   type BriefItemRow,
   type ExplanationRow,
   type PassageRow,
+  type QaQuestionRow,
   type SpanRow,
   type SurahRow,
   type VerseRow,
@@ -39,6 +47,8 @@ const WORD_MEANING = `surah, ayah, position, meaning_en, meaning_ko,
   word_meaning_citation(${CITATION}),
   word_meaning_elsewhere(sort_order, verse_surah, verse_ayah, text_en, text_ko)`;
 const BRIEF = `surah_brief_item(sort_order, text_en, text_ko, surah_brief_item_citation(${CITATION}))`;
+const QA_QUESTION = `id, question_en, question_ko, answer_en, answer_ko, span!inner(${SPAN}),
+  qa_question_citation(${CITATION})`;
 const PASSAGE = `id, volume, page, verse_surah, verse_ayah, text_ar, summary_en, summary_ko, url,
   source!inner(id, title_ar, title_en, author, edition, type)`;
 
@@ -132,6 +142,19 @@ export async function getSurahContent(surah: number): Promise<SurahContent | nul
       explanation: published.get(section.explanation_id) ?? null,
     })),
   };
+}
+
+/** The surah's published fixed questions, in the order of its qa.json (ADR 0018). */
+export async function getSurahQuestions(surah: number): Promise<FixedQuestion[]> {
+  "use cache";
+  cachePublishedContent();
+  const result = await createPublicClient()
+    .from("qa_question")
+    .select(QA_QUESTION)
+    .eq("status", "published")
+    .eq("span.start_surah", surah)
+    .order("sort_order");
+  return rows<QaQuestionRow[]>(result, `the questions of surah ${surah}`).map(toFixedQuestion);
 }
 
 /**

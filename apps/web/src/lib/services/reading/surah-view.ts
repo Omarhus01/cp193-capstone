@@ -157,11 +157,11 @@ export function verseTokens(verse: Verse, hasMeaning: (position: number) => bool
 }
 
 /**
- * Numbers sources within one explanation or brief: a passage keeps the number it got where it was
- * first cited, so "Source 2" is the same book page everywhere in that explanation. A citation of a
- * passage readers can't see is left out.
+ * Numbers sources within one explanation, brief or answer: a passage keeps the number it got where
+ * it was first cited, so "Source 2" is the same book page everywhere in that explanation. A
+ * citation of a passage readers can't see is left out.
  */
-function sourceNumbering(passages: ReadonlyMap<string, Passage>) {
+export function sourceNumbering(passages: ReadonlyMap<string, Passage>) {
   const numbers = new Map<string, number>();
   return (citations: readonly Citation[]): SourceView[] =>
     citations.flatMap(({ passageId, quoting }) => {

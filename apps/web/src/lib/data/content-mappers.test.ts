@@ -3,6 +3,7 @@ import {
   spanKeys,
   toExplanation,
   toBrief,
+  toFixedQuestion,
   toPassage,
   toVerse,
   toWordMeaning,
@@ -235,6 +236,37 @@ describe("toPassage", () => {
     expect(toPassage({ ...base, verse_surah: 2, verse_ayah: 1 }).verse).toEqual({
       surah: 2,
       ayah: 1,
+    });
+  });
+});
+
+describe("toFixedQuestion", () => {
+  it("keeps the span, both languages and the citations in order", () => {
+    expect(
+      toFixedQuestion({
+        id: "q",
+        question_en: "[question en]",
+        question_ko: "[question ko]",
+        answer_en: "[answer en]",
+        answer_ko: null,
+        span: span("1:2-1:4", [1, 2, null], [1, 4, null]),
+        qa_question_citation: [
+          { sort_order: 1, passage_id: "p2", quoting: "[narrator]" },
+          { sort_order: 0, passage_id: "p1", quoting: null },
+        ],
+      }),
+    ).toEqual({
+      id: "q",
+      span: {
+        start: { surah: 1, ayah: 2, word: null },
+        end: { surah: 1, ayah: 4, word: null },
+      },
+      question: { en: "[question en]", ko: "[question ko]" },
+      answer: { en: "[answer en]", ko: null },
+      citations: [
+        { passageId: "p1", quoting: null },
+        { passageId: "p2", quoting: "[narrator]" },
+      ],
     });
   });
 });

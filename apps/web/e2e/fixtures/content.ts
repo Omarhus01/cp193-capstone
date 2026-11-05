@@ -2,6 +2,7 @@ import type { ContentBundle, SurahFiles } from "../../src/lib/services/content/l
 import type { ItemEntry } from "../../src/lib/services/content/schema";
 import {
   explanation,
+  question,
   testMetadata,
   transliteration,
   wordMeaning,
@@ -78,6 +79,8 @@ export const FIXTURE_PASSAGE_URL = "https://example.com/fixture-book/1/10";
  * - 1:4–5, published, with one meaning point
  * Word meanings: 1:1:1 with elsewhere notes (2:1, and one without a verse); 1:2:2 with none.
  * Transliterations: 1:1 in both languages, 1:4 in Korean only, 1:2 a Latin draft (hidden).
+ * Fixed questions: two about 1:1–2 (the first citing the linked passage, the second quoting through
+ * the other), one about 1:4–5, and a draft about 1:3 (hidden).
  */
 export function fixtureBundle(): ContentBundle {
   const first = surahFiles(1, 5);
@@ -131,6 +134,17 @@ export function fixtureBundle(): ContentBundle {
     { ...transliteration("1:1", "ko"), text: "[hangul 1:1]" },
     transliteration("1:2", "en", "draft"),
     { ...transliteration("1:4", "ko"), text: "[hangul 1:4]" },
+  ];
+  const ask = (n: number, from: string, to: string, citations: ItemEntry["citations"]) => ({
+    ...question(`fx-qa-${n}`, from, to, "published", citations),
+    question: both(`question ${n}`),
+    answer: both(`answer ${n}`),
+  });
+  first.qa = [
+    ask(1, "1:1", "1:2", ["fx-passage-1"]),
+    ask(2, "1:2", "1:2", [{ passage: "fx-passage-2", quoting: FIXTURE_NARRATOR }]),
+    ask(3, "1:4", "1:5", ["fx-passage-1"]),
+    question("fx-qa-draft", "1:3", "1:3", "draft", ["fx-passage-1"]),
   ];
   first.surah = {
     names: first.surah.names,
