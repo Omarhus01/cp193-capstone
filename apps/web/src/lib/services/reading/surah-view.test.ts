@@ -235,6 +235,22 @@ describe("explanationView", () => {
     ]);
   });
 
+  it("shows a source once per point, with the via label of its first citation", () => {
+    const view = explanationView(
+      explanation({
+        parts: {
+          ...explanation().parts,
+          context: [point("x", cite("p2", "[narrator]"), cite("p1"), cite("p2"))],
+        },
+      }),
+      passages,
+    )!;
+    expect(view.meaning[0].sources.map((s) => [s.number, s.passage.id, s.quoting])).toEqual([
+      [1, "p2", "[narrator]"],
+      [2, "p1", null],
+    ]);
+  });
+
   it("leaves out a citation of a passage readers can't see", () => {
     const view = explanationView(
       explanation({ parts: { ...explanation().parts, context: [point("x", cite("hidden"))] } }),
