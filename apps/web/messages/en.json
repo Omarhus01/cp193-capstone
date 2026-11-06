@@ -59,6 +59,7 @@
     "meccan": "Meccan",
     "medinan": "Medinan",
     "verseCount": "{count, plural, one {# verse} other {# verses}}",
+    "showingVerses": "Showing {shown} of {total, plural, one {# verse} other {# verses}}",
     "readingSections": "Reading sections",
     "inReview": "In review",
     "showEnglish": "Show English explanation too",

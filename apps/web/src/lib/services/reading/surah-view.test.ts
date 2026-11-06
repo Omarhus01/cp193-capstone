@@ -350,6 +350,23 @@ describe("buildSurahPageView", () => {
       ["1:3", false, null],
     ]);
   });
+
+  it("shows how many of the surah's verses it holds", () => {
+    expect(buildSurahPageView(content(), [], []).shownVerseCount).toBe(3);
+  });
+
+  it("numbers the blocks 1, 2, 3 in a surah holding only some verses", () => {
+    // Verses 2 and 3 of a 7-verse surah, without reading sections.
+    const partial = { ...content(), readingSections: [] };
+    partial.surah = { ...partial.surah, verseCount: 7 };
+    partial.verses = partial.verses.slice(1);
+    const view = buildSurahPageView(partial, [], []);
+    expect(view.shownVerseCount).toBe(2);
+    expect(view.sections.map((s) => [s.position, s.total, s.anchor, s.label])).toEqual([
+      [1, 2, "section-1", "1:2"],
+      [2, 2, "section-2", "1:3"],
+    ]);
+  });
 });
 
 describe("what the page loads", () => {
