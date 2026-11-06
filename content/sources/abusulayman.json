@@ -1,0 +1,25 @@
+{
+  "$schema": "../schema/source.schema.json",
+  "source": {
+    "id": "abusulayman",
+    "titleAr": "ضرب المرأة: هل هو الفهم الصواب لحل الخلافات الزوجية؟",
+    "titleEn": null,
+    "author": "ʿAbd al-Ḥamīd Aḥmad Abū Sulaymān",
+    "edition": "2nd ed., 1431 AH / 2010",
+    "type": "modern_study"
+  },
+  "passages": [
+    {
+      "id": "abusulayman-2010",
+      "volume": null,
+      "page": "21–24",
+      "verse": null,
+      "textAr": null,
+      "summary": {
+        "en": "PDF p. 21: sorts the Quran's uses of ḍaraba. Uses that are not direct carry separation, isolation and leaving (travel in the land, sealing the ears, a wall between them); direct uses on a body (faces, feet, the stone) mean striking with force. PDF p. 22: concludes that in 4:34 the meaning is «البعد والترك والمفارقة»: the husband leaves the marital home, a step beyond leaving her bed, so she sees where the conflict leads (separation and divorce). He notes the Quran uses jald, not ḍarb, when it means physical punishment (24:2). PDF p. 23: restates it as «الترك والمفارقة والاعتزال», the last step the couple can take on their own. PDF p. 24: points to the Prophet ﷺ leaving his wives. Argues from the higher objectives of the Sharia (maqāṣid). An earlier version appeared as an article in الفكر الإسلامي المعاصر, vol. 6, no. 24 (2001).",
+        "ko": null
+      },
+      "url": "https://ia801608.us.archive.org/13/items/41_1_LIVE_201704/%D8%B6%D8%B1%D8%A8%20%D8%A7%D9%84%D9%85%D8%B1%D8%A3%D8%A9%20%D9%88%D8%B3%D9%8A%D9%84%D8%A9%20%D9%84%D8%AD%D9%84%20%D8%A7%D9%84%D8%AE%D9%84%D8%A7%D9%81%D8%A7%D8%AA%20%D8%A7%D9%84%D8%B2%D9%88%D8%AC%D9%8A%D8%A9.pdf"
+    }
+  ]
+}

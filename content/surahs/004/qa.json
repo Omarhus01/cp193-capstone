@@ -104,6 +104,50 @@
       ]
     },
     {
+      "id": "004-qa-8",
+      "span": { "from": "4:34", "to": "4:34" },
+      "question": {
+        "en": "Does ḍaraba here mean \"strike\"? Some translations say \"go away from them.\"",
+        "ko": "여기서 다라바는 '때리다'라는 뜻인가요? 어떤 번역은 \"그들에게서 떠나라\"라고 옮깁니다."
+      },
+      "answer": {
+        "en": "Some modern writers read it that way. The best known is Laleh Bakhtiar's English translation, *The Sublime Quran* (2007), which renders it \"go away from them.\" She found \"to go away\" among the meanings of ḍaraba in Lane's 19th-century Arabic-English Lexicon, and she held that it matches how the Prophet ﷺ acted: when he was upset with his wives, he went away from them. Writing in Arabic, Dr. ʿAbd al-Ḥamīd Abū Sulaymān argued in the same direction from the higher objectives of the Sharia: the last step is the husband leaving her, not striking her.\n\nTheir concern is real, and part of their case stands. The Prophet ﷺ never struck a woman, and he did stay away from his wives for a month. But the classical scholars read the word as \"strike,\" for three reasons:\n\n**The grammar.** Ḍaraba means to travel, go away or turn away only when another word comes with it: \"in the land,\" \"away from,\" \"between\". In 4:34 the verb falls directly on the wives, wa-ḍribūhunna, with nothing in between, and in that form it means to strike.\n\n**The separation is already in the verse.** \"Leave them in their beds\" is the second step. A third step meaning \"go away\" would repeat it.\n\n**The Prophet ﷺ used the same word and explained it.** In the Farewell Sermon he said: strike them, a strike that does not injure. Ibn ʿAbbās said it is with a siwāk. \"A leaving that does not injure\" makes no sense.\n\nSo the word stays \"strike,\" and the limits in the other answers do the work the \"go away\" reading wanted to do. Habeebullah Zakariyah, a modern critic of Abū Sulaymān's book, keeps the meaning of a light strike but reaches a close outcome: the permission serves the good of the marriage, so it can become disliked or forbidden, and a government may restrict it. Ibn ʿĀshūr said the same (question 7).",
+        "ko": "현대의 일부 저자들은 그렇게 읽습니다. 가장 널리 알려진 것은 랄레 바흐티아르의 영어 번역 『The Sublime Quran』(2007)으로, 이 낱말을 \"그들에게서 떠나라\"로 옮겼습니다. 바흐티아르는 19세기 레인의 아랍어-영어 사전에서 다라바의 여러 뜻 가운데 '떠나다'를 찾았고, 이 뜻이 예언자 ﷺ께서 하신 일과 맞는다고 보았습니다. 예언자 ﷺ께서는 아내들 때문에 마음이 상하셨을 때 아내들을 떠나 계셨기 때문입니다. 압둘하미드 아부 술라이만 박사는 아랍어로 쓴 책에서 샤리아의 더 높은 목적을 근거로 같은 방향의 주장을 폈습니다. 마지막 단계는 남편이 아내를 때리는 것이 아니라 아내 곁을 떠나는 것이라는 주장입니다.\n\n이들의 걱정은 진지하고, 주장의 일부는 맞습니다. 예언자 ﷺ께서는 여자를 때리신 적이 한 번도 없고, 아내들을 한 달 동안 멀리하신 적이 있습니다. 그러나 고전 학자들은 이 낱말을 '때리다'로 읽었고, 그 까닭은 세 가지입니다.\n\n**문법.** 다라바가 '길을 떠나다', '떠나다', '외면하다'라는 뜻이 되는 것은 다른 말이 함께 올 때뿐입니다. \"땅에서\", \"~에게서\", \"사이에\" 같은 말입니다. 4:34에서는 동사가 아내들에게 바로 떨어지고(와드리부훈나), 사이에 아무 말도 없습니다. 이 꼴에서는 '때리다'라는 뜻입니다.\n\n**멀리하는 단계는 이미 이 구절 안에 있습니다.** \"잠자리에서 그들을 멀리하십시오\"가 두 번째 단계입니다. 세 번째 단계가 '떠나라'라면 같은 말을 되풀이하는 셈입니다.\n\n**예언자 ﷺ께서 같은 낱말을 쓰시고 그 뜻을 풀어 주셨습니다.** 고별 설교에서 상처를 내지 않는 매로 때리라고 하셨고, 이븐 압바스는 시왁으로 하는 것이라고 말했습니다. \"상처를 내지 않게 떠나라\"는 말이 되지 않습니다.\n\n그래서 이 낱말은 '때리다'로 남고, '떠나라'라는 읽기가 하려던 일은 다른 답들에 나온 한계들이 해냅니다. 아부 술라이만의 책을 비판한 현대 학자 하비불라 자카리야는 가벼운 매라는 뜻을 지키면서도 비슷한 결론에 이릅니다. 이 허락은 혼인의 이익을 위한 것이므로 바람직하지 않은 일이나 금지된 일이 될 수 있고, 정부가 이를 제한할 수 있다는 것입니다. 이븐 아슈르도 같은 말을 했습니다(7번 질문)."
+      },
+      "citations": [
+        "bakhtiar-2007",
+        "abusulayman-2010",
+        "muslim-4-1814",
+        "qurtubi-5-172",
+        "raghib-505",
+        "ibn-kathir-2-258",
+        "qurtubi-5-173",
+        "zakariyah-2018"
+      ],
+      "status": "published",
+      "review": [
+        { "status": "en_approved", "reviewer": "Omar Ibrahim", "date": "2026-11-06" },
+        {
+          "status": "ko_drafted",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-11-06",
+          "notes": "Korean first draft, written from the meaning (docs/content-drafts/an-nisa-34.md, Korean style); pending review by Korean readers"
+        },
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-11-06",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-11-06",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        }
+      ]
+    },
+    {
       "id": "004-qa-4",
       "span": { "from": "4:34", "to": "4:34" },
       "question": {

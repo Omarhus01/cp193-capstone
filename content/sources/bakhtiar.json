@@ -1,0 +1,25 @@
+{
+  "$schema": "../schema/source.schema.json",
+  "source": {
+    "id": "bakhtiar",
+    "titleAr": null,
+    "titleEn": "The Sublime Quran",
+    "author": "Laleh Bakhtiar",
+    "edition": "Kazi Publications 2007; her account in a Beliefnet interview, July 2007",
+    "type": "modern_study"
+  },
+  "passages": [
+    {
+      "id": "bakhtiar-2007",
+      "volume": null,
+      "page": "2",
+      "verse": null,
+      "textAr": null,
+      "summary": {
+        "en": "While translating, she doubted the usual reading because she held that the Prophet ﷺ never hit anyone. She found \"to go away\" among the meanings of ḍaraba in Edward Lane's 1863 Arabic-English Lexicon, and saw it as matching his conduct: when he was upset with his wives, he went away from them. Her translation renders the word \"go away.\"",
+        "ko": null
+      },
+      "url": "https://www.beliefnet.com/faiths/islam/2007/07/does-the-quran-tolerate-domestic-abuse?p=2"
+    }
+  ]
+}
