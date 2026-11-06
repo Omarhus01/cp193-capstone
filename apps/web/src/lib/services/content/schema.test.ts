@@ -116,4 +116,16 @@ describe("sourceFileSchema", () => {
     delete (file.passages[0] as { url?: unknown }).url;
     expect(sourceFileSchema.safeParse(file).success).toBe(false);
   });
+
+  it("accepts a modern study with a link outside Shamela and no quoted text", () => {
+    const file = sourceFile("https://example.org/article/1");
+    file.source.type = "modern_study";
+    expect(sourceFileSchema.safeParse(file).success).toBe(true);
+  });
+
+  it("rejects a source type it doesn't know", () => {
+    const file = sourceFile(null);
+    file.source.type = "blog";
+    expect(sourceFileSchema.safeParse(file).success).toBe(false);
+  });
 });

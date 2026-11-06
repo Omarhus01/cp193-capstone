@@ -100,7 +100,7 @@ erDiagram
         text title_en
         text author
         text edition
-        enum type "tafsir, asbab_al_nuzul, word_dictionary, hadith"
+        enum type "tafsir, asbab_al_nuzul, word_dictionary, hadith, modern_study"
     }
     passage {
         text id PK

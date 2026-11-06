@@ -257,7 +257,7 @@ export const sourceFileSchema = z.strictObject({
     titleEn: text.nullable(),
     author: text,
     edition: text.nullable(),
-    type: z.enum(["tafsir", "asbab_al_nuzul", "word_dictionary", "hadith"]),
+    type: z.enum(["tafsir", "asbab_al_nuzul", "word_dictionary", "hadith", "modern_study"]),
   }),
   passages: z.array(
     z.strictObject({
