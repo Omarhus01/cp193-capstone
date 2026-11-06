@@ -159,21 +159,27 @@ export function verseTokens(verse: Verse, hasMeaning: (position: number) => bool
 /**
  * Numbers sources within one explanation, brief or answer: a passage keeps the number it got where
  * it was first cited, so "Source 2" is the same book page everywhere in that explanation. A
- * citation of a passage readers can't see is left out.
+ * point's sources come back in ascending order of their numbers (2, 3, 4), whatever order the
+ * point cites them in, and each source once: a repeat citation in the same point is dropped, and
+ * the first citation's "via" label is the one kept. A citation of a passage readers can't see is
+ * left out.
  */
 export function sourceNumbering(passages: ReadonlyMap<string, Passage>) {
   const numbers = new Map<string, number>();
   return (citations: readonly Citation[]): SourceView[] =>
-    citations.flatMap(({ passageId, quoting }) => {
-      const passage = passages.get(passageId);
-      if (!passage) {
-        return [];
-      }
-      if (!numbers.has(passageId)) {
-        numbers.set(passageId, numbers.size + 1);
-      }
-      return [{ number: numbers.get(passageId)!, passage, quoting }];
-    });
+    citations
+      .flatMap(({ passageId, quoting }) => {
+        const passage = passages.get(passageId);
+        if (!passage) {
+          return [];
+        }
+        if (!numbers.has(passageId)) {
+          numbers.set(passageId, numbers.size + 1);
+        }
+        return [{ number: numbers.get(passageId)!, passage, quoting }];
+      })
+      .sort((a, b) => a.number - b.number)
+      .filter((source, i, sorted) => i === 0 || source.number !== sorted[i - 1].number);
 }
 
 const written = (text: Localized) => Boolean(text.en || text.ko);

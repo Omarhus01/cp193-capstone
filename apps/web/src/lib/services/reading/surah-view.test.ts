@@ -214,6 +214,43 @@ describe("explanationView", () => {
     expect(numbers(view.relatedVerses[0].sources)).toEqual([[3, "p3", null]]);
   });
 
+  it("lists a point's sources in ascending order of their numbers, keeping each number and via label", () => {
+    const fourPassages = new Map(["p1", "p2", "p3", "p4"].map((id) => [id, passage(id)]));
+    const view = explanationView(
+      explanation({
+        parts: {
+          wordMeanings: [],
+          context: [point("meaning", cite("p1"), cite("p2"), cite("p3"), cite("p4"))],
+          // Cited as 4, 2, 3, the way the bug report found it.
+          background: [point("background", cite("p4", "[narrator]"), cite("p2"), cite("p3"))],
+          relatedVerses: [],
+        },
+      }),
+      fourPassages,
+    )!;
+    expect(view.background[0].sources.map((s) => [s.number, s.passage.id, s.quoting])).toEqual([
+      [2, "p2", null],
+      [3, "p3", null],
+      [4, "p4", "[narrator]"],
+    ]);
+  });
+
+  it("shows a source once per point, with the via label of its first citation", () => {
+    const view = explanationView(
+      explanation({
+        parts: {
+          ...explanation().parts,
+          context: [point("x", cite("p2", "[narrator]"), cite("p1"), cite("p2"))],
+        },
+      }),
+      passages,
+    )!;
+    expect(view.meaning[0].sources.map((s) => [s.number, s.passage.id, s.quoting])).toEqual([
+      [1, "p2", "[narrator]"],
+      [2, "p1", null],
+    ]);
+  });
+
   it("leaves out a citation of a passage readers can't see", () => {
     const view = explanationView(
       explanation({ parts: { ...explanation().parts, context: [point("x", cite("hidden"))] } }),
@@ -262,8 +299,8 @@ describe("buildSurahPageView", () => {
     expect(view.brief?.map((p) => p.sources.map((s) => [s.number, s.passage.id]))).toEqual([
       [[1, "p2"]],
       [
-        [2, "p3"],
         [1, "p2"],
+        [2, "p3"],
       ],
     ]);
   });
