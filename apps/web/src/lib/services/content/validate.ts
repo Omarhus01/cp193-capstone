@@ -9,7 +9,7 @@ import {
 import { findBannedTerms } from "@/lib/services/terminology";
 import type { ContentBundle, ContentError } from "./load";
 import { readCitation, type CitationEntry } from "./schema";
-import { formatRef, isReversed, parseRef, parseSpan, type SpanRefs } from "./spans";
+import { isReversed, parseRef, parseSpan, type SpanRefs } from "./spans";
 import { wordsMatchVerse } from "./words";
 
 /**
@@ -40,13 +40,28 @@ export function validateContent(bundle: ContentBundle): ContentError[] {
     if (text.surah.number !== number) {
       report(textFile, "surah.number", `is ${text.surah.number}, but the folder is ${dir}`);
     }
-    if (text.verses.length !== text.surah.verseCount) {
-      report(
-        textFile,
-        "verses",
-        `has ${text.verses.length} verses, but verseCount is ${text.surah.verseCount}`,
-      );
+    // A surah folder may hold only some of the surah's verses (ADR 0022): each verse within the
+    // surah's verse count, in order, each once.
+    if (text.verses.length === 0) {
+      report(textFile, "verses", "has no verses; import at least one from Tanzil");
     }
+    let previousAyah = 0;
+    text.verses.forEach((verse, i) => {
+      if (verse.ayah > text.surah.verseCount) {
+        report(
+          textFile,
+          `verses[${i}].ayah`,
+          `is ${verse.ayah}; the surah has ${text.surah.verseCount} verses`,
+        );
+      } else if (verse.ayah <= previousAyah) {
+        report(
+          textFile,
+          `verses[${i}].ayah`,
+          `is ${verse.ayah}, after verse ${previousAyah}; verses go up, each once`,
+        );
+      }
+      previousAyah = Math.max(previousAyah, verse.ayah);
+    });
     verseCounts.set(number, text.surah.verseCount);
     const meta = metadata.get(number);
     if (
@@ -57,12 +72,8 @@ export function validateContent(bundle: ContentBundle): ContentError[] {
     ) {
       report(textFile, "surah", "doesn't match quran-metadata.json; import both from Tanzil again");
     }
-    text.verses.forEach((verse, i) => {
-      if (verse.ayah !== i + 1) {
-        report(textFile, `verses[${i}].ayah`, `is ${verse.ayah}; verses are numbered 1, 2, 3, …`);
-      }
-    });
 
+    // words.json has the same verses as text.json, in the same order.
     if (words.verses.length !== text.verses.length) {
       report(
         wordsFile,
@@ -71,8 +82,14 @@ export function validateContent(bundle: ContentBundle): ContentError[] {
       );
     }
     words.verses.forEach((verse, i) => {
-      if (verse.ayah !== i + 1) {
-        report(wordsFile, `verses[${i}].ayah`, `is ${verse.ayah}; verses are numbered 1, 2, 3, …`);
+      const textVerse = text.verses[i];
+      if (textVerse && verse.ayah !== textVerse.ayah) {
+        report(
+          wordsFile,
+          `verses[${i}].ayah`,
+          `is ${verse.ayah}, but text.json has verse ${textVerse.ayah} here`,
+        );
+        return;
       }
       verse.words.forEach((word, j) => {
         if (word.position !== j + 1) {
@@ -83,11 +100,10 @@ export function validateContent(bundle: ContentBundle): ContentError[] {
           );
         }
       });
-      const verseText = text.verses[i]?.text;
       if (
-        verseText !== undefined &&
+        textVerse &&
         !wordsMatchVerse(
-          verseText,
+          textVerse.text,
           verse.words.map((w) => w.text),
         )
       ) {
@@ -97,7 +113,9 @@ export function validateContent(bundle: ContentBundle): ContentError[] {
           "joined with spaces, the words aren't the verse text without its pause marks",
         );
       }
-      wordCounts.set(`${number}:${verse.ayah}`, verse.words.length);
+      if (textVerse) {
+        wordCounts.set(`${number}:${verse.ayah}`, verse.words.length);
+      }
     });
   }
 
@@ -131,7 +149,31 @@ export function validateContent(bundle: ContentBundle): ContentError[] {
       report(file, path, `ends (${refs.to}) before it starts (${refs.from})`);
       return null;
     }
+    // Both ends exist; a span over several verses must not run over a verse that isn't imported,
+    // which happens when a surah holds only some of its verses (ADR 0022).
+    const skipped = firstMissingVerseInside(span);
+    if (skipped) {
+      report(file, path, `covers verse ${skipped}, which isn't in content/surahs/`);
+      return null;
+    }
     return span;
+  }
+
+  /** The first verse strictly between the span's two ends that isn't imported, or null. */
+  function firstMissingVerseInside({ start, end }: Span): string | null {
+    for (let surah = start.surah; surah <= end.surah; surah++) {
+      const first = surah === start.surah ? start.ayah + 1 : 1;
+      const last =
+        surah === end.surah
+          ? end.ayah - 1
+          : (verseCounts.get(surah) ?? metadata.get(surah)?.verseCount ?? 0);
+      for (let ayah = first; ayah <= last; ayah++) {
+        if (!wordCounts.has(`${surah}:${ayah}`)) {
+          return `${surah}:${ayah}`;
+        }
+      }
+    }
+    return null;
   }
 
   function checkText(file: string, path: string, text: Localized) {
@@ -326,9 +368,11 @@ export function validateContent(bundle: ContentBundle): ContentError[] {
       checkPublishedSources(file, path, explanation.status, items);
     });
 
-    // Reading sections run from the first verse to the last, in order, with no gaps or overlaps.
+    // Reading sections run from the first imported verse to the last, in order, with no gaps or
+    // overlaps. In a surah that holds only some verses, they cover only those (ADR 0022).
     const readingFile = `${dir}/reading.json`;
-    let nextAyah = 1;
+    const included = surah.text.verses.map((verse) => verse.ayah);
+    let coveredTo = 0;
     surah.readingSections.forEach((id, i) => {
       const path = `sections[${i}]`;
       const explanation = surah.explanations.find((e) => e.id === id);
@@ -350,28 +394,36 @@ export function validateContent(bundle: ContentBundle): ContentError[] {
         report(readingFile, path, `"${id}" runs past the end of surah ${number}`);
         return;
       }
-      if (span.start.ayah > nextAyah) {
+      // Imported verses before this section that no section covers. Verses the folder doesn't
+      // hold are no gap (ADR 0022); checkSpan rejects a section that covers one.
+      const skipped = included.filter((ayah) => ayah > coveredTo && ayah < span.start.ayah);
+      if (skipped.length > 0) {
+        const [first, last] = [skipped[0], skipped[skipped.length - 1]];
         report(
           readingFile,
           path,
-          `leaves a gap: verses ${formatRef({ surah: number, ayah: nextAyah, word: null })} to ` +
-            `${formatRef({ surah: number, ayah: span.start.ayah - 1, word: null })} are in no section`,
+          first === last
+            ? `leaves a gap: verse ${number}:${first} is in no section`
+            : `leaves a gap: verses ${number}:${first} to ${number}:${last} are in no section`,
         );
-      } else if (span.start.ayah < nextAyah) {
+      } else if (span.start.ayah <= coveredTo) {
         report(
           readingFile,
           path,
           `"${id}" starts at ${number}:${span.start.ayah}, inside the section before it`,
         );
       }
-      nextAyah = Math.max(nextAyah, span.end.ayah + 1);
+      coveredTo = Math.max(coveredTo, span.end.ayah);
     });
-    const verseCount = verseCounts.get(number) ?? 0;
-    if (surah.readingSections.length > 0 && nextAyah <= verseCount) {
+    const lastIncluded = included[included.length - 1] ?? 0;
+    if (surah.readingSections.length > 0 && coveredTo < lastIncluded) {
+      const verseCount = verseCounts.get(number) ?? 0;
       report(
         readingFile,
         "sections",
-        `end at verse ${nextAyah - 1}; the surah has ${verseCount} verses`,
+        lastIncluded === verseCount
+          ? `end at verse ${coveredTo}; the surah has ${verseCount} verses`
+          : `end at verse ${coveredTo}; text.json goes on to verse ${lastIncluded}`,
       );
     }
     surah.explanations.forEach((explanation, i) => {

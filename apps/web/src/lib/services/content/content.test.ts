@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { loadContent, type ContentBundle, type ContentError } from "./load";
-import { explanation, question, testBundle, transliteration } from "./test-bundle";
+import {
+  explanation,
+  question,
+  testBundle,
+  transliteration,
+  withPartialSurah,
+} from "./test-bundle";
 import { validateContent } from "./validate";
 
 describe("content/", () => {
@@ -113,7 +119,9 @@ describe("validateContent", () => {
       const errors = errorsAfter((b) => {
         b.surahs[0].explanations[0].span = { from: "1:2", to: "1:2" };
       });
-      expect(messages(errors)).toContainEqual(expect.stringContaining("verses 1:1 to 1:1"));
+      expect(messages(errors)).toContainEqual(
+        expect.stringContaining("verse 1:1 is in no section"),
+      );
     });
 
     it("rejects a section from another surah or of another kind", () => {
@@ -436,11 +444,16 @@ describe("validateContent", () => {
       );
     });
 
-    it("rejects a verse count that doesn't match the verses", () => {
+    it("rejects a verse past the surah's verse count", () => {
       const errors = errorsAfter((b) => {
-        b.surahs[0].text.surah.verseCount = 5;
+        b.surahs[0].text.surah.verseCount = 3;
+        b.metadata[0].verseCount = 3;
       });
-      expect(messages(errors)).toContainEqual(expect.stringContaining("verseCount is 5"));
+      expect(messages(errors)).toContainEqual(
+        expect.stringContaining(
+          "surahs/001/text.json verses[3].ayah: is 4; the surah has 3 verses",
+        ),
+      );
     });
 
     it("rejects 하나님 in any text", () => {
@@ -449,5 +462,120 @@ describe("validateContent", () => {
       });
       expect(messages(errors)).toContainEqual(expect.stringContaining('uses "하나님"'));
     });
+  });
+});
+
+/** Validates a copy of the bundle with the partial surah 4 after `change`, and returns the messages. */
+function partialErrorsAfter(change: (bundle: ContentBundle) => void): string[] {
+  const bundle = withPartialSurah();
+  change(bundle);
+  return messages(validateContent(bundle));
+}
+
+/** Surah 4 in the partial bundle: verses 34, 35 and 40 of 176. */
+const partial = (bundle: ContentBundle) => bundle.surahs[2];
+
+describe("validateContent: a surah holding only some verses", () => {
+  it("accepts verses 34, 35 and 40 of a 176-verse surah, with sections over only those", () => {
+    expect(validateContent(withPartialSurah())).toEqual([]);
+  });
+
+  it("rejects a verse past the surah's verse count", () => {
+    const errors = partialErrorsAfter((b) => {
+      partial(b).text.verses[2].ayah = 177;
+      partial(b).words.verses[2].ayah = 177;
+    });
+    expect(errors).toContainEqual(
+      expect.stringContaining("surahs/004/text.json verses[2].ayah: is 177; the surah has 176"),
+    );
+  });
+
+  it("rejects a verse listed twice or out of order", () => {
+    expect(
+      partialErrorsAfter((b) => {
+        partial(b).text.verses[1].ayah = 34;
+        partial(b).words.verses[1].ayah = 34;
+      }),
+    ).toContainEqual(expect.stringContaining("is 34, after verse 34; verses go up, each once"));
+    expect(
+      partialErrorsAfter((b) => {
+        partial(b).text.verses[1].ayah = 30;
+        partial(b).words.verses[1].ayah = 30;
+      }),
+    ).toContainEqual(expect.stringContaining("is 30, after verse 34; verses go up, each once"));
+  });
+
+  it("rejects a surah folder with no verses", () => {
+    const errors = partialErrorsAfter((b) => {
+      partial(b).text.verses = [];
+      partial(b).words.verses = [];
+      partial(b).explanations = [];
+      partial(b).readingSections = [];
+    });
+    expect(errors).toContainEqual(
+      expect.stringContaining("surahs/004/text.json verses: has no verses"),
+    );
+  });
+
+  it("rejects words.json listing a verse that text.json doesn't hold", () => {
+    const errors = partialErrorsAfter((b) => {
+      partial(b).words.verses[1].ayah = 36;
+    });
+    expect(errors).toContainEqual(
+      expect.stringContaining(
+        "surahs/004/words.json verses[1].ayah: is 36, but text.json has verse 35 here",
+      ),
+    );
+  });
+
+  it("rejects a section that covers a verse the folder doesn't hold", () => {
+    const errors = partialErrorsAfter((b) => {
+      partial(b).explanations[1].span = { from: "4:35", to: "4:40" };
+      partial(b).explanations[0].span = { from: "4:34", to: "4:34" };
+    });
+    expect(errors).toContainEqual(
+      expect.stringContaining("covers verse 4:36, which isn't in content/surahs/"),
+    );
+  });
+
+  it("rejects a section that starts or ends on a verse the folder doesn't hold", () => {
+    const errors = partialErrorsAfter((b) => {
+      partial(b).explanations[1].span = { from: "4:36", to: "4:40" };
+    });
+    expect(errors).toContainEqual(expect.stringContaining("verse 4:36 isn't in content/surahs/"));
+  });
+
+  it("rejects overlapping sections", () => {
+    const errors = partialErrorsAfter((b) => {
+      partial(b).explanations[1].span = { from: "4:35", to: "4:35" };
+    });
+    expect(errors).toContainEqual(expect.stringContaining("inside the section before it"));
+  });
+
+  it("rejects an included verse that no section covers", () => {
+    expect(
+      partialErrorsAfter((b) => {
+        partial(b).explanations[0].span = { from: "4:35", to: "4:35" };
+      }),
+    ).toContainEqual(expect.stringContaining("leaves a gap: verse 4:34 is in no section"));
+    expect(
+      partialErrorsAfter((b) => {
+        partial(b).explanations = partial(b).explanations.slice(0, 1);
+        partial(b).readingSections = ["s4-reading-1"];
+      }),
+    ).toContainEqual(expect.stringContaining("end at verse 35; text.json goes on to verse 40"));
+  });
+
+  it("rejects a verse explanation or question over a verse the folder doesn't hold", () => {
+    const errors = partialErrorsAfter((b) => {
+      partial(b).explanations.push(explanation("s4-verses", "verse_explanation", "4:34", "4:40"));
+      partial(b).qa = [question("s4-qa", "4:35", "4:40")];
+    });
+    expect(errors).toContainEqual(
+      expect.stringContaining("explanations[2].span: covers verse 4:36, which isn't"),
+    );
+    expect(errors).toContainEqual(
+      expect.stringContaining("questions[0].span: covers verse 4:36, which isn't"),
+    );
   });
 });
