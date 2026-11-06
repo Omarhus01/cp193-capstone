@@ -10,7 +10,7 @@ A platform that explains the Quran to Korean-speaking learners who don't read Ar
 
 The project proposal is in [`docs/proposal.pdf`](docs/proposal.pdf).
 
-Sprint 1 so far: the site shell, English/Korean routing, email-and-password accounts, the content model (Quran text, explanations, review steps, sources), and the surah page with reading sections, word meanings, English and pronunciation toggles, and source chips that open the passage on Shamela. Al-Fatiha is published: its explanations, brief, word meanings and transliterations have passed review. The Vercel deploy setup (checklist, build guard, smoke tests) and a feedback button for user testing are in place. Next up: the Q&A panel with prepared answers (#5), surah navigation and search (#6), and the Islamic terms glossary (#8).
+Sprint 1 so far: the site shell, English/Korean routing, email-and-password accounts, the content model (Quran text, explanations, review steps, sources), and the surah page with reading sections, word meanings, English and pronunciation toggles, and source chips that open the passage on Shamela. The surah page also has a questions panel with prepared questions for each reading section, whose answers show their sources. Al-Fatiha is published: its explanations, brief, word meanings, transliterations and prepared questions have passed review. The Vercel deploy setup (checklist, build guard, smoke tests) and a feedback button for user testing are in place. Next up: surah navigation and search (#6), and the Islamic terms glossary (#8).
 
 ## Repository layout
 
