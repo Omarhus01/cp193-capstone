@@ -27,6 +27,7 @@ Records are not rewritten when a decision changes. Add a new record and set the 
 | [0019](0019-chat-as-the-home-page.md) | Chat as the home page in Sprint 2 | Proposed |
 | [0020](0020-stored-explanations-and-generated-chat-answers.md) | Explanations are stored and reviewed; chat answers are generated live with their sources | Accepted |
 | [0021](0021-athars-search-and-shamela-links.md) | Athars as the search over tafsir books, with Shamela links built from its results | Accepted |
+| [0022](0022-partial-surahs.md) | A surah can publish only some of its verses | Accepted |
 
 ## Template
 

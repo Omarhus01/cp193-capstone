@@ -11,7 +11,7 @@ content/
   schema/                  JSON Schema of each file (generated, see "Changing the schema")
   quran-metadata.json      every surah's name, revelation place and verse count, from Tanzil. Generated.
   surahs/001/
-    text.json              Quran text from Tanzil. Generated; never edit it.
+    text.json              Quran text from Tanzil: the whole surah or only some verses. Generated; never edit it.
     words.json             the words of each verse. Generated; the owner fills in `root`.
     surah.json             names (en, ko) and the surah brief, paragraph by paragraph. Owner.
     explanations.json      explanations: phrase notes, verse explanations, reading sections. Owner.
@@ -47,6 +47,20 @@ npm run content:import-tanzil -- <path>/quran-uthmani.xml <path>/quran-data.xml 
 
 The importer writes `text.json` and `words.json`, keeps any roots already filled in for words whose text is unchanged, and creates `surah.json` with empty names if it doesn't exist.
 
+### Only some verses of a surah
+
+A surah folder may hold only the verses we include, for example An-Nisa 4:34 alone ([ADR 0022](../docs/decisions/0022-partial-surahs.md)). Name the verses instead of the surah:
+
+```bash
+npm run content:import-tanzil -- <path>/quran-uthmani.xml <path>/quran-data.xml 4:34
+npm run content:import-tanzil -- <path>/quran-uthmani.xml <path>/quran-data.xml 4:34 4:59-60
+```
+
+- The arguments decide exactly which verses the folder holds. To add a verse, list the ones already there too. The importer prints any verse it leaves out.
+- `verseCount` in `text.json` stays the surah's full count (176 for An-Nisa).
+- The verses are listed in ascending order, each once, in both `text.json` and `words.json`.
+- The surah page shows only these verses, with a line such as "Showing 1 of 176 verses".
+
 ## Spans
 
 Explanations attach to spans of the text, not to verses ([ADR 0012](../docs/decisions/0012-explanations-attach-to-spans.md)). A span runs from one ref to another, inclusive:
@@ -61,7 +75,8 @@ A ref without a word position means the whole verse at that end.
 
 - A `phrase_note` runs from word to word inside one verse.
 - A `verse_explanation` covers one or more whole verses.
-- A `reading_section` covers whole verses. The sections listed in `reading.json` must cover the surah from its first verse to its last, in order, with no gaps or overlaps.
+- A `reading_section` covers whole verses. The sections listed in `reading.json` must cover the surah from its first verse to its last, in order, with no gaps or overlaps. In a surah that holds only some verses, they cover exactly those verses: each included verse in one section, and no section over a verse that isn't included.
+- A span over several verses can't run over a verse that isn't in `content/surahs/`.
 - `contextLinks` name other spans a reader needs to understand an explanation, with the reason in English and Korean.
 
 An explanation goes in the folder of the surah where its span starts.
@@ -246,6 +261,7 @@ The validation test fails when:
 - a point of a published explanation or brief has no citation, or a published word meaning has none
 - a fixed question's answer has no citation, at any status
 - a verse reference names a verse that doesn't exist, or a citation names a passage that doesn't
+- a surah's verses aren't in ascending order, are listed twice, or go past its verse count
 - any text uses 하나님, or "God" as a name (CLAUDE.md, Content rules)
 
 The history is seeded into private tables; readers never see reviewer names or notes.
