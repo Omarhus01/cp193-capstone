@@ -62,7 +62,7 @@ describe("questionsBySection", () => {
     expect(questionsForSection(bySection, 3)).toEqual([]);
   });
 
-  it("numbers sources within each answer, and keeps who a source quotes", () => {
+  it("numbers sources within each answer, lists them in number order, and keeps who a source quotes", () => {
     const quoting: FixedQuestion = {
       ...question("a", 1, 1),
       citations: [
@@ -77,8 +77,8 @@ describe("questionsBySection", () => {
     );
     expect(view.sources.map((s) => [s.number, s.passage.id, s.quoting])).toEqual([
       [1, "p2", null],
-      [2, "p1", "[narrator]"],
       [1, "p2", null],
+      [2, "p1", "[narrator]"],
     ]);
     expect(view).toMatchObject({
       question: { en: "[question a en]", ko: "[question a ko]" },
