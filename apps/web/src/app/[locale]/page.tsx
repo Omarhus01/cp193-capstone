@@ -1,6 +1,7 @@
 import { useTranslations } from "next-intl";
 import { Suspense } from "react";
 import { AccountHint } from "@/components/home/AccountHint";
+import { SurahList } from "@/components/home/SurahList";
 import { Link } from "@/i18n/navigation";
 
 export default function HomePage() {
@@ -21,6 +22,10 @@ export default function HomePage() {
           <AccountHint />
         </Suspense>
       </div>
+      {/* Read at request time, so it streams in after the static shell. */}
+      <Suspense fallback={null}>
+        <SurahList />
+      </Suspense>
     </section>
   );
 }

@@ -6,6 +6,7 @@ import type {
   FixedQuestion,
   Localized,
   Passage,
+  PublishedSurah,
   RevelationPlace,
   SourceType,
   Span,
@@ -162,6 +163,26 @@ export function toSurah(row: SurahRow): Surah {
     revelationPlace: row.revelation_place,
     verseCount: row.verse_count,
     basmalaAr: row.basmala_ar,
+  };
+}
+
+export type PublishedSurahRow = {
+  number: number;
+  name_ar: string;
+  name_en: string | null;
+  name_ko: string | null;
+  verse_count: number;
+  verse: { ayah: number }[];
+};
+
+export function toPublishedSurah(row: PublishedSurahRow): PublishedSurah {
+  return {
+    number: row.number,
+    nameAr: row.name_ar,
+    nameEn: row.name_en,
+    nameKo: row.name_ko,
+    verseCount: row.verse_count,
+    ayahs: row.verse.map((verse) => verse.ayah).sort((a, b) => a - b),
   };
 }
 

@@ -5,6 +5,7 @@ import {
   toBrief,
   toFixedQuestion,
   toPassage,
+  toPublishedSurah,
   toVerse,
   toWordMeaning,
   type ExplanationRow,
@@ -134,6 +135,28 @@ describe("toExplanation", () => {
     });
     expect(explanation.passageIds).toEqual(["first", "second"]);
     expect(explanation.contextLinks.map((link) => link.reason.en)).toEqual(["a", "b"]);
+  });
+});
+
+describe("toPublishedSurah", () => {
+  it("keeps the surah's names and verse count, and orders its verses", () => {
+    expect(
+      toPublishedSurah({
+        number: 4,
+        name_ar: "النساء",
+        name_en: "[en]",
+        name_ko: null,
+        verse_count: 176,
+        verse: [{ ayah: 35 }, { ayah: 34 }],
+      }),
+    ).toEqual({
+      number: 4,
+      nameAr: "النساء",
+      nameEn: "[en]",
+      nameKo: null,
+      verseCount: 176,
+      ayahs: [34, 35],
+    });
   });
 });
 

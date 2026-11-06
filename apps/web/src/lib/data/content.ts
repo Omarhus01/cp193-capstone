@@ -2,6 +2,7 @@ import { cacheLife, cacheTag } from "next/cache";
 import type {
   FixedQuestion,
   Passage,
+  PublishedSurah,
   SurahContent,
   VerseRef,
   VerseText,
@@ -12,6 +13,7 @@ import {
   toExplanation,
   toFixedQuestion,
   toPassage,
+  toPublishedSurah,
   toSpan,
   toSurah,
   toVerse,
@@ -19,6 +21,7 @@ import {
   type BriefItemRow,
   type ExplanationRow,
   type PassageRow,
+  type PublishedSurahRow,
   type QaQuestionRow,
   type SpanRow,
   type SurahRow,
@@ -142,6 +145,37 @@ export async function getSurahContent(surah: number): Promise<SurahContent | nul
       explanation: published.get(section.explanation_id) ?? null,
     })),
   };
+}
+
+/**
+ * The surahs that have at least one published reading section explanation, in surah order, with
+ * the verses each holds. Used to list the surahs readers can open.
+ */
+export async function getPublishedSurahs(): Promise<PublishedSurah[]> {
+  "use cache";
+  cachePublishedContent();
+  const db = createPublicClient();
+  const sections = await db
+    .from("explanation")
+    .select("span!inner(start_surah)")
+    .eq("kind", "reading_section")
+    .eq("status", "published");
+  const numbers = [
+    ...new Set(
+      rows<{ span: { start_surah: number } }[]>(sections, "published reading sections").map(
+        (row) => row.span.start_surah,
+      ),
+    ),
+  ];
+  if (numbers.length === 0) {
+    return [];
+  }
+  const surahs = await db
+    .from("surah")
+    .select("number, name_ar, name_en, name_ko, verse_count, verse(ayah)")
+    .in("number", numbers)
+    .order("number");
+  return rows<PublishedSurahRow[]>(surahs, "published surahs").map(toPublishedSurah);
 }
 
 /** The surah's published fixed questions, in the order of its qa.json (ADR 0018). */

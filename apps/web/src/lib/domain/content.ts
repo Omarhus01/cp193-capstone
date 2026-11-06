@@ -31,6 +31,17 @@ export type Surah = {
   basmalaAr: string | null;
 };
 
+/** A surah with published explanations, and which of its verses are in the database. */
+export type PublishedSurah = {
+  number: number;
+  nameAr: string;
+  nameEn: string | null;
+  nameKo: string | null;
+  verseCount: number;
+  /** The verses the database holds, in order: all of them, or only some (ADR 0022). */
+  ayahs: number[];
+};
+
 export type Word = { position: number; textAr: string; root: string | null };
 
 export type Verse = VerseRef & {
