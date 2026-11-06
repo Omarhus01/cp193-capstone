@@ -1,0 +1,87 @@
+{
+  "$schema": "../../schema/word-meanings.schema.json",
+  "wordMeanings": [
+    {
+      "word": "4:34:29",
+      "meaning": {
+        "en": "Strike them: a light strike that does not injure, the last of three steps",
+        "ko": "그들을 때리십시오. 상처를 내지 않는 가벼운 매로, 세 단계 가운데 마지막입니다"
+      },
+      "citations": ["ibn-kathir-2-258", "ibn-kathir-2-347", "qurtubi-5-172", "raghib-505"],
+      "elsewhere": [
+        {
+          "verse": "7:160",
+          "en": "To strike with the hand, a stick or a sword (something lands on something): Mūsā told to strike the rock with his staff",
+          "ko": "손이나 지팡이나 칼로 치다 (무언가가 무언가 위에 떨어짐): 무사에게 지팡이로 바위를 치라고 하심"
+        },
+        {
+          "verse": "2:73",
+          "en": "To strike with the hand, a stick or a sword (something lands on something): \"strike him with part of it\"",
+          "ko": "손이나 지팡이나 칼로 치다 (무언가가 무언가 위에 떨어짐): \"그 일부로 그를 치라\""
+        },
+        {
+          "verse": "4:101",
+          "en": "To travel (feet striking the ground): «وَإِذَا ضَرَبْتُمْ فِي الْأَرْضِ», \"when you travel through the land\"",
+          "ko": "길을 떠나다 (발이 땅을 침): «وَإِذَا ضَرَبْتُمْ فِي الْأَرْضِ» \"너희가 땅에서 길을 떠날 때\""
+        },
+        {
+          "verse": "2:273",
+          "en": "To travel (feet striking the ground): those who cannot travel to earn",
+          "ko": "길을 떠나다 (발이 땅을 침): 벌이를 위해 길을 떠나지 못하는 이들"
+        },
+        {
+          "verse": "20:77",
+          "en": "To open a path (striking a way through): Mūsā told to strike a dry path through the sea",
+          "ko": "길을 내다 (쳐서 길을 뚫음): 무사에게 바다 가운데 마른 길을 내라고 하심"
+        },
+        {
+          "verse": "3:112",
+          "en": "To be covered by something (a tent pitched by striking its pegs): humiliation \"was pitched over them\" like a tent",
+          "ko": "무언가에 덮이다 (말뚝을 쳐서 세우는 천막): 굴욕이 천막처럼 그들 위에 드리움"
+        },
+        {
+          "verse": "18:11",
+          "en": "To seal or put to sleep (something laid over): \"We struck upon their ears\" in the cave for years",
+          "ko": "덮어 잠들게 하다 (무언가를 위에 덮음): 동굴에서 여러 해 동안 \"그들의 귀를 덮었다\""
+        },
+        {
+          "verse": "57:13",
+          "en": "To set up a barrier (a wall struck down between): a wall is set up between the believers and the hypocrites",
+          "ko": "벽을 세우다 (사이에 벽을 내리침): 믿는 이들과 위선자들 사이에 벽이 세워짐"
+        },
+        {
+          "verse": "39:29",
+          "en": "To set forth an example (minting a coin, whose stamp leaves its mark): \"Allah strikes an example\"",
+          "ko": "비유를 들다 (동전을 찍으면 무늬가 남음): \"알라께서 비유를 드신다\""
+        },
+        {
+          "verse": "43:5",
+          "en": "To turn away from: \"Shall We turn the Reminder away from you?\"",
+          "ko": "외면하다: \"너희에게서 이 가르침을 거두어야 하겠느냐?\""
+        }
+      ],
+      "status": "published",
+      "review": [
+        { "status": "en_approved", "reviewer": "Omar Ibrahim", "date": "2026-11-06" },
+        {
+          "status": "ko_drafted",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-11-06",
+          "notes": "Korean first draft, written from the meaning (docs/content-drafts/an-nisa-34.md, Korean style); pending review by Korean readers"
+        },
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-11-06",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-11-06",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        }
+      ]
+    }
+  ]
+}

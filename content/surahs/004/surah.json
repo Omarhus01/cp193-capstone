@@ -1,1 +1,35 @@
-{ "$schema": "../../schema/surah.schema.json", "names": { "en": null, "ko": null } }
+{
+  "$schema": "../../schema/surah.schema.json",
+  "names": { "en": "An-Nisāʾ (The Women)", "ko": "알니사 (여자들)" },
+  "brief": {
+    "items": [
+      {
+        "en": "4:34 sets out how a Muslim household is held together. It makes men responsible for the women of their families, to protect them and provide for them, and it praises the wife who is devoted and keeps faith in her husband's absence. Then it gives a husband three steps, in order, for when his wife turns against the marriage: speak to her, leave her bed, and as a last resort a strike that may not injure. It ends by forbidding any harm once she returns, and by reminding husbands that Allah is above them. The verse came down in Medina, in a surah that protected women's property and gave them inheritance.",
+        "ko": "4:34는 무슬림 가정을 지탱하는 틀을 세웁니다. 남자에게 집안 여자들을 지키고 먹여 살릴 책임을 맡기고, 남편이 없을 때도 신의를 지키며 마음을 다하는 아내를 칭찬합니다. 이어서 아내가 혼인에 등을 돌릴 때 남편이 밟을 세 단계를 순서대로 알려 줍니다. 먼저 타이르고, 다음에 잠자리를 멀리하고, 마지막 수단으로 상처를 내지 않는 매를 드는 것입니다. 그리고 아내가 돌아오면 어떤 해도 끼치지 말라고 금하고, 알라께서 남편보다 위에 계심을 일깨우며 끝납니다. 이 구절은 메디나에서, 여자의 재산을 지키고 여자에게 상속 몫을 준 수라 안에서 내려왔습니다.",
+        "citations": ["qurtubi-5-168", "ibn-kathir-2-258", "qurtubi-5-172", "ibn-ashur-4-211"]
+      }
+    ],
+    "status": "published",
+    "review": [
+      { "status": "en_approved", "reviewer": "Omar Ibrahim", "date": "2026-11-06" },
+      {
+        "status": "ko_drafted",
+        "reviewer": "Omar Ibrahim",
+        "date": "2026-11-06",
+        "notes": "Korean first draft, written from the meaning (docs/content-drafts/an-nisa-34.md, Korean style); pending review by Korean readers"
+      },
+      {
+        "status": "ko_approved",
+        "reviewer": "Omar Ibrahim",
+        "date": "2026-11-06",
+        "notes": "Published for user testing; Korean translation under review by Korean readers."
+      },
+      {
+        "status": "published",
+        "reviewer": "Omar Ibrahim",
+        "date": "2026-11-06",
+        "notes": "Published for user testing; Korean translation under review by Korean readers."
+      }
+    ]
+  }
+}

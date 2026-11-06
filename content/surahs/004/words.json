@@ -33,7 +33,7 @@
         { "position": 26, "text": "وَٱهْجُرُوهُنَّ", "root": null },
         { "position": 27, "text": "فِى", "root": null },
         { "position": 28, "text": "ٱلْمَضَاجِعِ", "root": null },
-        { "position": 29, "text": "وَٱضْرِبُوهُنَّ", "root": null },
+        { "position": 29, "text": "وَٱضْرِبُوهُنَّ", "root": "ض ر ب" },
         { "position": 30, "text": "فَإِنْ", "root": null },
         { "position": 31, "text": "أَطَعْنَكُمْ", "root": null },
         { "position": 32, "text": "فَلَا", "root": null },
