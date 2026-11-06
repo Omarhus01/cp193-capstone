@@ -24,6 +24,9 @@ Records are not rewritten when a decision changes. Add a new record and set the 
 | [0016](0016-tester-preview.md) | Tester preview: a service-role tester list, RLS policies, and an uncached draft path | Superseded by #35 |
 | [0017](0017-vercel-hosting-and-release-order.md) | Hosting on Vercel; database first, then code | Accepted |
 | [0018](0018-fixed-qa-as-stored-content.md) | Fixed Q&A is stored, reviewed content, not a mock AI answer | Accepted |
+| [0019](0019-chat-as-the-home-page.md) | Chat as the home page in Sprint 2 | Proposed |
+| [0020](0020-stored-explanations-and-generated-chat-answers.md) | Explanations are stored and reviewed; chat answers are generated live with their sources | Accepted |
+| [0021](0021-athars-search-and-shamela-links.md) | Athars as the search over tafsir books, with Shamela links built from its results | Accepted |
 
 ## Template
 
