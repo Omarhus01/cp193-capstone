@@ -22,9 +22,25 @@ Sprint 1 so far: the site shell, English/Korean routing, email-and-password acco
 | `.github/workflows/`   | CI (`ci.yml`) on every push and PR; daily Supabase ping (`keep-alive.yml`) |
 | `docs/decisions/`      | Architecture decision records (ADRs)                                       |
 
+## How it works
+
+The site is built in layers. Each layer uses only the layers below it, so a change to the database touches one layer, not every page. A lint rule enforces this ([decision record: layered architecture](docs/decisions/0009-layered-architecture.md)).
+
+1. **Pages** (`apps/web/src/app/`): one file per address, such as the home page, log in, or a surah page. A page checks who is logged in, asks the services for what it needs, and arranges the components.
+2. **Components** (`apps/web/src/components/`): the pieces on screen, such as a reading section, the word popup, a source chip or the questions panel. They show what they are given and handle clicks. When they need data, they ask the services, never the database.
+3. **Services** (`apps/web/src/lib/services/`): the rules of the app, in plain functions with their own tests. For example: which questions belong to which reading section, whether a link after log in stays on this site, or whether a text uses a banned term.
+4. **Data** (`apps/web/src/lib/data/`): the only code that talks to Supabase, for accounts and for content. It reads only published content, keeps it cached, and hands the services plain values.
+5. **Database** (Supabase, `supabase/migrations/`): Postgres holds the Quran text, the reviewed content, the sources and user accounts. Row level security in the database decides what each visitor may read, so unpublished content stays hidden even if the code above asks for it. Content is written only by the seed script, from the files in `content/`.
+
+Two more folders sit beside the layers: `lib/domain` holds the shared data types every layer uses, and `lib/ai` holds the interface the Sprint 2 question-answering service will plug into.
+
+The [database schema](docs/schema.md) shows the tables, and the [user flow](docs/user-flow.md) shows how a reader moves through the site.
+
 ## Documentation
 
 - [Project proposal](docs/proposal.pdf): scope, market research, sprint plan and the user-testing plan
+- [`docs/schema.md`](docs/schema.md): a diagram of the database tables, how they connect, and what each group is for
+- [`docs/user-flow.md`](docs/user-flow.md): a diagram of how a reader moves through the site, from the home page to the surah page
 - [`docs/deploy.md`](docs/deploy.md): Vercel and Supabase setup, the release order, and the daily keep-alive
 - [`docs/decisions/`](docs/decisions/README.md): architecture decision records (ADRs), one file per decision
 - [`docs/design/`](docs/design/): approved designs of the surah page (English, Korean, phone)
