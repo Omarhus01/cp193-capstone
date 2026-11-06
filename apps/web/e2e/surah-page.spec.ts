@@ -186,6 +186,50 @@ test.describe("a surah holding only some of its verses", () => {
   });
 });
 
+test.describe("the home page's list of surahs", () => {
+  // Other spec files open the home page in parallel, maybe before the fixtures are seeded, and the
+  // server keeps published content cached; it refreshes an entry in the background once it is a
+  // minute old (ADR 0014). So the first test reloads until the list shows the fixtures.
+  test.describe.configure({ timeout: 150_000 });
+
+  /** The list on the home page in `locale`, once it shows the fixture surahs. */
+  async function fixtureSurahList(page: Page, locale: "en" | "ko") {
+    const messages = locale === "en" ? en : ko;
+    const list = page.getByRole("region", { name: messages.home.surahsTitle });
+    await expect(async () => {
+      await page.goto(`/${locale}`);
+      await expect(list.getByRole("link").first()).toHaveText(
+        locale === "en" ? "[Fixture surah 1]" : "[픽스처 수라 1]",
+        { timeout: 1_000 },
+      );
+    }).toPass({ timeout: 120_000, intervals: [2_000, 5_000] });
+    return list;
+  }
+
+  test("lists every published surah, with the verses a partial one holds", async ({ page }) => {
+    const links = (await fixtureSurahList(page, "en")).getByRole("link");
+    await expect(links).toHaveCount(2);
+    await expect(links.nth(0)).toHaveText("[Fixture surah 1]");
+    await expect(links.nth(0)).toHaveAttribute("href", "/en/surah/1");
+    await expect(links.nth(1)).toHaveText("[Fixture surah 4] 4:34–35");
+    await expect(links.nth(1)).toHaveAttribute("href", "/en/surah/4");
+  });
+
+  test("names the surahs in Korean on Korean pages", async ({ page }) => {
+    const links = (await fixtureSurahList(page, "ko")).getByRole("link");
+    await expect(links.nth(1)).toHaveText("[픽스처 수라 4] 4:34–35");
+    await expect(links.nth(1)).toHaveAttribute("href", "/ko/surah/4");
+  });
+
+  test("a surah in the list opens its page", async ({ page }) => {
+    await openLoggedIn(page, "/en");
+    const list = await fixtureSurahList(page, "en");
+    await list.getByRole("link", { name: /^\[Fixture surah 4\]/ }).click();
+    await expect(page).toHaveURL("/en/surah/4");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("[Fixture surah 4]");
+  });
+});
+
 test.describe("toggles", () => {
   test("the English explanation on Korean pages is off by default and the choice persists", async ({
     page,
