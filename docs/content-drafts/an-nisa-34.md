@@ -12,6 +12,16 @@ The content for 4:34 on the site: English checked by Omar against the Arabic, Ko
 
 4:34는 무슬림 가정을 지탱하는 틀을 세웁니다. 남자에게 집안 여자들을 지키고 먹여 살릴 책임을 맡기고, 남편이 없을 때도 신의를 지키며 마음을 다하는 아내를 칭찬합니다. 이어서 아내가 혼인에 등을 돌릴 때 남편이 밟을 세 단계를 순서대로 알려 줍니다. 먼저 타이르고, 다음에 잠자리를 멀리하고, 마지막 수단으로 상처를 내지 않는 매를 드는 것입니다. 그리고 아내가 돌아오면 어떤 해도 끼치지 말라고 금하고, 알라께서 남편보다 위에 계심을 일깨우며 끝납니다. 이 구절은 메디나에서, 여자의 재산을 지키고 여자에게 상속 몫을 준 수라 안에서 내려왔습니다.
 
+## Pronunciation
+
+**Latin**
+
+Ar-rijālu qawwāmūna ʿalan-nisāʾi bimā faḍḍalal-lāhu baʿḍahum ʿalā baʿḍin wa-bimā anfaqū min amwālihim, faṣ-ṣāliḥātu qānitātun ḥāfiẓātul lil-ghaybi bimā ḥafiẓal-lāh, wal-lātī takhāfūna nushūzahunna faʿiẓūhunna wahjurūhunna fil-maḍājiʿi waḍribūhunn, fa-in aṭaʿnakum falā tabghū ʿalayhinna sabīlā, innal-lāha kāna ʿaliyyan kabīrā
+
+**한글 발음 (초안)**
+
+아르리잘루 깟와무나 알란니사이 비마 팟달랄라후 바으다훔 알라 바으딘 와비마 안파꾸 민 암왈리힘, 팟살리하투 까니타툰 하피자툴 릴가이비 비마 하피잘랄라, 왈라티 타카푸나 누슈자훈나 파이주훈나 와흐주루훈나 필마다지이 와드리부훈, 파인 아따으나쿰 팔라 탑구 알라이힌나 사빌라, 인날라하 카나 알리이얀 카비라
+
 ## Meaning
 
 **"Men are qawwāmūn over women."** English has no single word for qawwām. It comes from qāma, to stand, and describes someone who stands over a thing to look after it: you stand over what you care for and manage [jazairi-1-472]. The form qawwām is stronger than qayyim, the plain word for a caretaker. It means someone who carries this out fully and constantly: he sees to her needs, runs the affairs of the home and sets things right [baghawi-2-207, qasimi-3-96]. Al-Qurṭubī puts it in practical terms: men spend on women and defend them [qurtubi-5-168]. Ibn Kathīr adds that the qawwām is the head of the household who corrects her when she goes astray [ibn-kathir-2-256]. The verse states a responsibility before it states any authority. Ibn ʿĀshūr sums up the standing as two things: protecting her and earning for her [ibn-ashur-5-39].

@@ -1,0 +1,45 @@
+{
+  "$schema": "../../schema/transliterations.schema.json",
+  "transliterations": [
+    {
+      "verse": "4:34",
+      "language": "en",
+      "text": "Ar-rijālu qawwāmūna ʿalan-nisāʾi bimā faḍḍalal-lāhu baʿḍahum ʿalā baʿḍin wa-bimā anfaqū min amwālihim, faṣ-ṣāliḥātu qānitātun ḥāfiẓātul lil-ghaybi bimā ḥafiẓal-lāh, wal-lātī takhāfūna nushūzahunna faʿiẓūhunna wahjurūhunna fil-maḍājiʿi waḍribūhunn, fa-in aṭaʿnakum falā tabghū ʿalayhinna sabīlā, innal-lāha kāna ʿaliyyan kabīrā",
+      "status": "published",
+      "review": [
+        {
+          "status": "en_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-11-06",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-11-06",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        }
+      ]
+    },
+    {
+      "verse": "4:34",
+      "language": "ko",
+      "text": "아르리잘루 깟와무나 알란니사이 비마 팟달랄라후 바으다훔 알라 바으딘 와비마 안파꾸 민 암왈리힘, 팟살리하투 까니타툰 하피자툴 릴가이비 비마 하피잘랄라, 왈라티 타카푸나 누슈자훈나 파이주훈나 와흐주루훈나 필마다지이 와드리부훈, 파인 아따으나쿰 팔라 탑구 알라이힌나 사빌라, 인날라하 카나 알리이얀 카비라",
+      "status": "published",
+      "review": [
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-11-06",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-11-06",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        }
+      ]
+    }
+  ]
+}
