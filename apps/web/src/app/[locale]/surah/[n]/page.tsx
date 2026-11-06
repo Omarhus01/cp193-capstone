@@ -88,7 +88,12 @@ async function SurahContent({ params }: Pick<SurahPageProps, "params">) {
         }
       >
         <div className="flex flex-col gap-6">
-          <SurahHeader surah={view.surah} brief={view.brief} locale={locale} />
+          <SurahHeader
+            surah={view.surah}
+            shownVerseCount={view.shownVerseCount}
+            brief={view.brief}
+            locale={locale}
+          />
           <ReadingControls hasWordMeanings={Object.keys(view.words).length > 0} />
           {sections.map((section) => (
             <ReadingSectionCard

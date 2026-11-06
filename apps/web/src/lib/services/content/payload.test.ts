@@ -1,8 +1,21 @@
 import { describe, expect, it } from "vitest";
 import { toSeedPayload } from "./payload";
-import { testBundle } from "./test-bundle";
+import { testBundle, withPartialSurah } from "./test-bundle";
 
 describe("toSeedPayload", () => {
+  it("keeps a partial surah's full verse count and seeds only the verses it holds", () => {
+    const payload = toSeedPayload(withPartialSurah());
+    expect(payload.surahs.find((s) => s.number === 4)).toMatchObject({ verse_count: 176 });
+    expect(payload.verses.filter((v) => v.surah === 4).map((v) => v.ayah)).toEqual([34, 35, 40]);
+    expect([...new Set(payload.words.filter((w) => w.surah === 4).map((w) => w.ayah))]).toEqual([
+      34, 35, 40,
+    ]);
+    expect(payload.reading_sections.filter((r) => r.surah === 4)).toEqual([
+      { surah: 4, position: 1, explanation_id: "s4-reading-1", span_id: "4:34-4:35" },
+      { surah: 4, position: 2, explanation_id: "s4-reading-2", span_id: "4:40-4:40" },
+    ]);
+  });
+
   it("gives the same payload for the same content, whatever the file order", () => {
     const reordered = testBundle();
     reordered.surahs.reverse();

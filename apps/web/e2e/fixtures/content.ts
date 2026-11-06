@@ -19,12 +19,17 @@ export const FIXTURE_ROOT = "ا ب ت";
 
 const WORDS = ["ابت", "ثجح", "خدذ", "رزس"];
 
-function surahFiles(number: number, verseCount: number): SurahFiles {
-  const verses = Array.from({ length: verseCount }, (_, i) => ({
-    ayah: i + 1,
+/** A surah folder holding `ayahs` (every verse unless given) of a surah of `verseCount` verses. */
+function surahFiles(
+  number: number,
+  verseCount: number,
+  ayahs: readonly number[] = Array.from({ length: verseCount }, (_, i) => i + 1),
+): SurahFiles {
+  const verses = ayahs.map((ayah) => ({
+    ayah,
     // Verse 2 of surah 1 has a pause mark between its first two words.
     text:
-      number === 1 && i === 1
+      number === 1 && ayah === 2
         ? [WORDS[0], PAUSE_MARK, ...WORDS.slice(1)].join(" ")
         : WORDS.join(" "),
   }));
@@ -81,6 +86,9 @@ export const FIXTURE_PASSAGE_URL = "https://example.com/fixture-book/1/10";
  * Transliterations: 1:1 in both languages, 1:4 in Korean only, 1:2 a Latin draft (hidden).
  * Fixed questions: two about 1:1–2 (the first citing the linked passage, the second quoting through
  * the other), one about 1:4–5, and a draft about 1:3 (hidden).
+ *
+ * Surah 4 holds only verses 34 and 35 of its 176 (ADR 0022), in two reading sections: 4:34,
+ * published with one meaning point, and 4:35, a draft.
  */
 export function fixtureBundle(): ContentBundle {
   const first = surahFiles(1, 5);
@@ -161,9 +169,22 @@ export function fixtureBundle(): ContentBundle {
     { ...wordMeaning("2:1:1"), meaning: both("meaning of 2:1:1"), citations: ["fx-passage-1"] },
   ];
 
+  const partial = surahFiles(4, 176, [34, 35]);
+  const partialSection = explanation("fx-4-reading-1", "reading_section", "4:34", "4:34");
+  partialSection.parts = {
+    ...partialSection.parts,
+    background: [],
+    context: [point("meaning 4:34", ["fx-passage-1"])],
+  };
+  partial.explanations = [
+    partialSection,
+    explanation("fx-4-reading-2", "reading_section", "4:35", "4:35", "draft"),
+  ];
+  partial.readingSections = ["fx-4-reading-1", "fx-4-reading-2"];
+
   return {
-    metadata: testMetadata([first, second]),
-    surahs: [first, second],
+    metadata: testMetadata([first, second, partial]),
+    surahs: [first, second, partial],
     sources: [
       {
         file: "sources/fx-source.json",

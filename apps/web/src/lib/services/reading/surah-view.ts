@@ -111,6 +111,11 @@ export type WordDetail = {
 
 export type SurahPageView = {
   surah: Surah;
+  /**
+   * How many of the surah's verses the page shows. Below `surah.verseCount` when the surah holds
+   * only some of its verses (ADR 0022).
+   */
+  shownVerseCount: number;
   /** The published brief's paragraphs with their sources, or null. */
   brief: ItemView[] | null;
   sections: SectionView[];
@@ -243,13 +248,16 @@ export function briefView(
     .map(({ text, citations }) => ({ text, sources: sources(citations) }));
 }
 
-/** A surah without reading sections still shows every verse: one block per verse. */
+/**
+ * A surah without reading sections still shows every verse it holds: one block per verse,
+ * numbered 1, 2, 3 (not by verse number, since a surah may hold only some verses).
+ */
 function sectionsOf(content: SurahContent): ReadingSectionSummary[] {
   if (content.readingSections.length > 0) {
     return content.readingSections;
   }
-  return content.verses.map((verse) => ({
-    position: verse.ayah,
+  return content.verses.map((verse, i) => ({
+    position: i + 1,
     span: {
       start: { surah: verse.surah, ayah: verse.ayah, word: null },
       end: { surah: verse.surah, ayah: verse.ayah, word: null },
@@ -337,6 +345,7 @@ export function buildSurahPageView(
 
   return {
     surah: content.surah,
+    shownVerseCount: content.verses.length,
     brief: content.brief ? briefView(content.brief, passagesById) : null,
     sections: sectionViews,
     words,

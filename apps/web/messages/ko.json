@@ -59,6 +59,7 @@
     "meccan": "메카 계시",
     "medinan": "메디나 계시",
     "verseCount": "{count}절",
+    "showingVerses": "전체 {total}절 중 {shown}절 표시",
     "readingSections": "읽기 구간",
     "inReview": "준비 중",
     "showEnglish": "영어 해설 함께 보기",

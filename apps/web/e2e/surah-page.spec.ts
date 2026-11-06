@@ -150,6 +150,42 @@ test.describe("reading sections", () => {
   });
 });
 
+test.describe("a surah holding only some of its verses", () => {
+  test("shows only those verses, says how many, and moves between its sections", async ({
+    page,
+  }) => {
+    await openLoggedIn(page, "/en/surah/4");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("[Fixture surah 4]");
+    await expect(page.getByText("Showing 2 of 176 verses")).toBeVisible();
+    await expect(page.locator("#verse-4-34")).toBeVisible();
+    await expect(page.locator("#verse-4-35")).toBeVisible();
+    await expect(page.locator("[id^='verse-4-']")).toHaveCount(2);
+
+    await expect(section(page, "4:34").getByText("[meaning 4:34 en]")).toBeVisible();
+    await expect(section(page, "4:34").getByText("Reading section 1 of 2")).toBeVisible();
+    await expect(section(page, "4:35").getByText(en.surah.comingSoonTitle)).toBeVisible();
+
+    const nav = page.getByRole("navigation", { name: en.surah.readingSections });
+    await nav.getByRole("link", { name: /^4:35/ }).click();
+    await expect(page).toHaveURL(/#section-2$/);
+    await expect(nav.getByRole("link", { name: /^4:35/ })).toHaveAttribute(
+      "aria-current",
+      "location",
+    );
+  });
+
+  test("says how many verses it shows in Korean", async ({ page }) => {
+    await openLoggedIn(page, "/ko/surah/4");
+    await expect(page.getByText("전체 176절 중 2절 표시")).toBeVisible();
+  });
+
+  test("a complete surah doesn't say how many it shows", async ({ page }) => {
+    await openLoggedIn(page, "/en/surah/1");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("[Fixture surah 1]");
+    await expect(page.getByText(/^Showing \d+ of/)).toHaveCount(0);
+  });
+});
+
 test.describe("toggles", () => {
   test("the English explanation on Korean pages is off by default and the choice persists", async ({
     page,

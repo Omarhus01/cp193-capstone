@@ -15,11 +15,13 @@ import type {
 
 const WORDS = ["ابت", "ثجح", "خدذ", "رزس"];
 
-function surahFiles(number: number, verseCount: number): SurahFiles {
-  const verses = Array.from({ length: verseCount }, (_, i) => ({
-    ayah: i + 1,
-    text: WORDS.join(" "),
-  }));
+/** A surah folder holding `ayahs` (every verse unless given) of a surah of `verseCount` verses. */
+function surahFiles(
+  number: number,
+  verseCount: number,
+  ayahs: readonly number[] = Array.from({ length: verseCount }, (_, i) => i + 1),
+): SurahFiles {
+  const verses = ayahs.map((ayah) => ({ ayah, text: WORDS.join(" ") }));
   return {
     number,
     dir: `surahs/${String(number).padStart(3, "0")}`,
@@ -219,7 +221,7 @@ export function testBundle(): ContentBundle {
     },
   };
   return {
-    metadata: testMetadata([first, second]),
+    metadata: testMetadata([first, second, partialSurah()]),
     surahs: [first, second],
     sources: [
       {
@@ -255,4 +257,25 @@ export function testBundle(): ContentBundle {
       },
     ],
   };
+}
+
+/**
+ * Surah 4 (176 verses) holding only verses 34, 35 and 40 (ADR 0022), in two reading sections:
+ * 4:34–35 and 4:40. Not part of testBundle; add it with `withPartialSurah`.
+ */
+export function partialSurah(): SurahFiles {
+  const surah = surahFiles(4, 176, [34, 35, 40]);
+  surah.explanations = [
+    explanation("s4-reading-1", "reading_section", "4:34", "4:35"),
+    explanation("s4-reading-2", "reading_section", "4:40", "4:40"),
+  ];
+  surah.readingSections = ["s4-reading-1", "s4-reading-2"];
+  return surah;
+}
+
+/** The test bundle with the partial surah 4 added. */
+export function withPartialSurah(): ContentBundle {
+  const bundle = testBundle();
+  bundle.surahs.push(partialSurah());
+  return bundle;
 }
