@@ -6,8 +6,19 @@ import { loadContent } from "@/lib/services/content/load";
 // eslint-disable-next-line no-restricted-imports
 import { toSeedPayload } from "@/lib/services/content/payload";
 // eslint-disable-next-line no-restricted-imports
-import { explanation, item, testBundle } from "@/lib/services/content/test-bundle";
-import { getPassages, getSurahContent, getSurahQuestions, getVerseTexts } from "./content";
+import {
+  explanation,
+  item,
+  testBundle,
+  withPartialSurah,
+} from "@/lib/services/content/test-bundle";
+import {
+  getPassages,
+  getPublishedSurahs,
+  getSurahContent,
+  getSurahQuestions,
+  getVerseTexts,
+} from "./content";
 
 // The cache directives need the Next.js server; here every call goes to the database.
 vi.mock("next/cache", () => ({ cacheLife: () => {}, cacheTag: () => {} }));
@@ -409,6 +420,29 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
     expect(update.error?.message).toMatch(/check constraint/);
     const { data } = await service.from("passage").select("url").eq("id", "passage-1");
     expect(data).toEqual([{ url: "https://example.com/book/1/10" }]);
+  });
+
+  it("lists the surahs with a published reading section, with the verses each holds", async () => {
+    const listed = async () =>
+      (await getPublishedSurahs()).map(({ number, ayahs }) => ({ number, ayahs }));
+    try {
+      // Surah 4 holds verses 34, 35 and 40, first with draft sections only; surah 2 has none.
+      const drafts = withPartialSurah();
+      drafts.surahs[2].explanations = [
+        explanation("s4-reading-1", "reading_section", "4:34", "4:35", "draft"),
+        explanation("s4-reading-2", "reading_section", "4:40", "4:40", "draft"),
+      ];
+      await seed(toSeedPayload(drafts));
+      expect(await listed()).toEqual([{ number: 1, ayahs: [1, 2, 3, 4] }]);
+
+      await seed(toSeedPayload(withPartialSurah()));
+      expect(await listed()).toEqual([
+        { number: 1, ayahs: [1, 2, 3, 4] },
+        { number: 4, ayahs: [34, 35, 40] },
+      ]);
+    } finally {
+      await seed(toSeedPayload(dbBundle()));
+    }
   });
 
   it("has no tester preview left (dropped in 20261029120000)", async () => {
