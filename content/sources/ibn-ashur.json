@@ -1,0 +1,121 @@
+{
+  "$schema": "../schema/source.schema.json",
+  "source": {
+    "id": "ibn-ashur",
+    "titleAr": "التحرير والتنوير",
+    "titleEn": "al-Taḥrīr wa-l-Tanwīr",
+    "author": "Ibn ʿĀshūr",
+    "edition": "al-Dār al-Tūnisiyya, 1984",
+    "type": "tafsir"
+  },
+  "passages": [
+    {
+      "id": "ibn-ashur-4-211",
+      "volume": "4",
+      "page": "211–212",
+      "verse": null,
+      "textAr": null,
+      "summary": {
+        "en": "al-Nisāʾ began coming down in Medina after al-Baqara and Āl ʿImrān, once the community was settled and safe. He places most of it around year 7 AH, revealed over a long time. It details family law that al-Baqara gave in brief: orphans, women, inheritance.",
+        "ko": null
+      },
+      "url": "https://shamela.ws/book/9776/1770"
+    },
+    {
+      "id": "ibn-ashur-4-229",
+      "volume": "4",
+      "page": "229",
+      "verse": null,
+      "textAr": null,
+      "summary": {
+        "en": "Before Islam, the orphan and the woman were the two weak sides of society, and their property was the most often taken. The surah guards both from its opening verses.",
+        "ko": null
+      },
+      "url": "https://shamela.ws/book/9776/1788"
+    },
+    {
+      "id": "ibn-ashur-4-248",
+      "volume": "4",
+      "page": "248",
+      "verse": null,
+      "textAr": null,
+      "summary": {
+        "en": "Before Islam, Arabs gave inheritance to male sons only. Women inherited nothing.",
+        "ko": null
+      },
+      "url": "https://shamela.ws/book/9776/1807"
+    },
+    {
+      "id": "ibn-ashur-5-39",
+      "volume": "5",
+      "page": "38–39",
+      "verse": null,
+      "textAr": null,
+      "summary": {
+        "en": "Qawwām comes from standing, because whoever cares for a matter stands up to manage it. The standing of men is protection and earning. \"They spend\" is in the past tense because providing had been men's role since early times: by hunting, raids and farming, later by trade and building. The wording fits both a reason Allah gives and a reason people already see, so it speaks to everyone.",
+        "ko": null
+      },
+      "url": "https://shamela.ws/book/9776/1894"
+    },
+    {
+      "id": "ibn-ashur-5-40",
+      "volume": "5",
+      "page": "40",
+      "verse": null,
+      "textAr": null,
+      "summary": {
+        "en": "One reported occasion: women, among them Umm Salama, asked why men go out to fight and they do not, and why they get half the inheritance. 4:32 came down, and 4:34 continues it. The Saʿd ibn al-Rabīʿ report has «لَيْسَ فِي هَذَا السَّبَبِ الثَّانِي حَدِيثٌ صَحِيحٌ»; it comes from al-Ḥasan, al-Suddī and Qatāda. Ḥāfiẓāt lil-ghayb makes the absence itself the thing guarded, so it covers everything a husband would watch over if he were there.",
+        "ko": null
+      },
+      "url": "https://shamela.ws/book/9776/1896"
+    },
+    {
+      "id": "ibn-ashur-5-41",
+      "volume": "5",
+      "page": "41",
+      "verse": null,
+      "textAr": null,
+      "summary": {
+        "en": "\"By what Allah has guarded\" means as Allah commanded. It excludes what Allah allowed women, such as the Prophet ﷺ letting Hind bint ʿUtba take from Abū Sufyān's money what she and her child needed. Nushūz can come from her bad character, from wanting another man, or from the husband's harshness, «وَذَلِكَ كَثِيرٌ». He reads the reports allowing a husband to strike as taking into account the customs of certain classes and tribes; among the Bedouin, neither men nor women counted it as an assault.",
+        "ko": null
+      },
+      "url": "https://shamela.ws/book/9776/1897"
+    },
+    {
+      "id": "ibn-ashur-5-42",
+      "volume": "5",
+      "page": "42",
+      "verse": null,
+      "textAr": null,
+      "summary": {
+        "en": "Cites ʿUmar in al-Bukhārī: the Muhājirūn dominated their women, the Anṣār were dominated by theirs, and the Muhājir women began taking on the Anṣār women's ways. The three steps are in order, as Saʿīd ibn Jubayr and ʿAlī said. Once she returns, no one may look for a way to keep applying them.",
+        "ko": null
+      },
+      "url": "https://shamela.ws/book/9776/1898"
+    },
+    {
+      "id": "ibn-ashur-5-43",
+      "volume": "5",
+      "page": "43",
+      "verse": null,
+      "textAr": null,
+      "summary": {
+        "en": "\"Fear\" means the nushūz has happened with signs of set intent, not the ordinary anger every couple goes through. \"You\" may address husbands and the authorities together, each doing their part. ʿAṭāʾ said a husband does not strike his wife; he shows his anger. Ibn al-ʿArabī praised this: the verse permits, it does not command, and the Prophet ﷺ said «وَلَنْ يَضْرِبَ خِيَارُكُمْ».",
+        "ko": null
+      },
+      "url": "https://shamela.ws/book/9776/1899"
+    },
+    {
+      "id": "ibn-ashur-5-44",
+      "volume": "5",
+      "page": "44",
+      "verse": null,
+      "textAr": null,
+      "summary": {
+        "en": "No separation or striking on mere expectation, by agreement. The separation must not reach the point of harming her with grief. Striking is serious and hard to limit. Left to husbands while they are angry and want to vent, it would likely go too far, «إِذْ قَلَّ مَنْ يُعَاقِبُ عَلَى قَدْرِ الذَّنْبِ», and the Sharia does not let anyone judge his own case except out of necessity. Most scholars restricted it to no harm and to people among whom it is no insult. If rulers see husbands misusing it, they may forbid it and announce that a man who strikes his wife will be punished.",
+        "ko": null
+      },
+      "url": "https://shamela.ws/book/9776/1900"
+    }
+  ]
+}

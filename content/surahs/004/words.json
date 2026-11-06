@@ -1,0 +1,51 @@
+{
+  "$schema": "../../schema/words.schema.json",
+  "attribution": "# PLEASE DO NOT REMOVE OR CHANGE THIS COPYRIGHT BLOCK\n#====================================================================\n#\n#  Tanzil Quran Text (Uthmani, Version 1.1)\n#  Copyright (C) 2007-2026 Tanzil Project\n#  License: Creative Commons Attribution 3.0\n#\n#  This copy of the Quran text is carefully produced, highly \n#  verified and continuously monitored by a group of specialists \n#  at Tanzil Project.\n#\n#  TERMS OF USE:\n#\n#  - Permission is granted to copy and distribute verbatim copies \n#    of this text, but CHANGING IT IS NOT ALLOWED.\n#\n#  - This Quran text can be used in any website or application, \n#    provided that its source (Tanzil Project) is clearly indicated, \n#    and a link is made to tanzil.net to enable users to keep\n#    track of changes.\n#\n#  - This copyright notice shall be included in all verbatim copies \n#    of the text, and shall be reproduced appropriately in all files \n#    derived from or containing substantial portion of this text.\n#\n#  Please check updates at: http://tanzil.net/updates/\n#\n#====================================================================",
+  "verses": [
+    {
+      "ayah": 34,
+      "words": [
+        { "position": 1, "text": "ٱلرِّجَالُ", "root": null },
+        { "position": 2, "text": "قَوَّٰمُونَ", "root": null },
+        { "position": 3, "text": "عَلَى", "root": null },
+        { "position": 4, "text": "ٱلنِّسَآءِ", "root": null },
+        { "position": 5, "text": "بِمَا", "root": null },
+        { "position": 6, "text": "فَضَّلَ", "root": null },
+        { "position": 7, "text": "ٱللَّهُ", "root": null },
+        { "position": 8, "text": "بَعْضَهُمْ", "root": null },
+        { "position": 9, "text": "عَلَىٰ", "root": null },
+        { "position": 10, "text": "بَعْضٍ", "root": null },
+        { "position": 11, "text": "وَبِمَآ", "root": null },
+        { "position": 12, "text": "أَنفَقُوا۟", "root": null },
+        { "position": 13, "text": "مِنْ", "root": null },
+        { "position": 14, "text": "أَمْوَٰلِهِمْ", "root": null },
+        { "position": 15, "text": "فَٱلصَّـٰلِحَـٰتُ", "root": null },
+        { "position": 16, "text": "قَـٰنِتَـٰتٌ", "root": null },
+        { "position": 17, "text": "حَـٰفِظَـٰتٌ", "root": null },
+        { "position": 18, "text": "لِّلْغَيْبِ", "root": null },
+        { "position": 19, "text": "بِمَا", "root": null },
+        { "position": 20, "text": "حَفِظَ", "root": null },
+        { "position": 21, "text": "ٱللَّهُ", "root": null },
+        { "position": 22, "text": "وَٱلَّـٰتِى", "root": null },
+        { "position": 23, "text": "تَخَافُونَ", "root": null },
+        { "position": 24, "text": "نُشُوزَهُنَّ", "root": null },
+        { "position": 25, "text": "فَعِظُوهُنَّ", "root": null },
+        { "position": 26, "text": "وَٱهْجُرُوهُنَّ", "root": null },
+        { "position": 27, "text": "فِى", "root": null },
+        { "position": 28, "text": "ٱلْمَضَاجِعِ", "root": null },
+        { "position": 29, "text": "وَٱضْرِبُوهُنَّ", "root": "ض ر ب" },
+        { "position": 30, "text": "فَإِنْ", "root": null },
+        { "position": 31, "text": "أَطَعْنَكُمْ", "root": null },
+        { "position": 32, "text": "فَلَا", "root": null },
+        { "position": 33, "text": "تَبْغُوا۟", "root": null },
+        { "position": 34, "text": "عَلَيْهِنَّ", "root": null },
+        { "position": 35, "text": "سَبِيلًا", "root": null },
+        { "position": 36, "text": "إِنَّ", "root": null },
+        { "position": 37, "text": "ٱللَّهَ", "root": null },
+        { "position": 38, "text": "كَانَ", "root": null },
+        { "position": 39, "text": "عَلِيًّا", "root": null },
+        { "position": 40, "text": "كَبِيرًا", "root": null }
+      ]
+    }
+  ]
+}

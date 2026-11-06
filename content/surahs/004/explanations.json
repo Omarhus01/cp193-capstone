@@ -1,0 +1,192 @@
+{
+  "$schema": "../../schema/explanations.schema.json",
+  "explanations": [
+    {
+      "id": "004-reading-1",
+      "kind": "reading_section",
+      "span": { "from": "4:34", "to": "4:34" },
+      "parts": {
+        "wordMeanings": [],
+        "background": [
+          {
+            "en": "**When and where.** Sūrat al-Nisāʾ came down in Medina, after al-Baqara and Āl ʿImrān, once the Muslim community was settled and safe. Most of it came around the seventh year after the Hijra, over a long period. It spells out family law that al-Baqara gave in brief: orphans, women, marriage and inheritance.",
+            "ko": "**언제, 어디서.** 수라 알니사는 메디나에서 내려왔습니다. 알바까라와 알이므란 다음이며, 무슬림 공동체가 자리를 잡고 안전해진 뒤입니다. 대부분은 히즈라 뒤 7년 무렵에 오랜 기간에 걸쳐 내려왔습니다. 알바까라가 짧게 다룬 가족법, 곧 고아와 여자와 혼인과 상속을 이 수라가 자세히 풀어 줍니다.",
+            "citations": ["ibn-ashur-4-211"]
+          },
+          {
+            "en": "**The world it came into.** In Arabia before Islam, the orphan and the woman were the two weakest members of society, and their property was the most often taken. Women inherited nothing; only sons did. The surah opens by protecting exactly these: the orphan's wealth, the woman's dowry, then a share of inheritance for women. 4:34 sets the household's structure inside that framework.",
+            "ko": "**이 수라가 들어온 세상.** 이슬람 이전 아라비아에서 고아와 여자는 사회에서 가장 약한 이들이었고, 그들의 재산은 가장 자주 빼앗겼습니다. 여자는 아무것도 상속받지 못했고, 아들만 상속을 받았습니다. 이 수라는 바로 이들을 지키는 것으로 시작합니다. 고아의 재산, 여자의 마흐르, 그리고 여자의 상속 몫입니다. 4:34는 이 틀 안에서 가정의 구조를 세웁니다.",
+            "citations": ["ibn-ashur-4-229", "ibn-ashur-4-248"]
+          },
+          {
+            "en": "**Two cultures in one city.** Medina brought together the Muhājirūn from Mecca and the Anṣār of Medina, and their homes ran differently. ʿUmar said the Muhājirūn dominated their wives, while among the Anṣār the wives had the upper hand, and the Meccan women began adopting the Anṣār women's ways. Among the Bedouin, a husband striking his wife was not seen as an assault, by men or by women. The verse spoke to these people as they were.",
+            "ko": "**한 도시, 두 문화.** 메디나에는 메카에서 온 무하지룬과 메디나 사람인 안사르가 함께 살았고, 두 집단의 가정 모습은 서로 달랐습니다. 우마르는 무하지룬 남자들은 아내를 휘어잡았지만 안사르는 아내들이 주도권을 쥐었고, 메카 여자들이 안사르 여자들의 방식을 따라 하기 시작했다고 말했습니다. 베두인 사이에서는 남편이 아내를 때리는 일을 남자도 여자도 폭행으로 여기지 않았습니다. 이 구절은 바로 이런 사람들에게, 그들이 사는 모습 그대로 말을 건넸습니다.",
+            "citations": ["ibn-ashur-5-42", "ibn-ashur-5-41"]
+          },
+          {
+            "en": "**The question just before it.** Women, among them Umm Salama, the Prophet's ﷺ wife, asked why men go out to fight and they do not, and why they receive half the inheritance. 4:32 answered: do not wish for what Allah gave some of you over others; men get a share of what they earn and women get a share of what they earn. Ibn ʿĀshūr reads 4:34 as continuing that answer.",
+            "ko": "**바로 앞의 질문.** 예언자 ﷺ의 아내 움무 살라마를 비롯한 여자들이 물었습니다. 왜 남자들은 전쟁에 나가고 우리는 나가지 않는지, 왜 우리는 상속을 절반만 받는지. 4:32가 이렇게 답했습니다. 알라께서 너희 가운데 일부에게 다른 이들보다 더 주신 것을 탐내지 말라. 남자에게는 남자가 번 몫이, 여자에게는 여자가 번 몫이 있다. 이븐 아슈르는 4:34를 그 대답이 이어지는 자리로 읽습니다.",
+            "citations": ["ibn-ashur-5-40"]
+          },
+          {
+            "en": "**Saʿd ibn al-Rabīʿ.** Saʿd was one of the twelve leaders of the Anṣār. He slapped his wife Ḥabība bint Zayd. Her father brought her to the Prophet ﷺ, who ruled that she could take retaliation. Then this verse came down, and the Prophet ﷺ said: \"We wanted one thing and Allah wanted another\". This report reaches us from Successors such as al-Ḥasan al-Baṣrī and Qatāda, not with a full chain to the Prophet ﷺ. It still shows his first response: when a wife was slapped, he took her side.",
+            "ko": "**사아드 이븐 알라비으.** 사아드는 안사르의 열두 지도자 가운데 한 사람이었습니다. 사아드는 아내 하비바 빈트 자이드의 뺨을 때렸습니다. 하비바의 아버지가 딸을 데리고 예언자 ﷺ께 왔고, 예언자 ﷺ께서는 하비바가 똑같이 갚을 수 있다고 판결하셨습니다. 그때 이 구절이 내려왔고, 예언자 ﷺ께서는 \"우리는 한 가지를 원했고, 알라께서는 다른 것을 원하셨다\"고 말씀하셨습니다. 이 이야기는 알하산 알바스리, 까타다 같은 타비운을 통해 전해지며, 예언자 ﷺ까지 이어지는 온전한 전승 고리는 없습니다. 그래도 예언자 ﷺ의 첫 반응을 보여 줍니다. 아내가 뺨을 맞았을 때 예언자 ﷺ께서는 아내 편에 서셨습니다.",
+            "citations": [
+              "baghawi-2-206",
+              "qurtubi-5-168",
+              "baghawi-2-207",
+              "ibn-kathir-2-256",
+              "ibn-ashur-5-40"
+            ]
+          },
+          {
+            "en": "**How the Prophet ﷺ lived it.** He once said \"Do not strike the female servants of Allah.\" When ʿUmar ﵁ complained that wives had grown defiant, he allowed it. Then many women came to his household complaining about their husbands, and he said: \"Those men are not the best of you\". He told a man asking about his wife's rights: feed her when you eat, clothe her when you dress, and do not strike the face. In his Farewell Sermon, near the end of his life, he told men to fear Allah regarding women. He himself never struck anyone in his home. His wife ʿĀʾisha said: \"The Messenger of Allah ﷺ never struck anything with his hand, not a woman and not a servant, except when fighting in the path of Allah. And when someone wronged him, he never took revenge for himself\". He also said: \"The best of you will never strike.\" From this ʿAṭāʾ, one of the great Successors, held that a husband does not strike his wife; he shows his anger. Ibn al-ʿArabī praised this: the verse permits, it does not command.",
+            "ko": "**예언자 ﷺ께서 사신 모습.** 예언자 ﷺ께서는 한때 \"알라의 여종들을 때리지 말라\"고 말씀하셨습니다. 우마르가 아내들이 남편에게 대든다고 하소연하자 허락하셨습니다. 그러자 많은 여자들이 예언자 ﷺ의 집에 와서 남편 때문에 하소연했고, 예언자 ﷺ께서는 \"그런 남자들은 너희 가운데 가장 좋은 이들이 아니다\"라고 말씀하셨습니다. 아내의 권리를 묻는 사람에게는, 네가 먹을 때 아내도 먹이고 네가 입을 때 아내도 입히고 얼굴은 때리지 말라고 하셨습니다. 생애 끝 무렵 고별 설교에서는 여자들에 대해 알라를 두려워하라고 남자들에게 당부하셨습니다. 예언자 ﷺ께서는 집에서 누구에게도 손을 대신 적이 없습니다. 아내 아이샤는 이렇게 말했습니다. \"알라의 사도 ﷺ께서는 알라의 길에서 싸울 때 말고는 손으로 무엇도 때리신 적이 없습니다. 여자도, 하인도 때리신 적이 없습니다. 누가 해를 끼쳐도 자신을 위해 앙갚음하신 적이 없습니다.\" 예언자 ﷺ께서는 또 \"너희 가운데 가장 좋은 이들은 결코 때리지 않는다\"고 말씀하셨습니다. 이를 근거로 위대한 타비운 가운데 한 사람인 아따는 남편은 아내를 때리지 않고 화가 났음을 보여 줄 뿐이라고 보았습니다. 이븐 알아라비는 이 견해를 칭찬하며, 이 구절은 허락하는 것이지 명령하는 것이 아니라고 말했습니다.",
+            "citations": ["ibn-kathir-2-258", "baghawi-2-208", "muslim-4-1814", "ibn-ashur-5-43"]
+          }
+        ],
+        "context": [
+          {
+            "en": "**\"Men are qawwāmūn over women.\"** English has no single word for qawwām. It comes from qāma, to stand, and describes someone who stands over a thing to look after it: you stand over what you care for and manage. The form qawwām is stronger than qayyim, the plain word for a caretaker. It means someone who carries this out fully and constantly: he sees to her needs, runs the affairs of the home and sets things right. Al-Qurṭubī puts it in practical terms: men spend on women and defend them. Ibn Kathīr adds that the qawwām is the head of the household who corrects her when she goes astray. The verse states a responsibility before it states any authority. Ibn ʿĀshūr sums up the standing as two things: protecting her and earning for her.",
+            "ko": "**\"남자들은 여자들의 까우왐입니다.\"** 까우왐에 꼭 맞는 한국어 단어는 없습니다. 이 말은 '서다'라는 뜻의 까마에서 왔습니다. 무언가를 아끼고 돌보는 사람은 그 곁에 서서 살피기 때문입니다. 까우왐은 '돌보는 사람'을 뜻하는 까이임보다 강한 꼴로, 이 일을 온전히, 늘 해내는 사람을 가리킵니다. 아내에게 필요한 것을 챙기고, 집안일을 이끌고, 어긋난 것을 바로잡습니다. 알꾸르뚜비는 이를 실제 삶으로 풀어, 남자가 여자를 먹여 살리고 지켜 준다고 설명합니다. 이븐 카시르는 까우왐이 집안의 어른으로서 아내가 그릇된 길로 가면 바로잡는 사람이라고 덧붙입니다. 이 구절은 권한보다 책임을 먼저 말합니다. 이븐 아슈르는 이 '서 있음'을 두 가지로 요약합니다. 아내를 지키는 것과 아내를 위해 버는 것입니다.",
+            "citations": [
+              "jazairi-1-472",
+              "baghawi-2-207",
+              "qasimi-3-96",
+              "qurtubi-5-168",
+              "ibn-kathir-2-256",
+              "ibn-ashur-5-39"
+            ]
+          },
+          {
+            "en": "**\"Because of what Allah has favored some of them over others.\"** The Arabic does not say \"men over women.\" It says \"some of them over others,\" and al-Qāsimī notes that \"them\" covers men and women together. Ibn Kathīr reads it as Allah giving men precedence for this role, which is why prophethood, rule and judgeship were given to men. Al-Qurṭubī points to the roles men carry: rulers, governors and those who go out to fight.",
+            "ko": "**\"알라께서 그들 가운데 일부를 다른 일부보다 낫게 하셨기 때문에\"** 아랍어 원문은 \"남자를 여자보다\"라고 하지 않고 \"그들 가운데 일부를 다른 일부보다\"라고 말합니다. 알까시미는 여기서 \"그들\"이 남자와 여자를 함께 가리킨다고 설명합니다. 이븐 카시르는 알라께서 이 역할을 위해 남자에게 앞자리를 주셨다고 풀이하고, 그래서 예언자의 직분과 통치와 재판을 남자가 맡았다고 말합니다. 알꾸르뚜비는 남자들이 맡아 온 역할, 곧 통치자와 지도자와 전장에 나가는 이들을 예로 듭니다.",
+            "citations": ["qasimi-3-96", "ibn-kathir-2-256", "qurtubi-5-168"]
+          },
+          {
+            "en": "**\"And because of what they spend from their wealth.\"** The second reason is the man's own: he pays the dowry and carries the costs of the home. The verb is in the past tense because this was already how families lived: men provided by hunting, raiding and farming, and later by trade. The two reasons are tied together. Most jurists drew from this line that if a husband cannot provide, the wife may have the marriage dissolved, because the ground of his responsibility is gone. Abū Ḥanīfa disagreed.",
+            "ko": "**\"그리고 그들이 자기 재산에서 쓰기 때문에\"** 두 번째 이유는 남자 자신이 하는 일입니다. 남편은 마흐르를 주고 집안 살림의 비용을 맡습니다. 동사가 과거형인 까닭은 이것이 이미 오래전부터 가정이 살아온 방식이었기 때문입니다. 남자들은 사냥과 습격과 농사로, 나중에는 장사로 가족을 먹여 살렸습니다. 두 이유는 서로 묶여 있습니다. 대부분의 법학자는 이 구절에서, 남편이 아내를 부양하지 못하면 아내가 혼인을 풀 수 있다는 결론을 끌어냈습니다. 남편이 책임을 맡는 근거가 사라졌기 때문입니다. 아부 하니파는 이 견해에 반대했습니다.",
+            "citations": ["ibn-kathir-2-256", "baghawi-2-207", "ibn-ashur-5-39", "jazairi-1-472"]
+          },
+          {
+            "en": "**\"So righteous women are qānitāt, ḥāfiẓāt lil-ghayb.\"** Qānitāt means devoted in obedience, to Allah and to their husbands. Ḥāfiẓāt lil-ghayb means \"guardians of what is unseen\": when her husband is away, she guards herself and his property as if he were present. The Prophet ﷺ described the best wife the same way: she pleases you when you look at her, obeys you when you ask, and guards herself and your wealth when you are away.",
+            "ko": "**\"그러므로 의로운 여자들은 까니타트이며, 보이지 않는 것을 지키는 이들입니다.\"** 까니타트는 알라께, 그리고 남편에게 마음을 다해 순종하는 여자들을 뜻합니다. \"보이지 않는 것을 지킨다\"는 남편이 집을 비웠을 때, 남편이 곁에 있을 때처럼 자기 몸과 남편의 재산을 지킨다는 뜻입니다. 예언자 ﷺ께서도 가장 좋은 아내를 이렇게 그리셨습니다. 바라보면 기쁘게 하고, 부탁하면 따르고, 남편이 집을 비우면 자기 몸과 남편의 재산을 지키는 아내입니다.",
+            "citations": ["ibn-kathir-2-257", "jazairi-1-472"]
+          },
+          {
+            "en": "**\"For what is unseen.\"** The Arabic makes the absence itself the thing she guards. In two words it covers everything a husband would watch over if he were home.",
+            "ko": "**\"보이지 않는 것을\"** 아랍어는 남편이 없는 '부재' 자체를 아내가 지키는 대상으로 삼습니다. 그래서 두 낱말만으로, 남편이 집에 있다면 살폈을 모든 것을 아우릅니다.",
+            "citations": ["ibn-ashur-5-40"]
+          },
+          {
+            "en": "**\"By what Allah has guarded.\"** These words hold two meanings. She guards because Allah guards her and helps her; left to herself, she could keep nothing safe. And she guards as Allah commanded, no more. What Allah allowed her stays hers: the Prophet ﷺ let Hind bint ʿUtba take from her husband Abū Sufyān's money what she and her child needed.",
+            "ko": "**\"알라께서 지켜 주신 것으로\"** 이 말에는 두 가지 뜻이 함께 들어 있습니다. 첫째, 아내가 지킬 수 있는 것은 알라께서 아내를 지켜 주시고 도와주시기 때문입니다. 혼자서는 아무것도 지킬 수 없습니다. 둘째, 아내는 알라께서 명하신 만큼 지키고, 그 이상은 아닙니다. 알라께서 아내에게 허락하신 것은 아내의 몫으로 남습니다. 예언자 ﷺ께서는 힌드 빈트 우트바에게, 남편 아부 수피안의 재산에서 자기와 아이에게 필요한 만큼 가져가도 된다고 허락하셨습니다.",
+            "citations": ["jazairi-1-472", "ibn-kathir-2-257", "ibn-ashur-5-41"]
+          },
+          {
+            "en": "**\"As for those whose nushūz you fear.\"** Nushūz comes from nashz, raised ground. The picture is a wife who raises herself above her husband: she leaves his word, turns away from him and holds him in contempt. The same word is used for a husband in 4:128, so the Quran recognizes that either side can do this. Ibn ʿĀshūr lists its causes: her bad character, her wanting another man, or the husband's own harshness, which he says is common.",
+            "ko": "**\"누슈즈가 염려되는 여자들은\"** 누슈즈는 높이 솟은 땅을 뜻하는 나슈즈에서 왔습니다. 아내가 남편 위로 자신을 높이는 모습을 그린 말입니다. 남편의 말을 저버리고, 등을 돌리고, 남편을 업신여기는 것입니다. 4:128에서는 같은 말을 남편에게 씁니다. 꾸란은 어느 쪽이든 이럴 수 있다고 인정합니다. 이븐 아슈르는 누슈즈의 원인으로 아내의 나쁜 성품, 다른 남자와 혼인하고 싶은 마음, 그리고 남편 자신의 거친 성품을 들고, 마지막 경우가 흔하다고 말합니다.",
+            "citations": ["baghawi-2-208", "ibn-kathir-2-257", "shinqiti-1-241", "ibn-ashur-5-41"]
+          },
+          {
+            "en": "\"Fear\" here is debated. Some scholars read it as \"know,\" as in 2:182, and allowed all three remedies together once nushūz is certain. Others read it as fearing the signs before it is certain, and required the remedies one at a time in order. Ibn ʿĀshūr adds that it means a real refusal with set intent, not the ordinary anger every couple goes through, and that no step beyond words is allowed on suspicion alone.",
+            "ko": "여기서 '염려한다'의 뜻에 대해서는 의견이 나뉩니다. 어떤 학자들은 2:182처럼 '안다'로 읽고, 누슈즈가 확실하면 세 가지 방법을 한꺼번에 써도 된다고 보았습니다. 다른 학자들은 확실해지기 전에 그 조짐을 염려한다는 뜻으로 읽고, 방법을 하나씩 차례대로 써야 한다고 보았습니다. 이븐 아슈르는 여기에 덧붙여, 부부라면 누구나 겪는 평범한 다툼이 아니라 마음을 굳힌 진짜 거부를 뜻하며, 의심만으로는 말을 넘어서는 어떤 조치도 할 수 없다고 말합니다.",
+            "citations": ["baghawi-2-208", "ibn-ashur-5-43", "ibn-ashur-5-44"]
+          },
+          {
+            "en": "**\"Admonish them.\"** First he speaks to her. He reminds her of Allah, of what she owes him, of the reward for keeping it and the consequence of breaking it.",
+            "ko": "**\"그들을 타이르십시오.\"** 먼저 남편은 아내와 이야기합니다. 알라를 떠올리게 하고, 아내가 지켜야 할 도리와 그것을 지켰을 때의 보상, 저버렸을 때의 결과를 일깨웁니다.",
+            "citations": ["baghawi-2-208", "jazairi-1-472"]
+          },
+          {
+            "en": "**\"Leave them in their beds.\"** Ibn ʿAbbās explained it as turning his back to her in bed and withholding intimacy. Others added that he does not speak to her, or that he moves to another bed. The words \"in their beds\" set a boundary: the separation stays inside the home. The Prophet ﷺ said: \"Do not separate from her except in the house\". Scholars put its limit at one month, following the Prophet's ﷺ own example, and it must never reach the point of harming her with grief.",
+            "ko": "**\"잠자리에서 그들을 멀리하십시오.\"** 이븐 압바스는 잠자리에서 아내에게 등을 돌리고 부부 관계를 하지 않는 것이라고 설명했습니다. 다른 학자들은 말을 걸지 않는 것, 또는 다른 잠자리로 옮기는 것이라고 덧붙였습니다. \"잠자리에서\"라는 말이 한계를 정합니다. 멀리하는 일은 집 안에서만 합니다. 예언자 ﷺ께서는 \"집 안이 아니면 멀리하지 말라\"고 말씀하셨습니다. 학자들은 예언자 ﷺ 자신의 본보기를 따라 그 기한을 한 달로 보았고, 아내가 슬픔으로 상처받을 정도까지 가서는 안 된다고 했습니다.",
+            "citations": [
+              "ibn-kathir-2-257",
+              "baghawi-2-208",
+              "qurtubi-5-172",
+              "jazairi-1-472",
+              "ibn-ashur-5-44"
+            ]
+          },
+          {
+            "en": "**\"And strike them.\"** This is the last step, and only if the first two fail. Its purpose is to set things right, nothing else. The scholars agree it must not injure: it breaks no bone and leaves no mark. Ibn ʿAbbās said it is with a siwāk, a small tooth-cleaning stick, or something like it. The face is off limits. If it ever leads to death, the husband owes compensation. Al-Rāzī, quoted by al-Qāsimī, read the order of the steps as a rule: whenever a lighter step works, the husband must stop there and may not move to a heavier one.",
+            "ko": "**\"그리고 그들을 때리십시오.\"** 마지막 단계이며, 앞의 두 단계가 효과가 없을 때만 해당합니다. 목적은 관계를 바로잡는 것 하나뿐입니다. 학자들은 상처를 내면 안 된다는 데 모두 동의합니다. 뼈를 부러뜨리지 않고, 자국을 남기지 않아야 합니다. 이븐 압바스는 시왁(이를 닦는 작은 나뭇가지)이나 그와 비슷한 것으로 하는 것이라고 말했습니다. 얼굴은 절대 안 됩니다. 그 때문에 아내가 죽으면 남편은 배상해야 합니다. 알까시미가 인용한 알라지는 단계의 순서를 규칙으로 읽었습니다. 가벼운 단계로 해결되면 남편은 거기서 멈춰야 하고, 더 무거운 단계로 넘어갈 수 없습니다.",
+            "citations": [
+              "qurtubi-5-172",
+              "ibn-kathir-2-258",
+              "qurtubi-5-173",
+              "baghawi-2-208",
+              "qasimi-3-99"
+            ]
+          },
+          {
+            "en": "**\"If they obey you, do not seek a way against them.\"** Tabghū means \"seek.\" Once she returns, he may not look for excuses to hurt her by word or act. He also may not demand that she love him, because her heart is not in her hands.",
+            "ko": "**\"그들이 따르면, 그들을 해칠 길을 찾지 마십시오.\"** 탑구는 '찾다'라는 뜻입니다. 아내가 돌아오면 남편은 말로든 행동으로든 아내를 괴롭힐 구실을 찾으면 안 됩니다. 또 아내에게 자기를 사랑하라고 요구할 수도 없습니다. 마음은 아내 뜻대로 되는 것이 아니기 때문입니다.",
+            "citations": ["qurtubi-5-173", "jazairi-1-472", "baghawi-2-208"]
+          },
+          {
+            "en": "**\"Allah is Most High, Most Great.\"** The verse closes on these two names for the husbands. Whatever power you have over her, Allah is above you. She may be too weak to defend herself against you, but Allah will punish whoever wrongs her.",
+            "ko": "**\"알라께서는 가장 높으시고 가장 크십니다.\"** 이 구절은 남편들을 향해 이 두 이름으로 끝납니다. 남편이 아내 위에 어떤 힘이 있든, 알라께서는 남편보다 위에 계십니다. 아내가 약해서 스스로를 지키지 못해도, 알라께서는 아내를 해치는 사람을 벌하십니다.",
+            "citations": ["qurtubi-5-173", "qasimi-3-100"]
+          }
+        ],
+        "connectedVerses": [
+          {
+            "verse": "2:228",
+            "en": "«وَلِلرِّجَالِ عَلَيْهِنَّ دَرَجَةٌ»: Ibn Kathīr cites it for the husband's responsibility.",
+            "ko": "«وَلِلرِّجَالِ عَلَيْهِنَّ دَرَجَةٌ»: 이븐 카시르는 남편의 책임을 설명하며 이 구절을 인용합니다.",
+            "citations": ["ibn-kathir-2-256"]
+          },
+          {
+            "verse": "4:32",
+            "en": "the question the women asked, which 4:34 continues to answer.",
+            "ko": "여자들이 던진 질문입니다. 4:34가 그 대답을 이어 갑니다.",
+            "citations": ["ibn-ashur-5-40"]
+          },
+          {
+            "verse": "4:35",
+            "en": "the next step when the rift is on both sides, an arbiter from his family and one from hers.",
+            "ko": "다툼이 양쪽 모두에게 있을 때의 다음 단계입니다. 남편 집안에서 한 사람, 아내 집안에서 한 사람이 중재자로 나섭니다.",
+            "citations": ["qasimi-3-100"]
+          },
+          {
+            "verse": "4:128",
+            "en": "nushūz can also come from the husband.",
+            "ko": "누슈즈는 남편에게서도 나올 수 있습니다.",
+            "citations": ["shinqiti-1-241"]
+          },
+          {
+            "verse": "4:101",
+            "en": "the same verb ḍaraba with a different meaning (see Word meanings).",
+            "ko": "같은 동사 다라바가 다른 뜻으로 쓰입니다(낱말 뜻 참고).",
+            "citations": ["ibn-kathir-2-347"]
+          }
+        ]
+      },
+      "contextLinks": [],
+      "status": "published",
+      "review": [
+        { "status": "en_approved", "reviewer": "Omar Ibrahim", "date": "2026-11-06" },
+        {
+          "status": "ko_drafted",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-11-06",
+          "notes": "Korean first draft, written from the meaning (docs/content-drafts/an-nisa-34.md, Korean style); pending review by Korean readers"
+        },
+        {
+          "status": "ko_approved",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-11-06",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        },
+        {
+          "status": "published",
+          "reviewer": "Omar Ibrahim",
+          "date": "2026-11-06",
+          "notes": "Published for user testing; Korean translation under review by Korean readers."
+        }
+      ]
+    }
+  ]
+}
