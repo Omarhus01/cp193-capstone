@@ -20,7 +20,7 @@ For reviewers:
 2. **Demo videos**, in order:
    1. [The problem and the site](https://www.loom.com/share/e49ffb2d86cf46868e5e29cb42de7aed)
    2. [How it's built](https://www.loom.com/share/d1c1b520b24142d292b22eabd6b0baa6)
-   3. [How I keep it correct](https://www.loom.com/share/d1c1b520b24142d292b22eabd6b0baa6)
+   3. [How I keep it correct](https://www.loom.com/share/aecaa10a6bfa49beb67ae8ef2ea52c8b)
    4. [What testers said and what's next](https://www.loom.com/share/c9de8bdd91234446b90455f143937056)
 3. Then read [How it works](#how-it-works), the [database schema](docs/schema.md) and the [user flow](docs/user-flow.md).
 
