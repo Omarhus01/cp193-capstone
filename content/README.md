@@ -199,6 +199,7 @@ A word meaning has its meaning in this verse, its citations, and `elsewhere`: wh
 }
 ```
 
+- **The type** is `tafsir`, `asbab_al_nuzul` (reasons for revelation), `word_dictionary`, `hadith`, or `modern_study`: modern writing about the Quran that is none of those, such as a translation, a book or a journal article ([ADR 0023](../docs/decisions/0023-modern-studies-as-a-source-type.md)). A modern tafsir is still `tafsir`.
 - **The edition** is the one the pages were checked in (publisher, place, edition, year, editors). The page shows it in parentheses after the title.
 - **A passage** is cited by volume and pages; a range like `50–60` shows as "pp.". A source arranged by verse can give `verse` instead of a page.
 - **`url`** is where readers can open the cited pages, for example on Shamela. It must be `https://`, or `null` when there is none. The page's source chip opens it in a new tab; without one, the chip shows the citation and links nowhere.

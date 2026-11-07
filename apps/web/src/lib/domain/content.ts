@@ -51,7 +51,8 @@ export type Verse = VerseRef & {
   transliteration: Localized;
 };
 
-export type SourceType = "tafsir" | "asbab_al_nuzul" | "word_dictionary" | "hadith";
+export type SourceType =
+  "tafsir" | "asbab_al_nuzul" | "word_dictionary" | "hadith" | "modern_study";
 
 export type Source = {
   id: string;

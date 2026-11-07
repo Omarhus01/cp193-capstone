@@ -1,0 +1,25 @@
+{
+  "$schema": "../schema/source.schema.json",
+  "source": {
+    "id": "zakariyah",
+    "titleAr": null,
+    "titleEn": "The power of a man to beat his wife: a critical study of the book Darb al-Mar'ah of Abdul Hamid Abu Sulayman",
+    "author": "Habeebullah Zakariyah",
+    "edition": "Al-Qanatir 10(1), 2018",
+    "type": "modern_study"
+  },
+  "passages": [
+    {
+      "id": "zakariyah-2018",
+      "volume": null,
+      "page": "63–77",
+      "verse": null,
+      "textAr": null,
+      "summary": {
+        "en": "A critical study of Abū Sulaymān's book. Keeps al-ḍarb as a touch or light strike. Ties the permission to maṣlaḥa, so a permitted strike can become disliked or forbidden, and concludes that the government may restrict or prevent it when it does not serve the purposes of the Sharia.",
+        "ko": null
+      },
+      "url": "https://irep.iium.edu.my/68587/"
+    }
+  ]
+}
