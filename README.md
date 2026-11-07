@@ -1,4 +1,6 @@
-# CP193 Capstone: Quran explanations for Korean-speaking learners
+# Quran Explained (꾸란 해설)
+
+CP193 Capstone: Quran explanations for Korean-speaking learners
 
 A platform that explains the Quran to Korean-speaking learners who don't read Arabic. Each verse shows:
 
@@ -10,16 +12,37 @@ A platform that explains the Quran to Korean-speaking learners who don't read Ar
 
 The project proposal is in [`docs/proposal.pdf`](docs/proposal.pdf).
 
-Sprint 1 so far: the site shell, English/Korean routing, email-and-password accounts, the content model (Quran text, explanations, review steps, sources), and the surah page with reading sections, word meanings, English and pronunciation toggles, and source chips that open the passage on Shamela. The surah page also has a questions panel with prepared questions for each reading section, whose answers show their sources. Al-Fatiha is published: its explanations, brief, word meanings, transliterations and prepared questions have passed review. The Vercel deploy setup (checklist, build guard, smoke tests) and a feedback button for user testing are in place. Next up: surah navigation and search (#6), and the Islamic terms glossary (#8).
+## Start here
+
+For reviewers:
+
+1. **Live site:** https://cp193-capstone.vercel.app. An account is needed to read surah pages; sign-up is open.
+2. **Demo videos**, in order:
+   1. [The problem and the site](https://www.loom.com/share/e49ffb2d86cf46868e5e29cb42de7aed)
+   2. [How it's built](https://www.loom.com/share/d1c1b520b24142d292b22eabd6b0baa6)
+   3. [How I keep it correct](https://www.loom.com/share/d1c1b520b24142d292b22eabd6b0baa6)
+   4. [What testers said and what's next](https://www.loom.com/share/c9de8bdd91234446b90455f143937056)
+3. Then read [How it works](#how-it-works), the [database schema](docs/schema.md) and the [user flow](docs/user-flow.md).
+
+## Sprint 1 (done)
+
+- **Published:** Al-Fātiḥa in full, and An-Nisāʾ 4:34 as a partial surah (a surah can show only some of its verses).
+- **Home page:** lists every published surah.
+- **Prepared questions:** each reading section has prepared questions with sourced answers. 4:34 includes the modern "go away from them" reading of ḍaraba and the scholars' response, citing three modern works (a new "modern study" source type).
+- **User testing:** round 1 with four testers, through the feedback form.
+- **Sprint 2:** fixes from testing (switching surahs from the header, the word box on phones, pronunciation matching), a question-answering chat with retrieval and a check step before any answer is shown, new verses from tester requests, and audio.
 
 ## Repository layout
 
 | Path                   | What it holds                                                              |
 | ---------------------- | -------------------------------------------------------------------------- |
 | `apps/web/`            | Next.js site (App Router, TypeScript, Tailwind, next-intl)                 |
+| `apps/web/e2e/`        | Playwright tests                                                           |
+| `apps/web/scripts/`    | Content import and seed                                                    |
 | `content/`             | Quran text, explanations and sources as JSON ([README](content/README.md)) |
 | `supabase/migrations/` | Database schema as SQL migrations                                          |
 | `.github/workflows/`   | CI (`ci.yml`) on every push and PR; daily Supabase ping (`keep-alive.yml`) |
+| `docs/`                | Proposal, schema, user flow, deploy, decisions, designs, content drafts    |
 | `docs/decisions/`      | Architecture decision records (ADRs)                                       |
 
 ## How it works
@@ -156,9 +179,9 @@ NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321 NEXT_PUBLIC_SUPABASE_ANON_KEY=..
 - **One branch per issue**, from an up-to-date `main`: `feat/`, `fix/` or `chore/` + `<issue number>-<short-name>`.
 - **Small commits** in [Conventional Commits](https://www.conventionalcommits.org/) style, with a scope where it helps (`fix(i18n): …`). The body says why, not what the diff already shows.
 - **Pull request:** the description says `Closes #<issue>` and fills in the [template](.github/pull_request_template.md). The CI job `Format, lint, typecheck, unit tests` must pass and the branch must be up to date with `main`; branch protection enforces both, for admins too. Never push to `main` directly.
-- **Merge** with `gh pr merge --merge --delete-branch`: merge commits only, so each commit stays in the history.
+- **Merge** with `gh pr merge --merge`: merge commits only, so each commit stays in the history.
 - **Decisions get an ADR.** When a pull request picks between real alternatives (a library, a data shape, a rule, a trade-off someone might later question), add a record to [`docs/decisions/`](docs/decisions/README.md) from the template there.
-- **Content is the owner's.** Never write Quran verses, translations, explanations or word meanings, even as placeholders. The project owner provides and validates them in `content/`, and Islamic terms follow the Arabic word ([ADR 0008](docs/decisions/0008-terms-follow-the-arabic-word.md)).
+- **Content is the owner's.** Never write Quran verses, translations, explanations or word meanings, even as placeholders. The project owner provides and validates them in `content/`, and Islamic terms follow the Arabic word ([decision record: Islamic terms](docs/decisions/0008-terms-follow-the-arabic-word.md)).
 
 **Definition of done.** A pull request is done when:
 
@@ -171,9 +194,15 @@ NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321 NEXT_PUBLIC_SUPABASE_ANON_KEY=..
 
 ## Deploy (Vercel)
 
-[`docs/deploy.md`](docs/deploy.md) is the step-by-step checklist: the Vercel project (Root Directory `apps/web`, the two public variables, production from `main`, no previews), the Supabase Auth URLs, sign-ups and the Confirm signup email template, a smoke test, the release order for every later change (database first, then the merge; [ADR 0017](docs/decisions/0017-vercel-hosting-and-release-order.md)), and the daily keep-alive that stops the free Supabase project from pausing (`.github/workflows/keep-alive.yml`).
+[`docs/deploy.md`](docs/deploy.md) is the step-by-step checklist: the Vercel project (Root Directory `apps/web`, the two public variables, production from `main`, no previews), the Supabase Auth URLs, sign-ups and the Confirm signup email template, a smoke test, the release order for every later change (database first, then the merge; [decision record: hosting on Vercel](docs/decisions/0017-vercel-hosting-and-release-order.md)), and the daily keep-alive that stops the free Supabase project from pausing (`.github/workflows/keep-alive.yml`).
 
 **The feedback form:** the surah page's feedback button opens `NEXT_PUBLIC_FEEDBACK_URL` (optional, set in Vercel). Without it, the button reads "Feedback form coming soon".
+
+## Credits
+
+- **Quran text:** the [Tanzil Project](https://tanzil.net), used under its license, unchanged.
+- **Source pages:** [Shamela](https://shamela.ws).
+- **[Athars](https://athars.ai):** built by Ali, who gave API access used for the 4:34 model trials.
 
 ## Project history
 
