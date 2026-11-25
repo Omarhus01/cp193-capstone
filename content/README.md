@@ -206,6 +206,23 @@ A word meaning has its meaning in this verse, its citations, and `elsewhere`: wh
 - **Passage ids** follow the source and its location (`ibn-kathir-1-50-60`: volume 1, pages 50–60). When the pages change, rename the id and every citation to it in the same pull request; the seed deletes the old passage.
 - **The full citation** is the chip's tooltip and accessible name: author, title (edition), volume, pages, led by "Muslim, via …" when the citation quotes someone.
 
+## Finding passages for a new verse
+
+`content:find-passages` copies what the tafsir books say about one verse into one markdown file, to read before writing an explanation. It needs the export of the books from Athars, which stays **outside the repository**: one `<book id>.jsonl` (pages) and one `<book id>.toc.json` (table of contents) per book.
+
+```bash
+npm run content:find-passages -- "<export folder>" 4:34 "<path>/quran-uthmani.xml"
+```
+
+- **The result** is `<export folder>/found/4-34.md`. It starts with a table of the books and their page counts. Each book's section has its title, volume, printed pages, a Shamela link for every page, and the text. Running it again replaces the file.
+- **The Tanzil file** is optional. Without it, headings that quote a verse without its number aren't checked, and the books that have them say so. Give full paths: the script runs from `apps/web`.
+- **It copies text only.** It writes no explanations or translations and changes nothing in `content/`. It refuses to write inside the repository.
+- **Results marked "check"** weren't found by a trusted heading for exactly this verse. Open them on Shamela before citing them.
+- **"Not found"** lists books that cover the surah, with the reason and a page to start from.
+- **Before citing a page,** compare the edition. The export's edition can differ from the one in `sources/`, and then it needs its own source record.
+
+How verses are found, and why the books stay outside the repository: [decision record: passage finder](../docs/decisions/0024-passage-finder-reads-the-athars-export.md).
+
 ## Transliterations
 
 `transliterations.json` holds how each verse is pronounced: `en` in Latin letters, shown on English pages, and `ko` in Hangul, shown on Korean pages. Each is written and reviewed on its own, so the Latin line can be published before the Hangul exists ([ADR 0013](../docs/decisions/0013-public-reading-structure-and-transliteration.md)).
