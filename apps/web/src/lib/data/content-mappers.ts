@@ -6,7 +6,7 @@ import type {
   FixedQuestion,
   Localized,
   Passage,
-  PublishedSurah,
+  SurahListItem,
   RevelationPlace,
   SourceType,
   Span,
@@ -42,6 +42,7 @@ export type VerseRow = {
   surah: number;
   ayah: number;
   text_ar: string;
+  page: number | null;
   word: { position: number; text_ar: string; root: string | null }[];
   verse_transliteration: { language: "en" | "ko"; text: string | null; status: string }[];
 };
@@ -166,7 +167,7 @@ export function toSurah(row: SurahRow): Surah {
   };
 }
 
-export type PublishedSurahRow = {
+export type SurahListRow = {
   number: number;
   name_ar: string;
   name_en: string | null;
@@ -175,7 +176,7 @@ export type PublishedSurahRow = {
   verse: { ayah: number }[];
 };
 
-export function toPublishedSurah(row: PublishedSurahRow): PublishedSurah {
+export function toSurahListItem(row: SurahListRow): SurahListItem {
   return {
     number: row.number,
     nameAr: row.name_ar,
@@ -195,6 +196,7 @@ export function toVerse(row: VerseRow): Verse {
     surah: row.surah,
     ayah: row.ayah,
     textAr: row.text_ar,
+    page: row.page,
     words: [...row.word]
       .sort((a, b) => a.position - b.position)
       .map((word) => ({ position: word.position, textAr: word.text_ar, root: word.root })),

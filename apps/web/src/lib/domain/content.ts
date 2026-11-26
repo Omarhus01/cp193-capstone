@@ -31,8 +31,8 @@ export type Surah = {
   basmalaAr: string | null;
 };
 
-/** A surah with published explanations, and which of its verses are in the database. */
-export type PublishedSurah = {
+/** A surah in the database, and which of its verses the database holds. */
+export type SurahListItem = {
   number: number;
   nameAr: string;
   nameEn: string | null;
@@ -46,6 +46,8 @@ export type Word = { position: number; textAr: string; root: string | null };
 
 export type Verse = VerseRef & {
   textAr: string;
+  /** The page of the Madani mushaf the verse is on, from Tanzil's metadata. Null until seeded. */
+  page: number | null;
   words: Word[];
   /** How the verse is pronounced: Latin letters (en) and Hangul (ko). Null until published. */
   transliteration: Localized;

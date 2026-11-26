@@ -1,12 +1,14 @@
 import type { Locale } from "@/i18n/locale";
-import { getPublishedSurahs } from "@/lib/data/content";
-import type { PublishedSurah } from "@/lib/domain/content";
+import { getSurahList } from "@/lib/data/content";
+import type { SurahListItem } from "@/lib/domain/content";
 
 /** A surah readers can open, as the home page lists it. */
 export type SurahLink = {
   number: number;
   /** The name in the page's language, else English, else Arabic. */
   name: string;
+  /** The Arabic name, shown beside it. */
+  nameAr: string;
   /** The verses the surah holds when that is only some, such as "4:34"; null when complete. */
   verses: string | null;
 };
@@ -39,23 +41,24 @@ export function verseRanges(
 }
 
 /** The links for these surahs, named in the page's language. */
-export function surahLinks(surahs: readonly PublishedSurah[], locale: Locale): SurahLink[] {
+export function surahLinks(surahs: readonly SurahListItem[], locale: Locale): SurahLink[] {
   return surahs.map((surah) => ({
     number: surah.number,
     name: (locale === "ko" ? surah.nameKo : surah.nameEn) ?? surah.nameEn ?? surah.nameAr,
+    nameAr: surah.nameAr,
     verses: verseRanges(surah.number, surah.ayahs, surah.verseCount),
   }));
 }
 
 /**
- * Every surah with published explanations. When they can't be loaded, the error is logged and the
+ * Every surah in the database, explained or not (ADR 0025). When they can't be loaded, the error is logged and the
  * list is empty, so the page that shows it still works.
  */
 export async function loadSurahLinks(locale: Locale): Promise<SurahLink[]> {
   try {
-    return surahLinks(await getPublishedSurahs(), locale);
+    return surahLinks(await getSurahList(), locale);
   } catch (error) {
-    console.error("Couldn't load the published surahs:", error);
+    console.error("Couldn't load the surahs:", error);
     return [];
   }
 }

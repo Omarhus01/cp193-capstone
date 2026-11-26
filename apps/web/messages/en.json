@@ -29,7 +29,7 @@
     "intro": "Each verse appears in Arabic with a Korean explanation of its context, an optional English view, the meaning of each word in that verse, and a link to the source of every explanation.",
     "start": "Start reading",
     "accountHint": "You need an account to open the surah pages.",
-    "surahsTitle": "Surahs you can read"
+    "surahsTitle": "All surahs"
   },
   "auth": {
     "login": "Log in",
@@ -70,6 +70,7 @@
     "listenComingSoon": "Audio coming soon",
     "sectionOf": "Reading section {position} of {total}",
     "sectionOfShort": "{position} / {total}",
+    "pageLabel": "Page {page} · {range}",
     "verseNumber": "verse {number}",
     "pronunciation": "Pronunciation",
     "meaning": "Meaning",
@@ -81,6 +82,7 @@
     "sourceLabel": "Source {number}: {label}",
     "comingSoonTitle": "Explanation coming soon",
     "comingSoonBody": "This section's explanation is still in review. It appears here once the review is done.",
+    "comingSoonLine": "Explanation coming soon",
     "passage": {
       "volumePage": "{author}, {title}, vol. {volume}, p. {page}",
       "volumePages": "{author}, {title}, vol. {volume}, pp. {page}",

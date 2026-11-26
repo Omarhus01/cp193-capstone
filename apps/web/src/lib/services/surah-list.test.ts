@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { PublishedSurah } from "@/lib/domain/content";
+import type { SurahListItem } from "@/lib/domain/content";
 
-const contentData = vi.hoisted(() => ({ getPublishedSurahs: vi.fn() }));
+const contentData = vi.hoisted(() => ({ getSurahList: vi.fn() }));
 vi.mock("@/lib/data/content", () => contentData);
 
 const { loadSurahLinks, surahLinks, verseRanges } = await import("./surah-list");
 
-const surah = (overrides: Partial<PublishedSurah> = {}): PublishedSurah => ({
+const surah = (overrides: Partial<SurahListItem> = {}): SurahListItem => ({
   number: 4,
   nameAr: "النساء",
   nameEn: "[surah 4 en]",
@@ -41,7 +41,7 @@ describe("verseRanges", () => {
 describe("surahLinks", () => {
   it("names each surah in the page's language, with the verses it holds", () => {
     expect(surahLinks([surah()], "en")).toEqual([
-      { number: 4, name: "[surah 4 en]", verses: "4:34" },
+      { number: 4, name: "[surah 4 en]", nameAr: "النساء", verses: "4:34" },
     ]);
     expect(surahLinks([surah()], "ko")[0].name).toBe("[surah 4 ko]");
   });
@@ -60,16 +60,16 @@ describe("surahLinks", () => {
 describe("loadSurahLinks", () => {
   beforeEach(() => vi.resetAllMocks());
 
-  it("lists the published surahs", async () => {
-    contentData.getPublishedSurahs.mockResolvedValue([surah()]);
+  it("lists every surah in the database", async () => {
+    contentData.getSurahList.mockResolvedValue([surah()]);
     expect(await loadSurahLinks("en")).toEqual([
-      { number: 4, name: "[surah 4 en]", verses: "4:34" },
+      { number: 4, name: "[surah 4 en]", nameAr: "النساء", verses: "4:34" },
     ]);
   });
 
   it("is empty, and logs, when the surahs can't be loaded", async () => {
     const log = vi.spyOn(console, "error").mockImplementation(() => {});
-    contentData.getPublishedSurahs.mockRejectedValue(new Error("offline"));
+    contentData.getSurahList.mockRejectedValue(new Error("offline"));
     expect(await loadSurahLinks("en")).toEqual([]);
     expect(log).toHaveBeenCalled();
     log.mockRestore();

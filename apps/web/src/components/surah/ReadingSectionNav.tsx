@@ -8,17 +8,23 @@ import { useReader } from "./SurahReader";
 
 export type SectionNavItem = Pick<
   SectionView,
-  "position" | "anchor" | "label" | "previewAr" | "published"
+  "position" | "kind" | "page" | "anchor" | "label" | "previewAr" | "published"
 >;
 
 /**
- * The surah page's sidebar: its reading sections, with the one in view highlighted. A list on
- * wide screens, a dropdown on phones.
+ * The surah page's sidebar: its reading sections and page blocks, with the one in view
+ * highlighted. A list on wide screens, a dropdown on phones. A reading section whose explanation
+ * isn't published is marked as in review; page blocks have no explanation yet and no mark.
  */
 export function ReadingSectionNav({ sections }: { sections: SectionNavItem[] }) {
   const t = useTranslations("surah");
   const { currentSection, setCurrentSection } = useReader();
   const selectId = useId();
+  const labelOf = (section: SectionNavItem) =>
+    section.kind === "page" && section.page
+      ? t("pageLabel", { page: section.page, range: section.label })
+      : section.label;
+  const inReview = (section: SectionNavItem) => section.kind === "section" && !section.published;
 
   function onSelect(event: ChangeEvent<HTMLSelectElement>) {
     const section = sections.find((s) => s.position === Number(event.target.value));
@@ -47,10 +53,10 @@ export function ReadingSectionNav({ sections }: { sections: SectionNavItem[] }) 
                   }`}
                 >
                   <span className="flex items-baseline justify-between gap-2">
-                    <span className="text-sm font-semibold">{section.label}</span>
-                    {section.published ? null : (
+                    <span className="text-sm font-semibold">{labelOf(section)}</span>
+                    {inReview(section) ? (
                       <span className="text-xs text-ink-muted">{t("inReview")}</span>
-                    )}
+                    ) : null}
                   </span>
                   <ArabicText as="span" size="sm" className="block">
                     {section.previewAr}
@@ -74,7 +80,7 @@ export function ReadingSectionNav({ sections }: { sections: SectionNavItem[] }) 
         >
           {sections.map((section) => (
             <option key={section.position} value={section.position}>
-              {section.published ? section.label : `${section.label} · ${t("inReview")}`}
+              {inReview(section) ? `${labelOf(section)} · ${t("inReview")}` : labelOf(section)}
             </option>
           ))}
         </select>
