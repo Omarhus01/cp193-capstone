@@ -177,8 +177,10 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
       .select("span_id")
       .eq("id", "s1-reading-1");
     expect(explanation.data).toEqual([{ span_id: "1:1-1:1" }]);
+    // 1:3–4 is used by nothing now, so it is deleted. 1:1–2 stays: a fixed question (s1-qa-1)
+    // is still about those verses.
     const oldSpans = await service.from("span").select("id").in("id", ["1:1-1:2", "1:3-1:4"]);
-    expect(oldSpans.data).toEqual([]);
+    expect(oldSpans.data).toEqual([{ id: "1:1-1:2" }]);
 
     // And back again.
     await seed(toSeedPayload(dbBundle()));
