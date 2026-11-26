@@ -1,0 +1,51 @@
+[
+  {
+    "id": 1,
+    "title": "مقدمة",
+    "parent": 0,
+    "page_id": 1,
+    "page_num": 101
+  },
+  {
+    "id": 2,
+    "title": "سورة تجريبية",
+    "parent": 0,
+    "page_id": 1,
+    "page_num": 101
+  },
+  {
+    "id": 3,
+    "title": "البقرة",
+    "parent": 0,
+    "page_id": 2,
+    "page_num": 102
+  },
+  {
+    "id": 4,
+    "title": "٣",
+    "parent": 3,
+    "page_id": 2,
+    "page_num": 102
+  },
+  {
+    "id": 5,
+    "title": "النساء",
+    "parent": 0,
+    "page_id": 4,
+    "page_num": 104
+  },
+  {
+    "id": 6,
+    "title": "٣",
+    "parent": 5,
+    "page_id": 4,
+    "page_num": 104
+  },
+  {
+    "id": 7,
+    "title": "٦",
+    "parent": 5,
+    "page_id": 6,
+    "page_num": 106
+  }
+]

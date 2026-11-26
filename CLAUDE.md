@@ -53,12 +53,13 @@ apps/web/                 Next.js site (npm workspace)
   src/i18n/               next-intl routing, navigation, request config, locale helpers
   src/lib/services/       business logic: auth/ (paths, validation, accounts, requireUserId), surah, terminology,
                           qa (fixed questions per section), review (review steps and tracks), content/ (content file schema, loading, validation,
-                          seed payload), reading/ (surah page view, reading preferences)
+                          seed payload), reading/ (surah page view, reading preferences), passages/ (finds a verse's pages
+                          in tafsir books; pure, the scripts read the files)
   src/lib/data/           all database access: auth, session, content (cached, published only), health; the only
                           importers of lib/supabase
   src/lib/supabase/       server, proxy and public (cookie-less, for published content) client factories
   scripts/                content tooling run with tsx: import-tanzil, import-tanzil-metadata, write-content-schema,
-                          seed-content
+                          seed-content, find-passages (test-export/ is a made-up export for its tests)
   src/lib/domain/         domain types shared by every layer
   src/lib/ai/             RetrievalProvider interface and its mock
   src/architecture.test.ts  checks the ESLint layer rules
@@ -91,6 +92,7 @@ npm run content:seed   # load content/ into Supabase (needs SUPABASE_SERVICE_ROL
 npm run content:schema # rewrite content/schema/ after changing the Zod schemas
 E2E_BASE_URL=https://<domain> npm run test:smoke   # read-only smoke run against a deployed site
 npm run content:import-tanzil-metadata -- <quran-data.xml>  # rewrite content/quran-metadata.json
+npm run content:find-passages -- <export folder> <surah:verse> [<quran-uthmani.xml>]  # copy the tafsir books' pages on a verse into <export folder>/found/ (never into the repo)
 ```
 
 `.github/workflows/keep-alive.yml` reads one public row from Supabase once a day so the free project doesn't pause (`docs/deploy.md`, section 9).

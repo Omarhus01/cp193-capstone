@@ -10,6 +10,6 @@ export default defineConfig({
     // next-intl imports "next/server" without an extension, which Node's ESM loader can't
     // resolve. Bundling it through Vite resolves the import (needed by src/proxy.test.ts).
     server: { deps: { inline: ["next-intl"] } },
-    include: ["src/**/*.test.ts"],
+    include: ["src/**/*.test.ts", "scripts/**/*.test.ts"],
   },
 });
