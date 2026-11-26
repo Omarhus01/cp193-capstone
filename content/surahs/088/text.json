@@ -1,0 +1,39 @@
+{
+  "$schema": "../../schema/text.schema.json",
+  "attribution": "# PLEASE DO NOT REMOVE OR CHANGE THIS COPYRIGHT BLOCK\n#====================================================================\n#\n#  Tanzil Quran Text (Uthmani, Version 1.1)\n#  Copyright (C) 2007-2026 Tanzil Project\n#  License: Creative Commons Attribution 3.0\n#\n#  This copy of the Quran text is carefully produced, highly \n#  verified and continuously monitored by a group of specialists \n#  at Tanzil Project.\n#\n#  TERMS OF USE:\n#\n#  - Permission is granted to copy and distribute verbatim copies \n#    of this text, but CHANGING IT IS NOT ALLOWED.\n#\n#  - This Quran text can be used in any website or application, \n#    provided that its source (Tanzil Project) is clearly indicated, \n#    and a link is made to tanzil.net to enable users to keep\n#    track of changes.\n#\n#  - This copyright notice shall be included in all verbatim copies \n#    of the text, and shall be reproduced appropriately in all files \n#    derived from or containing substantial portion of this text.\n#\n#  Please check updates at: http://tanzil.net/updates/\n#\n#====================================================================",
+  "surah": {
+    "number": 88,
+    "nameAr": "الغاشية",
+    "revelationPlace": "meccan",
+    "verseCount": 26,
+    "basmala": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+  },
+  "verses": [
+    { "ayah": 1, "text": "هَلْ أَتَىٰكَ حَدِيثُ ٱلْغَـٰشِيَةِ" },
+    { "ayah": 2, "text": "وُجُوهٌ يَوْمَئِذٍ خَـٰشِعَةٌ" },
+    { "ayah": 3, "text": "عَامِلَةٌ نَّاصِبَةٌ" },
+    { "ayah": 4, "text": "تَصْلَىٰ نَارًا حَامِيَةً" },
+    { "ayah": 5, "text": "تُسْقَىٰ مِنْ عَيْنٍ ءَانِيَةٍ" },
+    { "ayah": 6, "text": "لَّيْسَ لَهُمْ طَعَامٌ إِلَّا مِن ضَرِيعٍ" },
+    { "ayah": 7, "text": "لَّا يُسْمِنُ وَلَا يُغْنِى مِن جُوعٍ" },
+    { "ayah": 8, "text": "وُجُوهٌ يَوْمَئِذٍ نَّاعِمَةٌ" },
+    { "ayah": 9, "text": "لِّسَعْيِهَا رَاضِيَةٌ" },
+    { "ayah": 10, "text": "فِى جَنَّةٍ عَالِيَةٍ" },
+    { "ayah": 11, "text": "لَّا تَسْمَعُ فِيهَا لَـٰغِيَةً" },
+    { "ayah": 12, "text": "فِيهَا عَيْنٌ جَارِيَةٌ" },
+    { "ayah": 13, "text": "فِيهَا سُرُرٌ مَّرْفُوعَةٌ" },
+    { "ayah": 14, "text": "وَأَكْوَابٌ مَّوْضُوعَةٌ" },
+    { "ayah": 15, "text": "وَنَمَارِقُ مَصْفُوفَةٌ" },
+    { "ayah": 16, "text": "وَزَرَابِىُّ مَبْثُوثَةٌ" },
+    { "ayah": 17, "text": "أَفَلَا يَنظُرُونَ إِلَى ٱلْإِبِلِ كَيْفَ خُلِقَتْ" },
+    { "ayah": 18, "text": "وَإِلَى ٱلسَّمَآءِ كَيْفَ رُفِعَتْ" },
+    { "ayah": 19, "text": "وَإِلَى ٱلْجِبَالِ كَيْفَ نُصِبَتْ" },
+    { "ayah": 20, "text": "وَإِلَى ٱلْأَرْضِ كَيْفَ سُطِحَتْ" },
+    { "ayah": 21, "text": "فَذَكِّرْ إِنَّمَآ أَنتَ مُذَكِّرٌ" },
+    { "ayah": 22, "text": "لَّسْتَ عَلَيْهِم بِمُصَيْطِرٍ" },
+    { "ayah": 23, "text": "إِلَّا مَن تَوَلَّىٰ وَكَفَرَ" },
+    { "ayah": 24, "text": "فَيُعَذِّبُهُ ٱللَّهُ ٱلْعَذَابَ ٱلْأَكْبَرَ" },
+    { "ayah": 25, "text": "إِنَّ إِلَيْنَآ إِيَابَهُمْ" },
+    { "ayah": 26, "text": "ثُمَّ إِنَّ عَلَيْنَا حِسَابَهُم" }
+  ]
+}

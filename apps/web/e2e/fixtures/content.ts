@@ -4,6 +4,7 @@ import {
   explanation,
   question,
   testMetadata,
+  testPages,
   transliteration,
   wordMeaning,
 } from "../../src/lib/services/content/test-bundle";
@@ -183,6 +184,8 @@ export function fixtureBundle(): ContentBundle {
   partial.readingSections = ["fx-4-reading-1", "fx-4-reading-2"];
 
   return {
+    // Pages start at 1:1, 1:3, 2:1 (page 3), 2:3 (page 4), then at verse 1 of each surah.
+    pages: testPages(["1:3", "2:3"]),
     metadata: testMetadata([first, second, partial]),
     surahs: [first, second, partial],
     sources: [

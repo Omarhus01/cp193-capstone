@@ -23,8 +23,24 @@
         "required": ["number", "nameAr", "revelationPlace", "verseCount"],
         "additionalProperties": false
       }
+    },
+    "pages": {
+      "minItems": 604,
+      "maxItems": 604,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "page": { "type": "integer", "minimum": 1, "maximum": 604 },
+          "surah": { "type": "integer", "minimum": 1, "maximum": 114 },
+          "ayah": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }
+        },
+        "required": ["page", "surah", "ayah"],
+        "additionalProperties": false
+      },
+      "description": "Where each page of the Madani mushaf starts. The surah page groups verses with no explanation by these pages."
     }
   },
-  "required": ["attribution", "surahs"],
+  "required": ["attribution", "surahs", "pages"],
   "additionalProperties": false
 }

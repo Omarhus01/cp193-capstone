@@ -8,7 +8,8 @@
 // listed are dropped (and printed).
 // text.json gets the verses exactly as Tanzil has them; Tanzil's license forbids changing the text.
 // words.json gets each verse's words (pause marks are not words) and keeps roots already filled in
-// for words whose text didn't change. surah.json is created with empty names if it doesn't exist.
+// for words whose text didn't change. surah.json is created if it doesn't exist, with Tanzil's
+// transliterated name as the English name and no Korean name (the owner writes it).
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { CONTENT_DIR } from "@/lib/services/content/load";
@@ -16,7 +17,7 @@ import { textFileSchema, wordsFileSchema } from "@/lib/services/content/schema";
 import { parseVerseSelection } from "@/lib/services/content/verse-selection";
 import { splitWords } from "@/lib/services/content/words";
 import { writeJsonFile } from "./json-file";
-import { attributes } from "./tanzil";
+import { attributes, newSurahFile } from "./tanzil";
 
 const [textXmlPath, metadataXmlPath, ...surahArgs] = process.argv.slice(2);
 if (!textXmlPath || !metadataXmlPath || surahArgs.length === 0) {
@@ -121,10 +122,7 @@ for (const { surah: number, ayahs: selected } of selections) {
 
   const surahPath = path.join(dir, "surah.json");
   if (!existsSync(surahPath)) {
-    await writeJsonFile(surahPath, {
-      $schema: "../../schema/surah.schema.json",
-      names: { en: null, ko: null },
-    });
+    await writeJsonFile(surahPath, newSurahFile(meta.tname));
   }
   const which =
     imported.length === ayas.length

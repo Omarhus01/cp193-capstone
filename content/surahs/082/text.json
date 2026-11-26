@@ -1,0 +1,35 @@
+{
+  "$schema": "../../schema/text.schema.json",
+  "attribution": "# PLEASE DO NOT REMOVE OR CHANGE THIS COPYRIGHT BLOCK\n#====================================================================\n#\n#  Tanzil Quran Text (Uthmani, Version 1.1)\n#  Copyright (C) 2007-2026 Tanzil Project\n#  License: Creative Commons Attribution 3.0\n#\n#  This copy of the Quran text is carefully produced, highly \n#  verified and continuously monitored by a group of specialists \n#  at Tanzil Project.\n#\n#  TERMS OF USE:\n#\n#  - Permission is granted to copy and distribute verbatim copies \n#    of this text, but CHANGING IT IS NOT ALLOWED.\n#\n#  - This Quran text can be used in any website or application, \n#    provided that its source (Tanzil Project) is clearly indicated, \n#    and a link is made to tanzil.net to enable users to keep\n#    track of changes.\n#\n#  - This copyright notice shall be included in all verbatim copies \n#    of the text, and shall be reproduced appropriately in all files \n#    derived from or containing substantial portion of this text.\n#\n#  Please check updates at: http://tanzil.net/updates/\n#\n#====================================================================",
+  "surah": {
+    "number": 82,
+    "nameAr": "الإنفطار",
+    "revelationPlace": "meccan",
+    "verseCount": 19,
+    "basmala": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
+  },
+  "verses": [
+    { "ayah": 1, "text": "إِذَا ٱلسَّمَآءُ ٱنفَطَرَتْ" },
+    { "ayah": 2, "text": "وَإِذَا ٱلْكَوَاكِبُ ٱنتَثَرَتْ" },
+    { "ayah": 3, "text": "وَإِذَا ٱلْبِحَارُ فُجِّرَتْ" },
+    { "ayah": 4, "text": "وَإِذَا ٱلْقُبُورُ بُعْثِرَتْ" },
+    { "ayah": 5, "text": "عَلِمَتْ نَفْسٌ مَّا قَدَّمَتْ وَأَخَّرَتْ" },
+    { "ayah": 6, "text": "يَـٰٓأَيُّهَا ٱلْإِنسَـٰنُ مَا غَرَّكَ بِرَبِّكَ ٱلْكَرِيمِ" },
+    { "ayah": 7, "text": "ٱلَّذِى خَلَقَكَ فَسَوَّىٰكَ فَعَدَلَكَ" },
+    { "ayah": 8, "text": "فِىٓ أَىِّ صُورَةٍ مَّا شَآءَ رَكَّبَكَ" },
+    { "ayah": 9, "text": "كَلَّا بَلْ تُكَذِّبُونَ بِٱلدِّينِ" },
+    { "ayah": 10, "text": "وَإِنَّ عَلَيْكُمْ لَحَـٰفِظِينَ" },
+    { "ayah": 11, "text": "كِرَامًا كَـٰتِبِينَ" },
+    { "ayah": 12, "text": "يَعْلَمُونَ مَا تَفْعَلُونَ" },
+    { "ayah": 13, "text": "إِنَّ ٱلْأَبْرَارَ لَفِى نَعِيمٍ" },
+    { "ayah": 14, "text": "وَإِنَّ ٱلْفُجَّارَ لَفِى جَحِيمٍ" },
+    { "ayah": 15, "text": "يَصْلَوْنَهَا يَوْمَ ٱلدِّينِ" },
+    { "ayah": 16, "text": "وَمَا هُمْ عَنْهَا بِغَآئِبِينَ" },
+    { "ayah": 17, "text": "وَمَآ أَدْرَىٰكَ مَا يَوْمُ ٱلدِّينِ" },
+    { "ayah": 18, "text": "ثُمَّ مَآ أَدْرَىٰكَ مَا يَوْمُ ٱلدِّينِ" },
+    {
+      "ayah": 19,
+      "text": "يَوْمَ لَا تَمْلِكُ نَفْسٌ لِّنَفْسٍ شَيْـًٔا ۖ وَٱلْأَمْرُ يَوْمَئِذٍ لِّلَّهِ"
+    }
+  ]
+}

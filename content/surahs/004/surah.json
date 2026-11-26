@@ -1,6 +1,6 @@
 {
   "$schema": "../../schema/surah.schema.json",
-  "names": { "en": "An-Nisāʾ (The Women)", "ko": "알니사 (여자들)" },
+  "names": { "en": "An-Nisāʾ", "ko": "알니사" },
   "brief": {
     "items": [
       {

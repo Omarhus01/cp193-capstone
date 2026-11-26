@@ -15,6 +15,7 @@ import {
   wordsFileSchema,
   type ExplanationEntry,
   type QaEntry,
+  type PageStart,
   type SourceFile,
   type SurahMetadata,
   type SurahFile,
@@ -50,6 +51,8 @@ export type SourceFiles = SourceFile & { file: string };
 export type ContentBundle = {
   /** All 114 surahs from Tanzil's metadata (quran-metadata.json), imported or not. */
   metadata: SurahMetadata[];
+  /** The first verse of each page of the Madani mushaf, from the same file, in text order. */
+  pages: PageStart[];
   surahs: SurahFiles[];
   sources: SourceFiles[];
 };
@@ -186,5 +189,8 @@ export function loadContent(dir: string = CONTENT_DIR): {
     }
   }
 
-  return { bundle: { metadata: metadata?.surahs ?? [], surahs, sources }, errors };
+  return {
+    bundle: { metadata: metadata?.surahs ?? [], pages: metadata?.pages ?? [], surahs, sources },
+    errors,
+  };
 }

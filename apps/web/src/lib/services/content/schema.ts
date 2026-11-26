@@ -82,8 +82,8 @@ const attribution = text.meta({
 const revelationPlace = z.enum(["meccan", "medinan"]);
 
 /**
- * quran-metadata.json: every surah's name, revelation place and verse count, from Tanzil's
- * metadata. Verse references are checked against it. Generated; never edited by hand.
+ * quran-metadata.json: every surah's name, revelation place and verse count, and where each
+ * page of the mushaf starts, from Tanzil's metadata. Verse references are checked against it. Generated; never edited by hand.
  */
 export const quranMetadataFileSchema = z.strictObject({
   $schema,
@@ -100,6 +100,19 @@ export const quranMetadataFileSchema = z.strictObject({
       }),
     )
     .length(114),
+  pages: z
+    .array(
+      z.strictObject({
+        page: z.int().min(1).max(604),
+        surah: z.int().min(1).max(114),
+        ayah: z.int().min(1),
+      }),
+    )
+    .length(604)
+    .meta({
+      description:
+        "Where each page of the Madani mushaf starts. The surah page groups verses with no explanation by these pages.",
+    }),
 });
 
 /** text.json: the surah's Quran text, imported from Tanzil. Never edited by hand. */
@@ -283,6 +296,8 @@ export const sourceFileSchema = z.strictObject({
 
 export type QuranMetadataFile = z.infer<typeof quranMetadataFileSchema>;
 export type SurahMetadata = QuranMetadataFile["surahs"][number];
+/** Where a page of the Madani mushaf starts: its first verse. */
+export type PageStart = QuranMetadataFile["pages"][number];
 export type TextFile = z.infer<typeof textFileSchema>;
 export type WordsFile = z.infer<typeof wordsFileSchema>;
 export type SurahFile = z.infer<typeof surahFileSchema>;
