@@ -186,6 +186,52 @@ test.describe("a surah holding only some of its verses", () => {
   });
 });
 
+test.describe("verses with no explanation yet (ADR 0025)", () => {
+  test("show in blocks by mushaf page, each saying the explanation is coming soon", async ({
+    page,
+  }) => {
+    await openLoggedIn(page, "/en/surah/2");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("[Fixture surah 2]");
+    const first = section(page, "Page 3 · 2:1–2");
+    const second = section(page, "Page 4 · 2:3");
+    await expect(first.locator("[id^='verse-2-']")).toHaveCount(2);
+    await expect(second.locator("[id^='verse-2-']")).toHaveCount(1);
+    await expect(first.getByText(en.surah.comingSoonLine)).toBeVisible();
+    await expect(second.getByText(en.surah.comingSoonLine)).toBeVisible();
+    await expect(page.getByText(/^Reading section \d+ of/)).toHaveCount(0);
+
+    const nav = page.getByRole("navigation", { name: en.surah.readingSections });
+    await expect(nav.getByRole("link")).toHaveCount(2);
+    await expect(nav.getByText(en.surah.inReview)).toHaveCount(0);
+    await nav.getByRole("link", { name: /^Page 4 · 2:3/ }).click();
+    await expect(page).toHaveURL(/#section-2$/);
+  });
+
+  test("Korean pages name the blocks by page too", async ({ page }) => {
+    await openLoggedIn(page, "/ko/surah/2");
+    await expect(section(page, "3쪽 · 2:1–2").getByText(ko.surah.comingSoonLine)).toBeVisible();
+  });
+
+  test("a surah with no Korean name is titled by its number, with the English name", async ({
+    page,
+  }) => {
+    await openLoggedIn(page, "/ko/surah/2");
+    const title = page.getByRole("heading", { level: 1 });
+    await expect(title).toHaveText("수라 2[Fixture surah 2]");
+    await expect(title.locator("[lang='en']")).toHaveText("[Fixture surah 2]");
+    // The number isn't repeated as a chip under the title.
+    await expect(page.getByRole("listitem").filter({ hasText: /^수라 2$/ })).toHaveCount(0);
+  });
+
+  test("a surah with a Korean name keeps it as the title", async ({ page }) => {
+    await openLoggedIn(page, "/ko/surah/1");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "[픽스처 수라 1][Fixture surah 1]",
+    );
+    await expect(page.getByRole("listitem").filter({ hasText: /^수라 1$/ })).toHaveCount(1);
+  });
+});
+
 test.describe("the home page's list of surahs", () => {
   // Other spec files open the home page in parallel, maybe before the fixtures are seeded, and the
   // server keeps published content cached; it refreshes an entry in the background once it is a
@@ -198,33 +244,40 @@ test.describe("the home page's list of surahs", () => {
     const list = page.getByRole("region", { name: messages.home.surahsTitle });
     await expect(async () => {
       await page.goto(`/${locale}`);
-      await expect(list.getByRole("link").first()).toHaveText(
-        locale === "en" ? "[Fixture surah 1]" : "[픽스처 수라 1]",
+      await expect(list.getByRole("link")).toHaveCount(3, { timeout: 1_000 });
+      await expect(list.getByRole("link").first()).toContainText(
+        locale === "en" ? "1. [Fixture surah 1]" : "1. [픽스처 수라 1]",
         { timeout: 1_000 },
       );
     }).toPass({ timeout: 120_000, intervals: [2_000, 5_000] });
     return list;
   }
 
-  test("lists every published surah, with the verses a partial one holds", async ({ page }) => {
+  test("lists every surah in the database, with the verses a partial one holds", async ({
+    page,
+  }) => {
     const links = (await fixtureSurahList(page, "en")).getByRole("link");
-    await expect(links).toHaveCount(2);
-    await expect(links.nth(0)).toHaveText("[Fixture surah 1]");
+    await expect(links).toHaveCount(3);
+    await expect(links.nth(0)).toContainText("1. [Fixture surah 1]");
     await expect(links.nth(0)).toHaveAttribute("href", "/en/surah/1");
-    await expect(links.nth(1)).toHaveText("[Fixture surah 4] 4:34–35");
-    await expect(links.nth(1)).toHaveAttribute("href", "/en/surah/4");
+    // Surah 2 has no reading sections: it is listed all the same.
+    await expect(links.nth(1)).toContainText("2. [Fixture surah 2]");
+    await expect(links.nth(2)).toContainText("4. [Fixture surah 4] 4:34–35");
+    await expect(links.nth(2)).toHaveAttribute("href", "/en/surah/4");
+    await expect(links.nth(2).locator("[lang='ar']")).toHaveText("اختبار");
   });
 
-  test("names the surahs in Korean on Korean pages", async ({ page }) => {
+  test("names the surahs in Korean on Korean pages, else in English", async ({ page }) => {
     const links = (await fixtureSurahList(page, "ko")).getByRole("link");
-    await expect(links.nth(1)).toHaveText("[픽스처 수라 4] 4:34–35");
-    await expect(links.nth(1)).toHaveAttribute("href", "/ko/surah/4");
+    await expect(links.nth(1)).toContainText("2. [Fixture surah 2]");
+    await expect(links.nth(2)).toContainText("4. [픽스처 수라 4] 4:34–35");
+    await expect(links.nth(2)).toHaveAttribute("href", "/ko/surah/4");
   });
 
   test("a surah in the list opens its page", async ({ page }) => {
     await openLoggedIn(page, "/en");
     const list = await fixtureSurahList(page, "en");
-    await list.getByRole("link", { name: /^\[Fixture surah 4\]/ }).click();
+    await list.getByRole("link", { name: /^4\. \[Fixture surah 4\]/ }).click();
     await expect(page).toHaveURL("/en/surah/4");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("[Fixture surah 4]");
   });

@@ -88,12 +88,16 @@ export const FIXTURE_PASSAGE_URL = "https://example.com/fixture-book/1/10";
  * Fixed questions: two about 1:1–2 (the first citing the linked passage, the second quoting through
  * the other), one about 1:4–5, and a draft about 1:3 (hidden).
  *
+ * Surah 2 (3 verses) has no reading sections and no Korean name: its verses show in page blocks,
+ * 2:1–2 on page 3 and 2:3 on page 4 (ADR 0025).
+ *
  * Surah 4 holds only verses 34 and 35 of its 176 (ADR 0022), in two reading sections: 4:34,
  * published with one meaning point, and 4:35, a draft.
  */
 export function fixtureBundle(): ContentBundle {
   const first = surahFiles(1, 5);
   const second = surahFiles(2, 3);
+  second.surah = { names: { en: "[Fixture surah 2]", ko: null } };
 
   const full = explanation("fx-reading-1", "reading_section", "1:1", "1:2");
   full.parts = {
