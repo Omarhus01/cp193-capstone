@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 import en from "../messages/en.json";
 import ko from "../messages/ko.json";
 import { FIXTURE_NARRATOR, FIXTURE_PASSAGE_URL, fixtureBundle } from "./fixtures/content";
@@ -49,6 +49,14 @@ async function openLoggedIn(page: Page, path: string) {
 }
 
 const section = (page: Page, label: string) => page.getByRole("region", { name: label });
+
+/** Checks that an element lies within the window's width, so nothing is cut off at the side. */
+async function expectInsideWindow(page: Page, element: Locator) {
+  const box = (await element.boundingBox())!;
+  const width = page.viewportSize()!.width;
+  expect(box.x).toBeGreaterThanOrEqual(0);
+  expect(box.x + box.width).toBeLessThanOrEqual(width);
+}
 
 /** The word 1:1:1, which has a meaning (the first underlined "ابت" on the page). */
 const firstWord = (page: Page) => page.getByRole("button", { name: "ابت" }).first();
@@ -280,6 +288,147 @@ test.describe("the home page's list of surahs", () => {
     await list.getByRole("link", { name: /^4\. \[Fixture surah 4\]/ }).click();
     await expect(page).toHaveURL("/en/surah/4");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("[Fixture surah 4]");
+  });
+});
+
+/** The links to the surahs before and after, in the header or at the end of the page. */
+const pager = (page: Page, where: "header" | "end" = "header") =>
+  page.getByRole("navigation", {
+    name: where === "header" ? en.surah.pager.label : en.surah.pager.labelEnd,
+    exact: true,
+  });
+
+/**
+ * Opens a fixture surah once the server's cached list of surahs holds the fixtures (1, 2 and 4):
+ * the list may still be the one from before they were seeded (see the home page's list above).
+ */
+async function openWithFixtureList(page: Page, path: string) {
+  await openLoggedIn(page, path);
+  await expect(async () => {
+    await page.goto(path.replace(/\/surah\/\d+$/, "/surah/2"));
+    await expect(
+      pager(page).getByRole("link", { name: new RegExp(`^${en.surah.pager.next}`) }),
+    ).toHaveAttribute("href", "/en/surah/4", { timeout: 1_000 });
+  }).toPass({ timeout: 120_000, intervals: [2_000, 5_000] });
+  await page.goto(path);
+}
+
+test.describe("moving between surahs (issue 6)", () => {
+  test.describe.configure({ timeout: 150_000 });
+
+  test("the previous and next links follow the surahs on the site, skipping missing ones", async ({
+    page,
+  }) => {
+    await openWithFixtureList(page, "/en/surah/2");
+    for (const where of ["header", "end"] as const) {
+      const links = pager(page, where).getByRole("link");
+      await expect(links).toHaveCount(2);
+      await expect(links.nth(0)).toHaveText(`${en.surah.pager.previous}1. [Fixture surah 1]اختبار`);
+      await expect(links.nth(0)).toHaveAttribute("href", "/en/surah/1");
+      // Surah 3 isn't in the fixtures, so the next surah is 4.
+      await expect(links.nth(1)).toHaveText(`${en.surah.pager.next}4. [Fixture surah 4]اختبار`);
+      await expect(links.nth(1)).toHaveAttribute("href", "/en/surah/4");
+    }
+
+    // The first surah has no previous one, and the last on the site no next one.
+    await page.goto("/en/surah/1");
+    await expect(pager(page).getByRole("link")).toHaveCount(1);
+    await pager(page)
+      .getByRole("link", { name: new RegExp(`^${en.surah.pager.next}`) })
+      .click();
+    await expect(page).toHaveURL("/en/surah/2");
+    await page.goto("/en/surah/4");
+    await expect(pager(page).getByRole("link")).toHaveCount(1);
+    await expect(pager(page).getByRole("link")).toHaveAttribute("href", "/en/surah/2");
+  });
+
+  test("the header's switcher finds a surah by number or name and opens it", async ({ page }) => {
+    await openWithFixtureList(page, "/en/surah/1");
+    const button = page.getByRole("button", { name: en.surah.switcher.open });
+    await expect(button).toHaveAttribute("aria-expanded", "false");
+    await button.click();
+    await expect(button).toHaveAttribute("aria-expanded", "true");
+
+    const search = page.getByRole("searchbox", { name: en.surah.switcher.searchLabel });
+    await expect(search).toBeFocused();
+    const panel = page.locator(`#${await button.getAttribute("aria-controls")}`);
+    const results = panel.getByRole("link");
+    await expect(results).toHaveCount(3);
+    await expect(panel.getByText("3 surahs")).toBeVisible();
+    // The page's own surah is marked.
+    await expect(results.nth(0)).toHaveAttribute("aria-current", "page");
+    await expect(results.nth(0)).toHaveText("1. [Fixture surah 1]اختبار");
+
+    await search.fill("4");
+    await expect(results).toHaveCount(1);
+    await expect(panel.getByText("1 surah", { exact: true })).toBeVisible();
+    await search.fill("fixture SURAH 2");
+    await expect(results).toHaveText(["2. [Fixture surah 2]اختبار"]);
+    // The Arabic name, typed with a vowel mark the stored name doesn't have.
+    await search.fill("اِختبار");
+    await expect(results).toHaveCount(3);
+    await search.fill("zzz");
+    await expect(results).toHaveCount(0);
+    await expect(panel.getByText("No surah matches")).toBeVisible();
+
+    await search.fill("4");
+    await results.first().click();
+    await expect(page).toHaveURL("/en/surah/4");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("[Fixture surah 4]");
+    await expect(page.getByRole("searchbox", { name: en.surah.switcher.searchLabel })).toHaveCount(
+      0,
+    );
+  });
+
+  test("the switcher finds a surah by its Korean name on Korean pages", async ({ page }) => {
+    await openWithFixtureList(page, "/en/surah/1");
+    await page.goto("/ko/surah/1");
+    await page.getByRole("button", { name: ko.surah.switcher.open }).click();
+    await page
+      .getByRole("searchbox", { name: ko.surah.switcher.searchLabel })
+      .fill("픽스처 수라 4");
+    const result = page.getByRole("link", { name: /^4\. \[픽스처 수라 4\]/ });
+    await expect(result).toBeVisible();
+    await result.click();
+    await expect(page).toHaveURL("/ko/surah/4");
+  });
+
+  test("the switcher works from the keyboard alone", async ({ page }) => {
+    await openWithFixtureList(page, "/en/surah/1");
+    const button = page.getByRole("button", { name: en.surah.switcher.open });
+
+    // Escape closes it and puts focus back on the button.
+    await button.focus();
+    await page.keyboard.press("Enter");
+    await expect(
+      page.getByRole("searchbox", { name: en.surah.switcher.searchLabel }),
+    ).toBeFocused();
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("searchbox", { name: en.surah.switcher.searchLabel })).toHaveCount(
+      0,
+    );
+    await expect(button).toBeFocused();
+
+    // Type, go down to the results, and open one.
+    await page.keyboard.press("Enter");
+    await page.keyboard.type("2");
+    await page.keyboard.press("ArrowDown");
+    await expect(page.getByRole("link", { name: /^2\. \[Fixture surah 2\]/ })).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveURL("/en/surah/2");
+  });
+
+  test("a press outside closes the switcher", async ({ page }) => {
+    await openWithFixtureList(page, "/en/surah/1");
+    await page.getByRole("button", { name: en.surah.switcher.open }).click();
+    await expect(
+      page.getByRole("searchbox", { name: en.surah.switcher.searchLabel }),
+    ).toBeVisible();
+    // The panel covers the title, so press on a section further down.
+    await section(page, "1:4–5").getByRole("heading", { name: "1:4–5" }).click();
+    await expect(page.getByRole("searchbox", { name: en.surah.switcher.searchLabel })).toHaveCount(
+      0,
+    );
   });
 });
 
@@ -533,6 +682,48 @@ test.describe("on a phone", () => {
     await expect(popover.getByText("[meaning of 1:1:1 ko]")).toBeVisible();
     await popover.getByRole("button", { name: ko.surah.word.close }).tap();
     await expect(popover).toBeHidden();
+  });
+
+  test("the surah switcher and the previous and next links fit a narrow screen", async ({
+    page,
+  }) => {
+    test.setTimeout(150_000);
+    await openWithFixtureList(page, "/en/surah/2");
+    for (const width of [390, 320]) {
+      await page.setViewportSize({ width, height: 800 });
+      await expectInsideWindow(page, pager(page));
+      await page.getByRole("button", { name: en.surah.switcher.open }).tap();
+      const search = page.getByRole("searchbox", { name: en.surah.switcher.searchLabel });
+      await expect(search).toBeVisible();
+      await expectInsideWindow(page, search.locator(".."));
+      await page.getByRole("button", { name: en.surah.switcher.open }).tap();
+      await expect(search).toHaveCount(0);
+    }
+  });
+
+  // Testers saw the word box run past the screen's edge (issue 66). It did with the phone's text
+  // set large: the word beside the close button couldn't shrink. The page's text is doubled here.
+  test("the word box stays inside a narrow screen, even with large text", async ({ page }) => {
+    await openLoggedIn(page, "/en/surah/1");
+    await page.setViewportSize({ width: 320, height: 800 });
+    await page.evaluate(() => {
+      document.documentElement.style.fontSize = "200%";
+    });
+    // Opened from the keyboard: at this size a tap's target point, the middle of the word's tall
+    // line, falls on the section around it. Tapping is tested above.
+    await firstWord(page).focus();
+    await page.keyboard.press("Enter");
+    const popover = page.getByRole("dialog");
+    await expect(popover).toBeVisible();
+    await expectInsideWindow(page, popover);
+    const box = (await popover.boundingBox())!;
+    const close = (await popover.getByRole("button", { name: en.surah.word.close }).boundingBox())!;
+    expect(close.x + close.width).toBeLessThanOrEqual(box.x + box.width);
+    // The row above the verses (label, Listen button, section count) wraps too.
+    await expectInsideWindow(
+      page,
+      section(page, "1:1–2").getByRole("button", { name: new RegExp(`^${en.surah.listen}`) }),
+    );
   });
 
   test("the feedback button comes at the end of the page", async ({ page }) => {
