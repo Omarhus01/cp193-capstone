@@ -14,7 +14,7 @@
 -- seed_content (20261126120000_verse_mushaf_page.sql) stays, so the seed script on main keeps
 -- working until this change is merged. A later migration drops it (#70).
 
-create function public.seed_surah_text(payload jsonb)
+create or replace function public.seed_surah_text(payload jsonb)
 returns jsonb
 language plpgsql
 security invoker
@@ -80,7 +80,7 @@ begin
 end;
 $$;
 
-create function public.seed_shared_content(payload jsonb)
+create or replace function public.seed_shared_content(payload jsonb)
 returns jsonb
 language plpgsql
 security invoker
@@ -123,7 +123,7 @@ $$;
 
 -- Deletes the spans nothing points to. A span exists only for the rows that use it, so these are
 -- the verse ranges that left the content.
-create function public.seed_delete_unused_spans()
+create or replace function public.seed_delete_unused_spans()
 returns void
 language sql
 security invoker
@@ -136,7 +136,7 @@ as $$
     and not exists (select 1 from public.qa_question q where q.span_id = s.id);
 $$;
 
-create function public.seed_surah_content(payload jsonb)
+create or replace function public.seed_surah_content(payload jsonb)
 returns jsonb
 language plpgsql
 security invoker
@@ -372,7 +372,7 @@ begin
 end;
 $$;
 
-create function public.seed_content_finish(payload jsonb)
+create or replace function public.seed_content_finish(payload jsonb)
 returns jsonb
 language plpgsql
 security invoker
@@ -400,12 +400,17 @@ begin
     surah_numbers := array(select jsonb_array_elements_text(payload -> 'surahs')::smallint);
   end if;
 
-  -- 1. On a full seed, the explanations and questions of surahs that left the content.
+  -- 1. On a full seed, the content of surahs that left the content, with its citations and
+  -- reviews (on delete cascade), so that step 2 sees which passages are still cited.
   if surah_numbers is not null then
     delete from public.explanation e using public.span s
     where s.id = e.span_id and s.start_surah <> all(surah_numbers);
     delete from public.qa_question q using public.span s
     where s.id = q.span_id and s.start_surah <> all(surah_numbers);
+    delete from public.reading_section where surah <> all(surah_numbers);
+    delete from public.word_meaning where surah <> all(surah_numbers);
+    delete from public.verse_transliteration where surah <> all(surah_numbers);
+    delete from public.surah_brief where surah <> all(surah_numbers);
   end if;
 
   -- 2. Verse ranges, passages and sources that nothing uses any more and that left the content.
@@ -421,8 +426,8 @@ begin
   where s.id <> all(source_ids)
     and not exists (select 1 from public.passage p where p.source_id = s.id);
 
-  -- 3. On a full seed, the surahs that left the content, with their verses, words, meanings,
-  -- transliterations, briefs and reading sections (on delete cascade).
+  -- 3. On a full seed, the surahs that left the content, with their verses and words (on delete
+  -- cascade).
   if surah_numbers is not null then
     delete from public.surah where number <> all(surah_numbers);
   end if;

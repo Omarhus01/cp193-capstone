@@ -43,13 +43,14 @@ function requests(plan: SeedPlan): Request[] {
   ];
 }
 
-/** "286 verses, 6116 words" from the counts a seed function returns. */
+/** "286 verses, 6116 words" from the counts a seed function returns, in name order. */
 function describe(data: unknown): string {
   if (!data || typeof data !== "object") {
     return "";
   }
   return Object.entries(data)
     .filter(([key, value]) => key !== "surah" && typeof value === "number")
+    .sort(([a], [b]) => a.localeCompare(b))
     .map(([key, value]) => `${value} ${key.replaceAll("_", " ")}`)
     .join(", ");
 }
