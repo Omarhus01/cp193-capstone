@@ -67,13 +67,17 @@ async function SurahContent({ params }: Pick<SurahPageProps, "params">) {
       <PageLayout
         sidebar={
           <ReadingSectionNav
-            sections={sections.map(({ position, anchor, label, previewAr, published }) => ({
-              position,
-              anchor,
-              label,
-              previewAr,
-              published,
-            }))}
+            sections={sections.map(
+              ({ position, kind, page, anchor, label, previewAr, published }) => ({
+                position,
+                kind,
+                page,
+                anchor,
+                label,
+                previewAr,
+                published,
+              }),
+            )}
           />
         }
         aside={

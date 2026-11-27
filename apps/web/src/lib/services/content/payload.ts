@@ -1,6 +1,7 @@
 import type { Span } from "@/lib/domain/content";
 import type { ReviewEntry } from "@/lib/services/review";
 import type { ContentBundle } from "./load";
+import { pageLookup } from "./pages";
 import { readCitation, type CitationEntry, type ItemEntry } from "./schema";
 import { parseRef, parseSpan, spanId, type SpanRefs } from "./spans";
 
@@ -151,6 +152,7 @@ export function toSeedPayload(bundle: ContentBundle): SeedPayload {
     }
   }
 
+  const pageOf = pageLookup(bundle.pages);
   for (const surah of bundle.surahs) {
     const { number, text, words } = surah;
     payload.surahs.push({
@@ -163,7 +165,12 @@ export function toSeedPayload(bundle: ContentBundle): SeedPayload {
       basmala_ar: text.surah.basmala,
     });
     for (const verse of text.verses) {
-      payload.verses.push({ surah: number, ayah: verse.ayah, text_ar: verse.text });
+      payload.verses.push({
+        surah: number,
+        ayah: verse.ayah,
+        text_ar: verse.text,
+        page: pageOf({ surah: number, ayah: verse.ayah }),
+      });
     }
     for (const verse of words.verses) {
       for (const word of verse.words) {

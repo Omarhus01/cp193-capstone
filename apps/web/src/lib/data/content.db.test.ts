@@ -14,8 +14,8 @@ import {
 } from "@/lib/services/content/test-bundle";
 import {
   getPassages,
-  getPublishedSurahs,
   getSurahContent,
+  getSurahList,
   getSurahQuestions,
   getVerseTexts,
 } from "./content";
@@ -177,8 +177,10 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
       .select("span_id")
       .eq("id", "s1-reading-1");
     expect(explanation.data).toEqual([{ span_id: "1:1-1:1" }]);
+    // 1:3–4 is used by nothing now, so it is deleted. 1:1–2 stays: a fixed question (s1-qa-1)
+    // is still about those verses.
     const oldSpans = await service.from("span").select("id").in("id", ["1:1-1:2", "1:3-1:4"]);
-    expect(oldSpans.data).toEqual([]);
+    expect(oldSpans.data).toEqual([{ id: "1:1-1:2" }]);
 
     // And back again.
     await seed(toSeedPayload(dbBundle()));
@@ -212,6 +214,8 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
       expect(content?.surah.verseCount).toBe(4);
       expect(content?.verses).toHaveLength(4);
       expect(content?.verses[0].words.map((w) => w.position)).toEqual([1, 2, 3, 4]);
+      // testPages: page 2 of the test metadata starts at 1:3.
+      expect(content?.verses.map((v) => v.page)).toEqual([1, 1, 2, 2]);
       expect(content?.brief).toEqual([
         {
           text: { en: "brief paragraph 1 (en)", ko: "brief paragraph 1 (ko)" },
@@ -422,28 +426,57 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
     expect(data).toEqual([{ url: "https://example.com/book/1/10" }]);
   });
 
-  it("lists the surahs with a published reading section, with the verses each holds", async () => {
+  it("lists every surah in the database, explained or not, with the verses each holds", async () => {
     const listed = async () =>
-      (await getPublishedSurahs()).map(({ number, ayahs }) => ({ number, ayahs }));
+      (await getSurahList()).map(({ number, ayahs }) => ({ number, ayahs }));
     try {
-      // Surah 4 holds verses 34, 35 and 40, first with draft sections only; surah 2 has none.
+      // Surah 2 has no reading sections; surah 4 holds verses 34, 35 and 40, with draft sections.
       const drafts = withPartialSurah();
       drafts.surahs[2].explanations = [
         explanation("s4-reading-1", "reading_section", "4:34", "4:35", "draft"),
         explanation("s4-reading-2", "reading_section", "4:40", "4:40", "draft"),
       ];
       await seed(toSeedPayload(drafts));
-      expect(await listed()).toEqual([{ number: 1, ayahs: [1, 2, 3, 4] }]);
-
-      await seed(toSeedPayload(withPartialSurah()));
       expect(await listed()).toEqual([
         { number: 1, ayahs: [1, 2, 3, 4] },
+        { number: 2, ayahs: [1, 2, 3] },
         { number: 4, ayahs: [34, 35, 40] },
       ]);
     } finally {
       await seed(toSeedPayload(dbBundle()));
     }
   });
+
+  it("loads the whole Quran: every surah, and every verse and word of the longest", async () => {
+    // The real content: 114 surahs and 6,236 verses. PostgREST caps a response at 1,000 rows
+    // (max_rows); that cap is on the top-level rows, so a surah's words come back whole.
+    const { bundle } = loadContent();
+    const timed = async () => {
+      const started = performance.now();
+      await seed(toSeedPayload(bundle));
+      return Math.round(performance.now() - started);
+    };
+    try {
+      const first = await timed();
+      const again = await timed();
+      console.log(
+        `Seeding the whole Quran: ${first} ms, then ${again} ms with nothing changed; ` +
+          `payload ${(JSON.stringify(toSeedPayload(bundle)).length / 1e6).toFixed(1)} MB`,
+      );
+      const surahs = await getSurahList();
+      expect(surahs).toHaveLength(114);
+      expect(surahs.reduce((total, surah) => total + surah.ayahs.length, 0)).toBe(6236);
+
+      const baqara = await getSurahContent(2);
+      const words = bundle.surahs[1].words.verses.reduce((n, v) => n + v.words.length, 0);
+      expect(baqara?.verses).toHaveLength(286);
+      expect(baqara?.verses.reduce((n, v) => n + v.words.length, 0)).toBe(words);
+      expect(baqara?.verses[0].page).toBe(2);
+      expect(baqara?.verses[285].page).toBe(49);
+    } finally {
+      await seed(toSeedPayload(dbBundle()));
+    }
+  }, 120_000);
 
   it("has no tester preview left (dropped in 20261029120000)", async () => {
     expect((await anon.rpc("is_tester")).error).not.toBeNull();

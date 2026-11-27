@@ -2,7 +2,7 @@ import { cacheLife, cacheTag } from "next/cache";
 import type {
   FixedQuestion,
   Passage,
-  PublishedSurah,
+  SurahListItem,
   SurahContent,
   VerseRef,
   VerseText,
@@ -13,7 +13,7 @@ import {
   toExplanation,
   toFixedQuestion,
   toPassage,
-  toPublishedSurah,
+  toSurahListItem,
   toSpan,
   toSurah,
   toVerse,
@@ -21,7 +21,7 @@ import {
   type BriefItemRow,
   type ExplanationRow,
   type PassageRow,
-  type PublishedSurahRow,
+  type SurahListRow,
   type QaQuestionRow,
   type SpanRow,
   type SurahRow,
@@ -38,7 +38,7 @@ import {
 // while testing (ADR 0014).
 
 const SPAN = "id, start_surah, start_ayah, start_word, end_surah, end_ayah, end_word";
-const VERSE = `surah, ayah, text_ar, word(position, text_ar, root),
+const VERSE = `surah, ayah, text_ar, page, word(position, text_ar, root),
   verse_transliteration(language, text, status)`;
 const CITATION = "sort_order, passage_id, quoting";
 const EXPLANATION = `id, kind, span!inner(${SPAN}),
@@ -148,34 +148,17 @@ export async function getSurahContent(surah: number): Promise<SurahContent | nul
 }
 
 /**
- * The surahs that have at least one published reading section explanation, in surah order, with
- * the verses each holds. Used to list the surahs readers can open.
+ * Every surah in the database, in surah order, with the verses each holds. Used to list the
+ * surahs readers can open: all 114 once the whole Quran is seeded, explained or not (ADR 0025).
  */
-export async function getPublishedSurahs(): Promise<PublishedSurah[]> {
+export async function getSurahList(): Promise<SurahListItem[]> {
   "use cache";
   cachePublishedContent();
-  const db = createPublicClient();
-  const sections = await db
-    .from("explanation")
-    .select("span!inner(start_surah)")
-    .eq("kind", "reading_section")
-    .eq("status", "published");
-  const numbers = [
-    ...new Set(
-      rows<{ span: { start_surah: number } }[]>(sections, "published reading sections").map(
-        (row) => row.span.start_surah,
-      ),
-    ),
-  ];
-  if (numbers.length === 0) {
-    return [];
-  }
-  const surahs = await db
+  const surahs = await createPublicClient()
     .from("surah")
     .select("number, name_ar, name_en, name_ko, verse_count, verse(ayah)")
-    .in("number", numbers)
     .order("number");
-  return rows<PublishedSurahRow[]>(surahs, "published surahs").map(toPublishedSurah);
+  return rows<SurahListRow[]>(surahs, "the surahs").map(toSurahListItem);
 }
 
 /** The surah's published fixed questions, in the order of its qa.json (ADR 0018). */

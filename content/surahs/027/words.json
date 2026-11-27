@@ -1,0 +1,1622 @@
+{
+  "$schema": "../../schema/words.schema.json",
+  "attribution": "# PLEASE DO NOT REMOVE OR CHANGE THIS COPYRIGHT BLOCK\n#====================================================================\n#\n#  Tanzil Quran Text (Uthmani, Version 1.1)\n#  Copyright (C) 2007-2026 Tanzil Project\n#  License: Creative Commons Attribution 3.0\n#\n#  This copy of the Quran text is carefully produced, highly \n#  verified and continuously monitored by a group of specialists \n#  at Tanzil Project.\n#\n#  TERMS OF USE:\n#\n#  - Permission is granted to copy and distribute verbatim copies \n#    of this text, but CHANGING IT IS NOT ALLOWED.\n#\n#  - This Quran text can be used in any website or application, \n#    provided that its source (Tanzil Project) is clearly indicated, \n#    and a link is made to tanzil.net to enable users to keep\n#    track of changes.\n#\n#  - This copyright notice shall be included in all verbatim copies \n#    of the text, and shall be reproduced appropriately in all files \n#    derived from or containing substantial portion of this text.\n#\n#  Please check updates at: http://tanzil.net/updates/\n#\n#====================================================================",
+  "verses": [
+    {
+      "ayah": 1,
+      "words": [
+        { "position": 1, "text": "طسٓ", "root": null },
+        { "position": 2, "text": "تِلْكَ", "root": null },
+        { "position": 3, "text": "ءَايَـٰتُ", "root": null },
+        { "position": 4, "text": "ٱلْقُرْءَانِ", "root": null },
+        { "position": 5, "text": "وَكِتَابٍ", "root": null },
+        { "position": 6, "text": "مُّبِينٍ", "root": null }
+      ]
+    },
+    {
+      "ayah": 2,
+      "words": [
+        { "position": 1, "text": "هُدًى", "root": null },
+        { "position": 2, "text": "وَبُشْرَىٰ", "root": null },
+        { "position": 3, "text": "لِلْمُؤْمِنِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 3,
+      "words": [
+        { "position": 1, "text": "ٱلَّذِينَ", "root": null },
+        { "position": 2, "text": "يُقِيمُونَ", "root": null },
+        { "position": 3, "text": "ٱلصَّلَوٰةَ", "root": null },
+        { "position": 4, "text": "وَيُؤْتُونَ", "root": null },
+        { "position": 5, "text": "ٱلزَّكَوٰةَ", "root": null },
+        { "position": 6, "text": "وَهُم", "root": null },
+        { "position": 7, "text": "بِٱلْـَٔاخِرَةِ", "root": null },
+        { "position": 8, "text": "هُمْ", "root": null },
+        { "position": 9, "text": "يُوقِنُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 4,
+      "words": [
+        { "position": 1, "text": "إِنَّ", "root": null },
+        { "position": 2, "text": "ٱلَّذِينَ", "root": null },
+        { "position": 3, "text": "لَا", "root": null },
+        { "position": 4, "text": "يُؤْمِنُونَ", "root": null },
+        { "position": 5, "text": "بِٱلْـَٔاخِرَةِ", "root": null },
+        { "position": 6, "text": "زَيَّنَّا", "root": null },
+        { "position": 7, "text": "لَهُمْ", "root": null },
+        { "position": 8, "text": "أَعْمَـٰلَهُمْ", "root": null },
+        { "position": 9, "text": "فَهُمْ", "root": null },
+        { "position": 10, "text": "يَعْمَهُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 5,
+      "words": [
+        { "position": 1, "text": "أُو۟لَـٰٓئِكَ", "root": null },
+        { "position": 2, "text": "ٱلَّذِينَ", "root": null },
+        { "position": 3, "text": "لَهُمْ", "root": null },
+        { "position": 4, "text": "سُوٓءُ", "root": null },
+        { "position": 5, "text": "ٱلْعَذَابِ", "root": null },
+        { "position": 6, "text": "وَهُمْ", "root": null },
+        { "position": 7, "text": "فِى", "root": null },
+        { "position": 8, "text": "ٱلْـَٔاخِرَةِ", "root": null },
+        { "position": 9, "text": "هُمُ", "root": null },
+        { "position": 10, "text": "ٱلْأَخْسَرُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 6,
+      "words": [
+        { "position": 1, "text": "وَإِنَّكَ", "root": null },
+        { "position": 2, "text": "لَتُلَقَّى", "root": null },
+        { "position": 3, "text": "ٱلْقُرْءَانَ", "root": null },
+        { "position": 4, "text": "مِن", "root": null },
+        { "position": 5, "text": "لَّدُنْ", "root": null },
+        { "position": 6, "text": "حَكِيمٍ", "root": null },
+        { "position": 7, "text": "عَلِيمٍ", "root": null }
+      ]
+    },
+    {
+      "ayah": 7,
+      "words": [
+        { "position": 1, "text": "إِذْ", "root": null },
+        { "position": 2, "text": "قَالَ", "root": null },
+        { "position": 3, "text": "مُوسَىٰ", "root": null },
+        { "position": 4, "text": "لِأَهْلِهِۦٓ", "root": null },
+        { "position": 5, "text": "إِنِّىٓ", "root": null },
+        { "position": 6, "text": "ءَانَسْتُ", "root": null },
+        { "position": 7, "text": "نَارًا", "root": null },
+        { "position": 8, "text": "سَـَٔاتِيكُم", "root": null },
+        { "position": 9, "text": "مِّنْهَا", "root": null },
+        { "position": 10, "text": "بِخَبَرٍ", "root": null },
+        { "position": 11, "text": "أَوْ", "root": null },
+        { "position": 12, "text": "ءَاتِيكُم", "root": null },
+        { "position": 13, "text": "بِشِهَابٍ", "root": null },
+        { "position": 14, "text": "قَبَسٍ", "root": null },
+        { "position": 15, "text": "لَّعَلَّكُمْ", "root": null },
+        { "position": 16, "text": "تَصْطَلُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 8,
+      "words": [
+        { "position": 1, "text": "فَلَمَّا", "root": null },
+        { "position": 2, "text": "جَآءَهَا", "root": null },
+        { "position": 3, "text": "نُودِىَ", "root": null },
+        { "position": 4, "text": "أَنۢ", "root": null },
+        { "position": 5, "text": "بُورِكَ", "root": null },
+        { "position": 6, "text": "مَن", "root": null },
+        { "position": 7, "text": "فِى", "root": null },
+        { "position": 8, "text": "ٱلنَّارِ", "root": null },
+        { "position": 9, "text": "وَمَنْ", "root": null },
+        { "position": 10, "text": "حَوْلَهَا", "root": null },
+        { "position": 11, "text": "وَسُبْحَـٰنَ", "root": null },
+        { "position": 12, "text": "ٱللَّهِ", "root": null },
+        { "position": 13, "text": "رَبِّ", "root": null },
+        { "position": 14, "text": "ٱلْعَـٰلَمِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 9,
+      "words": [
+        { "position": 1, "text": "يَـٰمُوسَىٰٓ", "root": null },
+        { "position": 2, "text": "إِنَّهُۥٓ", "root": null },
+        { "position": 3, "text": "أَنَا", "root": null },
+        { "position": 4, "text": "ٱللَّهُ", "root": null },
+        { "position": 5, "text": "ٱلْعَزِيزُ", "root": null },
+        { "position": 6, "text": "ٱلْحَكِيمُ", "root": null }
+      ]
+    },
+    {
+      "ayah": 10,
+      "words": [
+        { "position": 1, "text": "وَأَلْقِ", "root": null },
+        { "position": 2, "text": "عَصَاكَ", "root": null },
+        { "position": 3, "text": "فَلَمَّا", "root": null },
+        { "position": 4, "text": "رَءَاهَا", "root": null },
+        { "position": 5, "text": "تَهْتَزُّ", "root": null },
+        { "position": 6, "text": "كَأَنَّهَا", "root": null },
+        { "position": 7, "text": "جَآنٌّ", "root": null },
+        { "position": 8, "text": "وَلَّىٰ", "root": null },
+        { "position": 9, "text": "مُدْبِرًا", "root": null },
+        { "position": 10, "text": "وَلَمْ", "root": null },
+        { "position": 11, "text": "يُعَقِّبْ", "root": null },
+        { "position": 12, "text": "يَـٰمُوسَىٰ", "root": null },
+        { "position": 13, "text": "لَا", "root": null },
+        { "position": 14, "text": "تَخَفْ", "root": null },
+        { "position": 15, "text": "إِنِّى", "root": null },
+        { "position": 16, "text": "لَا", "root": null },
+        { "position": 17, "text": "يَخَافُ", "root": null },
+        { "position": 18, "text": "لَدَىَّ", "root": null },
+        { "position": 19, "text": "ٱلْمُرْسَلُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 11,
+      "words": [
+        { "position": 1, "text": "إِلَّا", "root": null },
+        { "position": 2, "text": "مَن", "root": null },
+        { "position": 3, "text": "ظَلَمَ", "root": null },
+        { "position": 4, "text": "ثُمَّ", "root": null },
+        { "position": 5, "text": "بَدَّلَ", "root": null },
+        { "position": 6, "text": "حُسْنًۢا", "root": null },
+        { "position": 7, "text": "بَعْدَ", "root": null },
+        { "position": 8, "text": "سُوٓءٍ", "root": null },
+        { "position": 9, "text": "فَإِنِّى", "root": null },
+        { "position": 10, "text": "غَفُورٌ", "root": null },
+        { "position": 11, "text": "رَّحِيمٌ", "root": null }
+      ]
+    },
+    {
+      "ayah": 12,
+      "words": [
+        { "position": 1, "text": "وَأَدْخِلْ", "root": null },
+        { "position": 2, "text": "يَدَكَ", "root": null },
+        { "position": 3, "text": "فِى", "root": null },
+        { "position": 4, "text": "جَيْبِكَ", "root": null },
+        { "position": 5, "text": "تَخْرُجْ", "root": null },
+        { "position": 6, "text": "بَيْضَآءَ", "root": null },
+        { "position": 7, "text": "مِنْ", "root": null },
+        { "position": 8, "text": "غَيْرِ", "root": null },
+        { "position": 9, "text": "سُوٓءٍ", "root": null },
+        { "position": 10, "text": "فِى", "root": null },
+        { "position": 11, "text": "تِسْعِ", "root": null },
+        { "position": 12, "text": "ءَايَـٰتٍ", "root": null },
+        { "position": 13, "text": "إِلَىٰ", "root": null },
+        { "position": 14, "text": "فِرْعَوْنَ", "root": null },
+        { "position": 15, "text": "وَقَوْمِهِۦٓ", "root": null },
+        { "position": 16, "text": "إِنَّهُمْ", "root": null },
+        { "position": 17, "text": "كَانُوا۟", "root": null },
+        { "position": 18, "text": "قَوْمًا", "root": null },
+        { "position": 19, "text": "فَـٰسِقِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 13,
+      "words": [
+        { "position": 1, "text": "فَلَمَّا", "root": null },
+        { "position": 2, "text": "جَآءَتْهُمْ", "root": null },
+        { "position": 3, "text": "ءَايَـٰتُنَا", "root": null },
+        { "position": 4, "text": "مُبْصِرَةً", "root": null },
+        { "position": 5, "text": "قَالُوا۟", "root": null },
+        { "position": 6, "text": "هَـٰذَا", "root": null },
+        { "position": 7, "text": "سِحْرٌ", "root": null },
+        { "position": 8, "text": "مُّبِينٌ", "root": null }
+      ]
+    },
+    {
+      "ayah": 14,
+      "words": [
+        { "position": 1, "text": "وَجَحَدُوا۟", "root": null },
+        { "position": 2, "text": "بِهَا", "root": null },
+        { "position": 3, "text": "وَٱسْتَيْقَنَتْهَآ", "root": null },
+        { "position": 4, "text": "أَنفُسُهُمْ", "root": null },
+        { "position": 5, "text": "ظُلْمًا", "root": null },
+        { "position": 6, "text": "وَعُلُوًّا", "root": null },
+        { "position": 7, "text": "فَٱنظُرْ", "root": null },
+        { "position": 8, "text": "كَيْفَ", "root": null },
+        { "position": 9, "text": "كَانَ", "root": null },
+        { "position": 10, "text": "عَـٰقِبَةُ", "root": null },
+        { "position": 11, "text": "ٱلْمُفْسِدِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 15,
+      "words": [
+        { "position": 1, "text": "وَلَقَدْ", "root": null },
+        { "position": 2, "text": "ءَاتَيْنَا", "root": null },
+        { "position": 3, "text": "دَاوُۥدَ", "root": null },
+        { "position": 4, "text": "وَسُلَيْمَـٰنَ", "root": null },
+        { "position": 5, "text": "عِلْمًا", "root": null },
+        { "position": 6, "text": "وَقَالَا", "root": null },
+        { "position": 7, "text": "ٱلْحَمْدُ", "root": null },
+        { "position": 8, "text": "لِلَّهِ", "root": null },
+        { "position": 9, "text": "ٱلَّذِى", "root": null },
+        { "position": 10, "text": "فَضَّلَنَا", "root": null },
+        { "position": 11, "text": "عَلَىٰ", "root": null },
+        { "position": 12, "text": "كَثِيرٍ", "root": null },
+        { "position": 13, "text": "مِّنْ", "root": null },
+        { "position": 14, "text": "عِبَادِهِ", "root": null },
+        { "position": 15, "text": "ٱلْمُؤْمِنِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 16,
+      "words": [
+        { "position": 1, "text": "وَوَرِثَ", "root": null },
+        { "position": 2, "text": "سُلَيْمَـٰنُ", "root": null },
+        { "position": 3, "text": "دَاوُۥدَ", "root": null },
+        { "position": 4, "text": "وَقَالَ", "root": null },
+        { "position": 5, "text": "يَـٰٓأَيُّهَا", "root": null },
+        { "position": 6, "text": "ٱلنَّاسُ", "root": null },
+        { "position": 7, "text": "عُلِّمْنَا", "root": null },
+        { "position": 8, "text": "مَنطِقَ", "root": null },
+        { "position": 9, "text": "ٱلطَّيْرِ", "root": null },
+        { "position": 10, "text": "وَأُوتِينَا", "root": null },
+        { "position": 11, "text": "مِن", "root": null },
+        { "position": 12, "text": "كُلِّ", "root": null },
+        { "position": 13, "text": "شَىْءٍ", "root": null },
+        { "position": 14, "text": "إِنَّ", "root": null },
+        { "position": 15, "text": "هَـٰذَا", "root": null },
+        { "position": 16, "text": "لَهُوَ", "root": null },
+        { "position": 17, "text": "ٱلْفَضْلُ", "root": null },
+        { "position": 18, "text": "ٱلْمُبِينُ", "root": null }
+      ]
+    },
+    {
+      "ayah": 17,
+      "words": [
+        { "position": 1, "text": "وَحُشِرَ", "root": null },
+        { "position": 2, "text": "لِسُلَيْمَـٰنَ", "root": null },
+        { "position": 3, "text": "جُنُودُهُۥ", "root": null },
+        { "position": 4, "text": "مِنَ", "root": null },
+        { "position": 5, "text": "ٱلْجِنِّ", "root": null },
+        { "position": 6, "text": "وَٱلْإِنسِ", "root": null },
+        { "position": 7, "text": "وَٱلطَّيْرِ", "root": null },
+        { "position": 8, "text": "فَهُمْ", "root": null },
+        { "position": 9, "text": "يُوزَعُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 18,
+      "words": [
+        { "position": 1, "text": "حَتَّىٰٓ", "root": null },
+        { "position": 2, "text": "إِذَآ", "root": null },
+        { "position": 3, "text": "أَتَوْا۟", "root": null },
+        { "position": 4, "text": "عَلَىٰ", "root": null },
+        { "position": 5, "text": "وَادِ", "root": null },
+        { "position": 6, "text": "ٱلنَّمْلِ", "root": null },
+        { "position": 7, "text": "قَالَتْ", "root": null },
+        { "position": 8, "text": "نَمْلَةٌ", "root": null },
+        { "position": 9, "text": "يَـٰٓأَيُّهَا", "root": null },
+        { "position": 10, "text": "ٱلنَّمْلُ", "root": null },
+        { "position": 11, "text": "ٱدْخُلُوا۟", "root": null },
+        { "position": 12, "text": "مَسَـٰكِنَكُمْ", "root": null },
+        { "position": 13, "text": "لَا", "root": null },
+        { "position": 14, "text": "يَحْطِمَنَّكُمْ", "root": null },
+        { "position": 15, "text": "سُلَيْمَـٰنُ", "root": null },
+        { "position": 16, "text": "وَجُنُودُهُۥ", "root": null },
+        { "position": 17, "text": "وَهُمْ", "root": null },
+        { "position": 18, "text": "لَا", "root": null },
+        { "position": 19, "text": "يَشْعُرُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 19,
+      "words": [
+        { "position": 1, "text": "فَتَبَسَّمَ", "root": null },
+        { "position": 2, "text": "ضَاحِكًا", "root": null },
+        { "position": 3, "text": "مِّن", "root": null },
+        { "position": 4, "text": "قَوْلِهَا", "root": null },
+        { "position": 5, "text": "وَقَالَ", "root": null },
+        { "position": 6, "text": "رَبِّ", "root": null },
+        { "position": 7, "text": "أَوْزِعْنِىٓ", "root": null },
+        { "position": 8, "text": "أَنْ", "root": null },
+        { "position": 9, "text": "أَشْكُرَ", "root": null },
+        { "position": 10, "text": "نِعْمَتَكَ", "root": null },
+        { "position": 11, "text": "ٱلَّتِىٓ", "root": null },
+        { "position": 12, "text": "أَنْعَمْتَ", "root": null },
+        { "position": 13, "text": "عَلَىَّ", "root": null },
+        { "position": 14, "text": "وَعَلَىٰ", "root": null },
+        { "position": 15, "text": "وَٰلِدَىَّ", "root": null },
+        { "position": 16, "text": "وَأَنْ", "root": null },
+        { "position": 17, "text": "أَعْمَلَ", "root": null },
+        { "position": 18, "text": "صَـٰلِحًا", "root": null },
+        { "position": 19, "text": "تَرْضَىٰهُ", "root": null },
+        { "position": 20, "text": "وَأَدْخِلْنِى", "root": null },
+        { "position": 21, "text": "بِرَحْمَتِكَ", "root": null },
+        { "position": 22, "text": "فِى", "root": null },
+        { "position": 23, "text": "عِبَادِكَ", "root": null },
+        { "position": 24, "text": "ٱلصَّـٰلِحِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 20,
+      "words": [
+        { "position": 1, "text": "وَتَفَقَّدَ", "root": null },
+        { "position": 2, "text": "ٱلطَّيْرَ", "root": null },
+        { "position": 3, "text": "فَقَالَ", "root": null },
+        { "position": 4, "text": "مَا", "root": null },
+        { "position": 5, "text": "لِىَ", "root": null },
+        { "position": 6, "text": "لَآ", "root": null },
+        { "position": 7, "text": "أَرَى", "root": null },
+        { "position": 8, "text": "ٱلْهُدْهُدَ", "root": null },
+        { "position": 9, "text": "أَمْ", "root": null },
+        { "position": 10, "text": "كَانَ", "root": null },
+        { "position": 11, "text": "مِنَ", "root": null },
+        { "position": 12, "text": "ٱلْغَآئِبِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 21,
+      "words": [
+        { "position": 1, "text": "لَأُعَذِّبَنَّهُۥ", "root": null },
+        { "position": 2, "text": "عَذَابًا", "root": null },
+        { "position": 3, "text": "شَدِيدًا", "root": null },
+        { "position": 4, "text": "أَوْ", "root": null },
+        { "position": 5, "text": "لَأَا۟ذْبَحَنَّهُۥٓ", "root": null },
+        { "position": 6, "text": "أَوْ", "root": null },
+        { "position": 7, "text": "لَيَأْتِيَنِّى", "root": null },
+        { "position": 8, "text": "بِسُلْطَـٰنٍ", "root": null },
+        { "position": 9, "text": "مُّبِينٍ", "root": null }
+      ]
+    },
+    {
+      "ayah": 22,
+      "words": [
+        { "position": 1, "text": "فَمَكَثَ", "root": null },
+        { "position": 2, "text": "غَيْرَ", "root": null },
+        { "position": 3, "text": "بَعِيدٍ", "root": null },
+        { "position": 4, "text": "فَقَالَ", "root": null },
+        { "position": 5, "text": "أَحَطتُ", "root": null },
+        { "position": 6, "text": "بِمَا", "root": null },
+        { "position": 7, "text": "لَمْ", "root": null },
+        { "position": 8, "text": "تُحِطْ", "root": null },
+        { "position": 9, "text": "بِهِۦ", "root": null },
+        { "position": 10, "text": "وَجِئْتُكَ", "root": null },
+        { "position": 11, "text": "مِن", "root": null },
+        { "position": 12, "text": "سَبَإٍۭ", "root": null },
+        { "position": 13, "text": "بِنَبَإٍ", "root": null },
+        { "position": 14, "text": "يَقِينٍ", "root": null }
+      ]
+    },
+    {
+      "ayah": 23,
+      "words": [
+        { "position": 1, "text": "إِنِّى", "root": null },
+        { "position": 2, "text": "وَجَدتُّ", "root": null },
+        { "position": 3, "text": "ٱمْرَأَةً", "root": null },
+        { "position": 4, "text": "تَمْلِكُهُمْ", "root": null },
+        { "position": 5, "text": "وَأُوتِيَتْ", "root": null },
+        { "position": 6, "text": "مِن", "root": null },
+        { "position": 7, "text": "كُلِّ", "root": null },
+        { "position": 8, "text": "شَىْءٍ", "root": null },
+        { "position": 9, "text": "وَلَهَا", "root": null },
+        { "position": 10, "text": "عَرْشٌ", "root": null },
+        { "position": 11, "text": "عَظِيمٌ", "root": null }
+      ]
+    },
+    {
+      "ayah": 24,
+      "words": [
+        { "position": 1, "text": "وَجَدتُّهَا", "root": null },
+        { "position": 2, "text": "وَقَوْمَهَا", "root": null },
+        { "position": 3, "text": "يَسْجُدُونَ", "root": null },
+        { "position": 4, "text": "لِلشَّمْسِ", "root": null },
+        { "position": 5, "text": "مِن", "root": null },
+        { "position": 6, "text": "دُونِ", "root": null },
+        { "position": 7, "text": "ٱللَّهِ", "root": null },
+        { "position": 8, "text": "وَزَيَّنَ", "root": null },
+        { "position": 9, "text": "لَهُمُ", "root": null },
+        { "position": 10, "text": "ٱلشَّيْطَـٰنُ", "root": null },
+        { "position": 11, "text": "أَعْمَـٰلَهُمْ", "root": null },
+        { "position": 12, "text": "فَصَدَّهُمْ", "root": null },
+        { "position": 13, "text": "عَنِ", "root": null },
+        { "position": 14, "text": "ٱلسَّبِيلِ", "root": null },
+        { "position": 15, "text": "فَهُمْ", "root": null },
+        { "position": 16, "text": "لَا", "root": null },
+        { "position": 17, "text": "يَهْتَدُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 25,
+      "words": [
+        { "position": 1, "text": "أَلَّا", "root": null },
+        { "position": 2, "text": "يَسْجُدُوا۟", "root": null },
+        { "position": 3, "text": "لِلَّهِ", "root": null },
+        { "position": 4, "text": "ٱلَّذِى", "root": null },
+        { "position": 5, "text": "يُخْرِجُ", "root": null },
+        { "position": 6, "text": "ٱلْخَبْءَ", "root": null },
+        { "position": 7, "text": "فِى", "root": null },
+        { "position": 8, "text": "ٱلسَّمَـٰوَٰتِ", "root": null },
+        { "position": 9, "text": "وَٱلْأَرْضِ", "root": null },
+        { "position": 10, "text": "وَيَعْلَمُ", "root": null },
+        { "position": 11, "text": "مَا", "root": null },
+        { "position": 12, "text": "تُخْفُونَ", "root": null },
+        { "position": 13, "text": "وَمَا", "root": null },
+        { "position": 14, "text": "تُعْلِنُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 26,
+      "words": [
+        { "position": 1, "text": "ٱللَّهُ", "root": null },
+        { "position": 2, "text": "لَآ", "root": null },
+        { "position": 3, "text": "إِلَـٰهَ", "root": null },
+        { "position": 4, "text": "إِلَّا", "root": null },
+        { "position": 5, "text": "هُوَ", "root": null },
+        { "position": 6, "text": "رَبُّ", "root": null },
+        { "position": 7, "text": "ٱلْعَرْشِ", "root": null },
+        { "position": 8, "text": "ٱلْعَظِيمِ", "root": null }
+      ]
+    },
+    {
+      "ayah": 27,
+      "words": [
+        { "position": 1, "text": "قَالَ", "root": null },
+        { "position": 2, "text": "سَنَنظُرُ", "root": null },
+        { "position": 3, "text": "أَصَدَقْتَ", "root": null },
+        { "position": 4, "text": "أَمْ", "root": null },
+        { "position": 5, "text": "كُنتَ", "root": null },
+        { "position": 6, "text": "مِنَ", "root": null },
+        { "position": 7, "text": "ٱلْكَـٰذِبِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 28,
+      "words": [
+        { "position": 1, "text": "ٱذْهَب", "root": null },
+        { "position": 2, "text": "بِّكِتَـٰبِى", "root": null },
+        { "position": 3, "text": "هَـٰذَا", "root": null },
+        { "position": 4, "text": "فَأَلْقِهْ", "root": null },
+        { "position": 5, "text": "إِلَيْهِمْ", "root": null },
+        { "position": 6, "text": "ثُمَّ", "root": null },
+        { "position": 7, "text": "تَوَلَّ", "root": null },
+        { "position": 8, "text": "عَنْهُمْ", "root": null },
+        { "position": 9, "text": "فَٱنظُرْ", "root": null },
+        { "position": 10, "text": "مَاذَا", "root": null },
+        { "position": 11, "text": "يَرْجِعُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 29,
+      "words": [
+        { "position": 1, "text": "قَالَتْ", "root": null },
+        { "position": 2, "text": "يَـٰٓأَيُّهَا", "root": null },
+        { "position": 3, "text": "ٱلْمَلَؤُا۟", "root": null },
+        { "position": 4, "text": "إِنِّىٓ", "root": null },
+        { "position": 5, "text": "أُلْقِىَ", "root": null },
+        { "position": 6, "text": "إِلَىَّ", "root": null },
+        { "position": 7, "text": "كِتَـٰبٌ", "root": null },
+        { "position": 8, "text": "كَرِيمٌ", "root": null }
+      ]
+    },
+    {
+      "ayah": 30,
+      "words": [
+        { "position": 1, "text": "إِنَّهُۥ", "root": null },
+        { "position": 2, "text": "مِن", "root": null },
+        { "position": 3, "text": "سُلَيْمَـٰنَ", "root": null },
+        { "position": 4, "text": "وَإِنَّهُۥ", "root": null },
+        { "position": 5, "text": "بِسْمِ", "root": null },
+        { "position": 6, "text": "ٱللَّهِ", "root": null },
+        { "position": 7, "text": "ٱلرَّحْمَـٰنِ", "root": null },
+        { "position": 8, "text": "ٱلرَّحِيمِ", "root": null }
+      ]
+    },
+    {
+      "ayah": 31,
+      "words": [
+        { "position": 1, "text": "أَلَّا", "root": null },
+        { "position": 2, "text": "تَعْلُوا۟", "root": null },
+        { "position": 3, "text": "عَلَىَّ", "root": null },
+        { "position": 4, "text": "وَأْتُونِى", "root": null },
+        { "position": 5, "text": "مُسْلِمِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 32,
+      "words": [
+        { "position": 1, "text": "قَالَتْ", "root": null },
+        { "position": 2, "text": "يَـٰٓأَيُّهَا", "root": null },
+        { "position": 3, "text": "ٱلْمَلَؤُا۟", "root": null },
+        { "position": 4, "text": "أَفْتُونِى", "root": null },
+        { "position": 5, "text": "فِىٓ", "root": null },
+        { "position": 6, "text": "أَمْرِى", "root": null },
+        { "position": 7, "text": "مَا", "root": null },
+        { "position": 8, "text": "كُنتُ", "root": null },
+        { "position": 9, "text": "قَاطِعَةً", "root": null },
+        { "position": 10, "text": "أَمْرًا", "root": null },
+        { "position": 11, "text": "حَتَّىٰ", "root": null },
+        { "position": 12, "text": "تَشْهَدُونِ", "root": null }
+      ]
+    },
+    {
+      "ayah": 33,
+      "words": [
+        { "position": 1, "text": "قَالُوا۟", "root": null },
+        { "position": 2, "text": "نَحْنُ", "root": null },
+        { "position": 3, "text": "أُو۟لُوا۟", "root": null },
+        { "position": 4, "text": "قُوَّةٍ", "root": null },
+        { "position": 5, "text": "وَأُو۟لُوا۟", "root": null },
+        { "position": 6, "text": "بَأْسٍ", "root": null },
+        { "position": 7, "text": "شَدِيدٍ", "root": null },
+        { "position": 8, "text": "وَٱلْأَمْرُ", "root": null },
+        { "position": 9, "text": "إِلَيْكِ", "root": null },
+        { "position": 10, "text": "فَٱنظُرِى", "root": null },
+        { "position": 11, "text": "مَاذَا", "root": null },
+        { "position": 12, "text": "تَأْمُرِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 34,
+      "words": [
+        { "position": 1, "text": "قَالَتْ", "root": null },
+        { "position": 2, "text": "إِنَّ", "root": null },
+        { "position": 3, "text": "ٱلْمُلُوكَ", "root": null },
+        { "position": 4, "text": "إِذَا", "root": null },
+        { "position": 5, "text": "دَخَلُوا۟", "root": null },
+        { "position": 6, "text": "قَرْيَةً", "root": null },
+        { "position": 7, "text": "أَفْسَدُوهَا", "root": null },
+        { "position": 8, "text": "وَجَعَلُوٓا۟", "root": null },
+        { "position": 9, "text": "أَعِزَّةَ", "root": null },
+        { "position": 10, "text": "أَهْلِهَآ", "root": null },
+        { "position": 11, "text": "أَذِلَّةً", "root": null },
+        { "position": 12, "text": "وَكَذَٰلِكَ", "root": null },
+        { "position": 13, "text": "يَفْعَلُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 35,
+      "words": [
+        { "position": 1, "text": "وَإِنِّى", "root": null },
+        { "position": 2, "text": "مُرْسِلَةٌ", "root": null },
+        { "position": 3, "text": "إِلَيْهِم", "root": null },
+        { "position": 4, "text": "بِهَدِيَّةٍ", "root": null },
+        { "position": 5, "text": "فَنَاظِرَةٌۢ", "root": null },
+        { "position": 6, "text": "بِمَ", "root": null },
+        { "position": 7, "text": "يَرْجِعُ", "root": null },
+        { "position": 8, "text": "ٱلْمُرْسَلُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 36,
+      "words": [
+        { "position": 1, "text": "فَلَمَّا", "root": null },
+        { "position": 2, "text": "جَآءَ", "root": null },
+        { "position": 3, "text": "سُلَيْمَـٰنَ", "root": null },
+        { "position": 4, "text": "قَالَ", "root": null },
+        { "position": 5, "text": "أَتُمِدُّونَنِ", "root": null },
+        { "position": 6, "text": "بِمَالٍ", "root": null },
+        { "position": 7, "text": "فَمَآ", "root": null },
+        { "position": 8, "text": "ءَاتَىٰنِۦَ", "root": null },
+        { "position": 9, "text": "ٱللَّهُ", "root": null },
+        { "position": 10, "text": "خَيْرٌ", "root": null },
+        { "position": 11, "text": "مِّمَّآ", "root": null },
+        { "position": 12, "text": "ءَاتَىٰكُم", "root": null },
+        { "position": 13, "text": "بَلْ", "root": null },
+        { "position": 14, "text": "أَنتُم", "root": null },
+        { "position": 15, "text": "بِهَدِيَّتِكُمْ", "root": null },
+        { "position": 16, "text": "تَفْرَحُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 37,
+      "words": [
+        { "position": 1, "text": "ٱرْجِعْ", "root": null },
+        { "position": 2, "text": "إِلَيْهِمْ", "root": null },
+        { "position": 3, "text": "فَلَنَأْتِيَنَّهُم", "root": null },
+        { "position": 4, "text": "بِجُنُودٍ", "root": null },
+        { "position": 5, "text": "لَّا", "root": null },
+        { "position": 6, "text": "قِبَلَ", "root": null },
+        { "position": 7, "text": "لَهُم", "root": null },
+        { "position": 8, "text": "بِهَا", "root": null },
+        { "position": 9, "text": "وَلَنُخْرِجَنَّهُم", "root": null },
+        { "position": 10, "text": "مِّنْهَآ", "root": null },
+        { "position": 11, "text": "أَذِلَّةً", "root": null },
+        { "position": 12, "text": "وَهُمْ", "root": null },
+        { "position": 13, "text": "صَـٰغِرُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 38,
+      "words": [
+        { "position": 1, "text": "قَالَ", "root": null },
+        { "position": 2, "text": "يَـٰٓأَيُّهَا", "root": null },
+        { "position": 3, "text": "ٱلْمَلَؤُا۟", "root": null },
+        { "position": 4, "text": "أَيُّكُمْ", "root": null },
+        { "position": 5, "text": "يَأْتِينِى", "root": null },
+        { "position": 6, "text": "بِعَرْشِهَا", "root": null },
+        { "position": 7, "text": "قَبْلَ", "root": null },
+        { "position": 8, "text": "أَن", "root": null },
+        { "position": 9, "text": "يَأْتُونِى", "root": null },
+        { "position": 10, "text": "مُسْلِمِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 39,
+      "words": [
+        { "position": 1, "text": "قَالَ", "root": null },
+        { "position": 2, "text": "عِفْرِيتٌ", "root": null },
+        { "position": 3, "text": "مِّنَ", "root": null },
+        { "position": 4, "text": "ٱلْجِنِّ", "root": null },
+        { "position": 5, "text": "أَنَا۠", "root": null },
+        { "position": 6, "text": "ءَاتِيكَ", "root": null },
+        { "position": 7, "text": "بِهِۦ", "root": null },
+        { "position": 8, "text": "قَبْلَ", "root": null },
+        { "position": 9, "text": "أَن", "root": null },
+        { "position": 10, "text": "تَقُومَ", "root": null },
+        { "position": 11, "text": "مِن", "root": null },
+        { "position": 12, "text": "مَّقَامِكَ", "root": null },
+        { "position": 13, "text": "وَإِنِّى", "root": null },
+        { "position": 14, "text": "عَلَيْهِ", "root": null },
+        { "position": 15, "text": "لَقَوِىٌّ", "root": null },
+        { "position": 16, "text": "أَمِينٌ", "root": null }
+      ]
+    },
+    {
+      "ayah": 40,
+      "words": [
+        { "position": 1, "text": "قَالَ", "root": null },
+        { "position": 2, "text": "ٱلَّذِى", "root": null },
+        { "position": 3, "text": "عِندَهُۥ", "root": null },
+        { "position": 4, "text": "عِلْمٌ", "root": null },
+        { "position": 5, "text": "مِّنَ", "root": null },
+        { "position": 6, "text": "ٱلْكِتَـٰبِ", "root": null },
+        { "position": 7, "text": "أَنَا۠", "root": null },
+        { "position": 8, "text": "ءَاتِيكَ", "root": null },
+        { "position": 9, "text": "بِهِۦ", "root": null },
+        { "position": 10, "text": "قَبْلَ", "root": null },
+        { "position": 11, "text": "أَن", "root": null },
+        { "position": 12, "text": "يَرْتَدَّ", "root": null },
+        { "position": 13, "text": "إِلَيْكَ", "root": null },
+        { "position": 14, "text": "طَرْفُكَ", "root": null },
+        { "position": 15, "text": "فَلَمَّا", "root": null },
+        { "position": 16, "text": "رَءَاهُ", "root": null },
+        { "position": 17, "text": "مُسْتَقِرًّا", "root": null },
+        { "position": 18, "text": "عِندَهُۥ", "root": null },
+        { "position": 19, "text": "قَالَ", "root": null },
+        { "position": 20, "text": "هَـٰذَا", "root": null },
+        { "position": 21, "text": "مِن", "root": null },
+        { "position": 22, "text": "فَضْلِ", "root": null },
+        { "position": 23, "text": "رَبِّى", "root": null },
+        { "position": 24, "text": "لِيَبْلُوَنِىٓ", "root": null },
+        { "position": 25, "text": "ءَأَشْكُرُ", "root": null },
+        { "position": 26, "text": "أَمْ", "root": null },
+        { "position": 27, "text": "أَكْفُرُ", "root": null },
+        { "position": 28, "text": "وَمَن", "root": null },
+        { "position": 29, "text": "شَكَرَ", "root": null },
+        { "position": 30, "text": "فَإِنَّمَا", "root": null },
+        { "position": 31, "text": "يَشْكُرُ", "root": null },
+        { "position": 32, "text": "لِنَفْسِهِۦ", "root": null },
+        { "position": 33, "text": "وَمَن", "root": null },
+        { "position": 34, "text": "كَفَرَ", "root": null },
+        { "position": 35, "text": "فَإِنَّ", "root": null },
+        { "position": 36, "text": "رَبِّى", "root": null },
+        { "position": 37, "text": "غَنِىٌّ", "root": null },
+        { "position": 38, "text": "كَرِيمٌ", "root": null }
+      ]
+    },
+    {
+      "ayah": 41,
+      "words": [
+        { "position": 1, "text": "قَالَ", "root": null },
+        { "position": 2, "text": "نَكِّرُوا۟", "root": null },
+        { "position": 3, "text": "لَهَا", "root": null },
+        { "position": 4, "text": "عَرْشَهَا", "root": null },
+        { "position": 5, "text": "نَنظُرْ", "root": null },
+        { "position": 6, "text": "أَتَهْتَدِىٓ", "root": null },
+        { "position": 7, "text": "أَمْ", "root": null },
+        { "position": 8, "text": "تَكُونُ", "root": null },
+        { "position": 9, "text": "مِنَ", "root": null },
+        { "position": 10, "text": "ٱلَّذِينَ", "root": null },
+        { "position": 11, "text": "لَا", "root": null },
+        { "position": 12, "text": "يَهْتَدُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 42,
+      "words": [
+        { "position": 1, "text": "فَلَمَّا", "root": null },
+        { "position": 2, "text": "جَآءَتْ", "root": null },
+        { "position": 3, "text": "قِيلَ", "root": null },
+        { "position": 4, "text": "أَهَـٰكَذَا", "root": null },
+        { "position": 5, "text": "عَرْشُكِ", "root": null },
+        { "position": 6, "text": "قَالَتْ", "root": null },
+        { "position": 7, "text": "كَأَنَّهُۥ", "root": null },
+        { "position": 8, "text": "هُوَ", "root": null },
+        { "position": 9, "text": "وَأُوتِينَا", "root": null },
+        { "position": 10, "text": "ٱلْعِلْمَ", "root": null },
+        { "position": 11, "text": "مِن", "root": null },
+        { "position": 12, "text": "قَبْلِهَا", "root": null },
+        { "position": 13, "text": "وَكُنَّا", "root": null },
+        { "position": 14, "text": "مُسْلِمِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 43,
+      "words": [
+        { "position": 1, "text": "وَصَدَّهَا", "root": null },
+        { "position": 2, "text": "مَا", "root": null },
+        { "position": 3, "text": "كَانَت", "root": null },
+        { "position": 4, "text": "تَّعْبُدُ", "root": null },
+        { "position": 5, "text": "مِن", "root": null },
+        { "position": 6, "text": "دُونِ", "root": null },
+        { "position": 7, "text": "ٱللَّهِ", "root": null },
+        { "position": 8, "text": "إِنَّهَا", "root": null },
+        { "position": 9, "text": "كَانَتْ", "root": null },
+        { "position": 10, "text": "مِن", "root": null },
+        { "position": 11, "text": "قَوْمٍ", "root": null },
+        { "position": 12, "text": "كَـٰفِرِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 44,
+      "words": [
+        { "position": 1, "text": "قِيلَ", "root": null },
+        { "position": 2, "text": "لَهَا", "root": null },
+        { "position": 3, "text": "ٱدْخُلِى", "root": null },
+        { "position": 4, "text": "ٱلصَّرْحَ", "root": null },
+        { "position": 5, "text": "فَلَمَّا", "root": null },
+        { "position": 6, "text": "رَأَتْهُ", "root": null },
+        { "position": 7, "text": "حَسِبَتْهُ", "root": null },
+        { "position": 8, "text": "لُجَّةً", "root": null },
+        { "position": 9, "text": "وَكَشَفَتْ", "root": null },
+        { "position": 10, "text": "عَن", "root": null },
+        { "position": 11, "text": "سَاقَيْهَا", "root": null },
+        { "position": 12, "text": "قَالَ", "root": null },
+        { "position": 13, "text": "إِنَّهُۥ", "root": null },
+        { "position": 14, "text": "صَرْحٌ", "root": null },
+        { "position": 15, "text": "مُّمَرَّدٌ", "root": null },
+        { "position": 16, "text": "مِّن", "root": null },
+        { "position": 17, "text": "قَوَارِيرَ", "root": null },
+        { "position": 18, "text": "قَالَتْ", "root": null },
+        { "position": 19, "text": "رَبِّ", "root": null },
+        { "position": 20, "text": "إِنِّى", "root": null },
+        { "position": 21, "text": "ظَلَمْتُ", "root": null },
+        { "position": 22, "text": "نَفْسِى", "root": null },
+        { "position": 23, "text": "وَأَسْلَمْتُ", "root": null },
+        { "position": 24, "text": "مَعَ", "root": null },
+        { "position": 25, "text": "سُلَيْمَـٰنَ", "root": null },
+        { "position": 26, "text": "لِلَّهِ", "root": null },
+        { "position": 27, "text": "رَبِّ", "root": null },
+        { "position": 28, "text": "ٱلْعَـٰلَمِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 45,
+      "words": [
+        { "position": 1, "text": "وَلَقَدْ", "root": null },
+        { "position": 2, "text": "أَرْسَلْنَآ", "root": null },
+        { "position": 3, "text": "إِلَىٰ", "root": null },
+        { "position": 4, "text": "ثَمُودَ", "root": null },
+        { "position": 5, "text": "أَخَاهُمْ", "root": null },
+        { "position": 6, "text": "صَـٰلِحًا", "root": null },
+        { "position": 7, "text": "أَنِ", "root": null },
+        { "position": 8, "text": "ٱعْبُدُوا۟", "root": null },
+        { "position": 9, "text": "ٱللَّهَ", "root": null },
+        { "position": 10, "text": "فَإِذَا", "root": null },
+        { "position": 11, "text": "هُمْ", "root": null },
+        { "position": 12, "text": "فَرِيقَانِ", "root": null },
+        { "position": 13, "text": "يَخْتَصِمُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 46,
+      "words": [
+        { "position": 1, "text": "قَالَ", "root": null },
+        { "position": 2, "text": "يَـٰقَوْمِ", "root": null },
+        { "position": 3, "text": "لِمَ", "root": null },
+        { "position": 4, "text": "تَسْتَعْجِلُونَ", "root": null },
+        { "position": 5, "text": "بِٱلسَّيِّئَةِ", "root": null },
+        { "position": 6, "text": "قَبْلَ", "root": null },
+        { "position": 7, "text": "ٱلْحَسَنَةِ", "root": null },
+        { "position": 8, "text": "لَوْلَا", "root": null },
+        { "position": 9, "text": "تَسْتَغْفِرُونَ", "root": null },
+        { "position": 10, "text": "ٱللَّهَ", "root": null },
+        { "position": 11, "text": "لَعَلَّكُمْ", "root": null },
+        { "position": 12, "text": "تُرْحَمُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 47,
+      "words": [
+        { "position": 1, "text": "قَالُوا۟", "root": null },
+        { "position": 2, "text": "ٱطَّيَّرْنَا", "root": null },
+        { "position": 3, "text": "بِكَ", "root": null },
+        { "position": 4, "text": "وَبِمَن", "root": null },
+        { "position": 5, "text": "مَّعَكَ", "root": null },
+        { "position": 6, "text": "قَالَ", "root": null },
+        { "position": 7, "text": "طَـٰٓئِرُكُمْ", "root": null },
+        { "position": 8, "text": "عِندَ", "root": null },
+        { "position": 9, "text": "ٱللَّهِ", "root": null },
+        { "position": 10, "text": "بَلْ", "root": null },
+        { "position": 11, "text": "أَنتُمْ", "root": null },
+        { "position": 12, "text": "قَوْمٌ", "root": null },
+        { "position": 13, "text": "تُفْتَنُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 48,
+      "words": [
+        { "position": 1, "text": "وَكَانَ", "root": null },
+        { "position": 2, "text": "فِى", "root": null },
+        { "position": 3, "text": "ٱلْمَدِينَةِ", "root": null },
+        { "position": 4, "text": "تِسْعَةُ", "root": null },
+        { "position": 5, "text": "رَهْطٍ", "root": null },
+        { "position": 6, "text": "يُفْسِدُونَ", "root": null },
+        { "position": 7, "text": "فِى", "root": null },
+        { "position": 8, "text": "ٱلْأَرْضِ", "root": null },
+        { "position": 9, "text": "وَلَا", "root": null },
+        { "position": 10, "text": "يُصْلِحُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 49,
+      "words": [
+        { "position": 1, "text": "قَالُوا۟", "root": null },
+        { "position": 2, "text": "تَقَاسَمُوا۟", "root": null },
+        { "position": 3, "text": "بِٱللَّهِ", "root": null },
+        { "position": 4, "text": "لَنُبَيِّتَنَّهُۥ", "root": null },
+        { "position": 5, "text": "وَأَهْلَهُۥ", "root": null },
+        { "position": 6, "text": "ثُمَّ", "root": null },
+        { "position": 7, "text": "لَنَقُولَنَّ", "root": null },
+        { "position": 8, "text": "لِوَلِيِّهِۦ", "root": null },
+        { "position": 9, "text": "مَا", "root": null },
+        { "position": 10, "text": "شَهِدْنَا", "root": null },
+        { "position": 11, "text": "مَهْلِكَ", "root": null },
+        { "position": 12, "text": "أَهْلِهِۦ", "root": null },
+        { "position": 13, "text": "وَإِنَّا", "root": null },
+        { "position": 14, "text": "لَصَـٰدِقُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 50,
+      "words": [
+        { "position": 1, "text": "وَمَكَرُوا۟", "root": null },
+        { "position": 2, "text": "مَكْرًا", "root": null },
+        { "position": 3, "text": "وَمَكَرْنَا", "root": null },
+        { "position": 4, "text": "مَكْرًا", "root": null },
+        { "position": 5, "text": "وَهُمْ", "root": null },
+        { "position": 6, "text": "لَا", "root": null },
+        { "position": 7, "text": "يَشْعُرُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 51,
+      "words": [
+        { "position": 1, "text": "فَٱنظُرْ", "root": null },
+        { "position": 2, "text": "كَيْفَ", "root": null },
+        { "position": 3, "text": "كَانَ", "root": null },
+        { "position": 4, "text": "عَـٰقِبَةُ", "root": null },
+        { "position": 5, "text": "مَكْرِهِمْ", "root": null },
+        { "position": 6, "text": "أَنَّا", "root": null },
+        { "position": 7, "text": "دَمَّرْنَـٰهُمْ", "root": null },
+        { "position": 8, "text": "وَقَوْمَهُمْ", "root": null },
+        { "position": 9, "text": "أَجْمَعِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 52,
+      "words": [
+        { "position": 1, "text": "فَتِلْكَ", "root": null },
+        { "position": 2, "text": "بُيُوتُهُمْ", "root": null },
+        { "position": 3, "text": "خَاوِيَةًۢ", "root": null },
+        { "position": 4, "text": "بِمَا", "root": null },
+        { "position": 5, "text": "ظَلَمُوٓا۟", "root": null },
+        { "position": 6, "text": "إِنَّ", "root": null },
+        { "position": 7, "text": "فِى", "root": null },
+        { "position": 8, "text": "ذَٰلِكَ", "root": null },
+        { "position": 9, "text": "لَـَٔايَةً", "root": null },
+        { "position": 10, "text": "لِّقَوْمٍ", "root": null },
+        { "position": 11, "text": "يَعْلَمُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 53,
+      "words": [
+        { "position": 1, "text": "وَأَنجَيْنَا", "root": null },
+        { "position": 2, "text": "ٱلَّذِينَ", "root": null },
+        { "position": 3, "text": "ءَامَنُوا۟", "root": null },
+        { "position": 4, "text": "وَكَانُوا۟", "root": null },
+        { "position": 5, "text": "يَتَّقُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 54,
+      "words": [
+        { "position": 1, "text": "وَلُوطًا", "root": null },
+        { "position": 2, "text": "إِذْ", "root": null },
+        { "position": 3, "text": "قَالَ", "root": null },
+        { "position": 4, "text": "لِقَوْمِهِۦٓ", "root": null },
+        { "position": 5, "text": "أَتَأْتُونَ", "root": null },
+        { "position": 6, "text": "ٱلْفَـٰحِشَةَ", "root": null },
+        { "position": 7, "text": "وَأَنتُمْ", "root": null },
+        { "position": 8, "text": "تُبْصِرُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 55,
+      "words": [
+        { "position": 1, "text": "أَئِنَّكُمْ", "root": null },
+        { "position": 2, "text": "لَتَأْتُونَ", "root": null },
+        { "position": 3, "text": "ٱلرِّجَالَ", "root": null },
+        { "position": 4, "text": "شَهْوَةً", "root": null },
+        { "position": 5, "text": "مِّن", "root": null },
+        { "position": 6, "text": "دُونِ", "root": null },
+        { "position": 7, "text": "ٱلنِّسَآءِ", "root": null },
+        { "position": 8, "text": "بَلْ", "root": null },
+        { "position": 9, "text": "أَنتُمْ", "root": null },
+        { "position": 10, "text": "قَوْمٌ", "root": null },
+        { "position": 11, "text": "تَجْهَلُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 56,
+      "words": [
+        { "position": 1, "text": "فَمَا", "root": null },
+        { "position": 2, "text": "كَانَ", "root": null },
+        { "position": 3, "text": "جَوَابَ", "root": null },
+        { "position": 4, "text": "قَوْمِهِۦٓ", "root": null },
+        { "position": 5, "text": "إِلَّآ", "root": null },
+        { "position": 6, "text": "أَن", "root": null },
+        { "position": 7, "text": "قَالُوٓا۟", "root": null },
+        { "position": 8, "text": "أَخْرِجُوٓا۟", "root": null },
+        { "position": 9, "text": "ءَالَ", "root": null },
+        { "position": 10, "text": "لُوطٍ", "root": null },
+        { "position": 11, "text": "مِّن", "root": null },
+        { "position": 12, "text": "قَرْيَتِكُمْ", "root": null },
+        { "position": 13, "text": "إِنَّهُمْ", "root": null },
+        { "position": 14, "text": "أُنَاسٌ", "root": null },
+        { "position": 15, "text": "يَتَطَهَّرُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 57,
+      "words": [
+        { "position": 1, "text": "فَأَنجَيْنَـٰهُ", "root": null },
+        { "position": 2, "text": "وَأَهْلَهُۥٓ", "root": null },
+        { "position": 3, "text": "إِلَّا", "root": null },
+        { "position": 4, "text": "ٱمْرَأَتَهُۥ", "root": null },
+        { "position": 5, "text": "قَدَّرْنَـٰهَا", "root": null },
+        { "position": 6, "text": "مِنَ", "root": null },
+        { "position": 7, "text": "ٱلْغَـٰبِرِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 58,
+      "words": [
+        { "position": 1, "text": "وَأَمْطَرْنَا", "root": null },
+        { "position": 2, "text": "عَلَيْهِم", "root": null },
+        { "position": 3, "text": "مَّطَرًا", "root": null },
+        { "position": 4, "text": "فَسَآءَ", "root": null },
+        { "position": 5, "text": "مَطَرُ", "root": null },
+        { "position": 6, "text": "ٱلْمُنذَرِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 59,
+      "words": [
+        { "position": 1, "text": "قُلِ", "root": null },
+        { "position": 2, "text": "ٱلْحَمْدُ", "root": null },
+        { "position": 3, "text": "لِلَّهِ", "root": null },
+        { "position": 4, "text": "وَسَلَـٰمٌ", "root": null },
+        { "position": 5, "text": "عَلَىٰ", "root": null },
+        { "position": 6, "text": "عِبَادِهِ", "root": null },
+        { "position": 7, "text": "ٱلَّذِينَ", "root": null },
+        { "position": 8, "text": "ٱصْطَفَىٰٓ", "root": null },
+        { "position": 9, "text": "ءَآللَّهُ", "root": null },
+        { "position": 10, "text": "خَيْرٌ", "root": null },
+        { "position": 11, "text": "أَمَّا", "root": null },
+        { "position": 12, "text": "يُشْرِكُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 60,
+      "words": [
+        { "position": 1, "text": "أَمَّنْ", "root": null },
+        { "position": 2, "text": "خَلَقَ", "root": null },
+        { "position": 3, "text": "ٱلسَّمَـٰوَٰتِ", "root": null },
+        { "position": 4, "text": "وَٱلْأَرْضَ", "root": null },
+        { "position": 5, "text": "وَأَنزَلَ", "root": null },
+        { "position": 6, "text": "لَكُم", "root": null },
+        { "position": 7, "text": "مِّنَ", "root": null },
+        { "position": 8, "text": "ٱلسَّمَآءِ", "root": null },
+        { "position": 9, "text": "مَآءً", "root": null },
+        { "position": 10, "text": "فَأَنۢبَتْنَا", "root": null },
+        { "position": 11, "text": "بِهِۦ", "root": null },
+        { "position": 12, "text": "حَدَآئِقَ", "root": null },
+        { "position": 13, "text": "ذَاتَ", "root": null },
+        { "position": 14, "text": "بَهْجَةٍ", "root": null },
+        { "position": 15, "text": "مَّا", "root": null },
+        { "position": 16, "text": "كَانَ", "root": null },
+        { "position": 17, "text": "لَكُمْ", "root": null },
+        { "position": 18, "text": "أَن", "root": null },
+        { "position": 19, "text": "تُنۢبِتُوا۟", "root": null },
+        { "position": 20, "text": "شَجَرَهَآ", "root": null },
+        { "position": 21, "text": "أَءِلَـٰهٌ", "root": null },
+        { "position": 22, "text": "مَّعَ", "root": null },
+        { "position": 23, "text": "ٱللَّهِ", "root": null },
+        { "position": 24, "text": "بَلْ", "root": null },
+        { "position": 25, "text": "هُمْ", "root": null },
+        { "position": 26, "text": "قَوْمٌ", "root": null },
+        { "position": 27, "text": "يَعْدِلُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 61,
+      "words": [
+        { "position": 1, "text": "أَمَّن", "root": null },
+        { "position": 2, "text": "جَعَلَ", "root": null },
+        { "position": 3, "text": "ٱلْأَرْضَ", "root": null },
+        { "position": 4, "text": "قَرَارًا", "root": null },
+        { "position": 5, "text": "وَجَعَلَ", "root": null },
+        { "position": 6, "text": "خِلَـٰلَهَآ", "root": null },
+        { "position": 7, "text": "أَنْهَـٰرًا", "root": null },
+        { "position": 8, "text": "وَجَعَلَ", "root": null },
+        { "position": 9, "text": "لَهَا", "root": null },
+        { "position": 10, "text": "رَوَٰسِىَ", "root": null },
+        { "position": 11, "text": "وَجَعَلَ", "root": null },
+        { "position": 12, "text": "بَيْنَ", "root": null },
+        { "position": 13, "text": "ٱلْبَحْرَيْنِ", "root": null },
+        { "position": 14, "text": "حَاجِزًا", "root": null },
+        { "position": 15, "text": "أَءِلَـٰهٌ", "root": null },
+        { "position": 16, "text": "مَّعَ", "root": null },
+        { "position": 17, "text": "ٱللَّهِ", "root": null },
+        { "position": 18, "text": "بَلْ", "root": null },
+        { "position": 19, "text": "أَكْثَرُهُمْ", "root": null },
+        { "position": 20, "text": "لَا", "root": null },
+        { "position": 21, "text": "يَعْلَمُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 62,
+      "words": [
+        { "position": 1, "text": "أَمَّن", "root": null },
+        { "position": 2, "text": "يُجِيبُ", "root": null },
+        { "position": 3, "text": "ٱلْمُضْطَرَّ", "root": null },
+        { "position": 4, "text": "إِذَا", "root": null },
+        { "position": 5, "text": "دَعَاهُ", "root": null },
+        { "position": 6, "text": "وَيَكْشِفُ", "root": null },
+        { "position": 7, "text": "ٱلسُّوٓءَ", "root": null },
+        { "position": 8, "text": "وَيَجْعَلُكُمْ", "root": null },
+        { "position": 9, "text": "خُلَفَآءَ", "root": null },
+        { "position": 10, "text": "ٱلْأَرْضِ", "root": null },
+        { "position": 11, "text": "أَءِلَـٰهٌ", "root": null },
+        { "position": 12, "text": "مَّعَ", "root": null },
+        { "position": 13, "text": "ٱللَّهِ", "root": null },
+        { "position": 14, "text": "قَلِيلًا", "root": null },
+        { "position": 15, "text": "مَّا", "root": null },
+        { "position": 16, "text": "تَذَكَّرُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 63,
+      "words": [
+        { "position": 1, "text": "أَمَّن", "root": null },
+        { "position": 2, "text": "يَهْدِيكُمْ", "root": null },
+        { "position": 3, "text": "فِى", "root": null },
+        { "position": 4, "text": "ظُلُمَـٰتِ", "root": null },
+        { "position": 5, "text": "ٱلْبَرِّ", "root": null },
+        { "position": 6, "text": "وَٱلْبَحْرِ", "root": null },
+        { "position": 7, "text": "وَمَن", "root": null },
+        { "position": 8, "text": "يُرْسِلُ", "root": null },
+        { "position": 9, "text": "ٱلرِّيَـٰحَ", "root": null },
+        { "position": 10, "text": "بُشْرًۢا", "root": null },
+        { "position": 11, "text": "بَيْنَ", "root": null },
+        { "position": 12, "text": "يَدَىْ", "root": null },
+        { "position": 13, "text": "رَحْمَتِهِۦٓ", "root": null },
+        { "position": 14, "text": "أَءِلَـٰهٌ", "root": null },
+        { "position": 15, "text": "مَّعَ", "root": null },
+        { "position": 16, "text": "ٱللَّهِ", "root": null },
+        { "position": 17, "text": "تَعَـٰلَى", "root": null },
+        { "position": 18, "text": "ٱللَّهُ", "root": null },
+        { "position": 19, "text": "عَمَّا", "root": null },
+        { "position": 20, "text": "يُشْرِكُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 64,
+      "words": [
+        { "position": 1, "text": "أَمَّن", "root": null },
+        { "position": 2, "text": "يَبْدَؤُا۟", "root": null },
+        { "position": 3, "text": "ٱلْخَلْقَ", "root": null },
+        { "position": 4, "text": "ثُمَّ", "root": null },
+        { "position": 5, "text": "يُعِيدُهُۥ", "root": null },
+        { "position": 6, "text": "وَمَن", "root": null },
+        { "position": 7, "text": "يَرْزُقُكُم", "root": null },
+        { "position": 8, "text": "مِّنَ", "root": null },
+        { "position": 9, "text": "ٱلسَّمَآءِ", "root": null },
+        { "position": 10, "text": "وَٱلْأَرْضِ", "root": null },
+        { "position": 11, "text": "أَءِلَـٰهٌ", "root": null },
+        { "position": 12, "text": "مَّعَ", "root": null },
+        { "position": 13, "text": "ٱللَّهِ", "root": null },
+        { "position": 14, "text": "قُلْ", "root": null },
+        { "position": 15, "text": "هَاتُوا۟", "root": null },
+        { "position": 16, "text": "بُرْهَـٰنَكُمْ", "root": null },
+        { "position": 17, "text": "إِن", "root": null },
+        { "position": 18, "text": "كُنتُمْ", "root": null },
+        { "position": 19, "text": "صَـٰدِقِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 65,
+      "words": [
+        { "position": 1, "text": "قُل", "root": null },
+        { "position": 2, "text": "لَّا", "root": null },
+        { "position": 3, "text": "يَعْلَمُ", "root": null },
+        { "position": 4, "text": "مَن", "root": null },
+        { "position": 5, "text": "فِى", "root": null },
+        { "position": 6, "text": "ٱلسَّمَـٰوَٰتِ", "root": null },
+        { "position": 7, "text": "وَٱلْأَرْضِ", "root": null },
+        { "position": 8, "text": "ٱلْغَيْبَ", "root": null },
+        { "position": 9, "text": "إِلَّا", "root": null },
+        { "position": 10, "text": "ٱللَّهُ", "root": null },
+        { "position": 11, "text": "وَمَا", "root": null },
+        { "position": 12, "text": "يَشْعُرُونَ", "root": null },
+        { "position": 13, "text": "أَيَّانَ", "root": null },
+        { "position": 14, "text": "يُبْعَثُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 66,
+      "words": [
+        { "position": 1, "text": "بَلِ", "root": null },
+        { "position": 2, "text": "ٱدَّٰرَكَ", "root": null },
+        { "position": 3, "text": "عِلْمُهُمْ", "root": null },
+        { "position": 4, "text": "فِى", "root": null },
+        { "position": 5, "text": "ٱلْـَٔاخِرَةِ", "root": null },
+        { "position": 6, "text": "بَلْ", "root": null },
+        { "position": 7, "text": "هُمْ", "root": null },
+        { "position": 8, "text": "فِى", "root": null },
+        { "position": 9, "text": "شَكٍّ", "root": null },
+        { "position": 10, "text": "مِّنْهَا", "root": null },
+        { "position": 11, "text": "بَلْ", "root": null },
+        { "position": 12, "text": "هُم", "root": null },
+        { "position": 13, "text": "مِّنْهَا", "root": null },
+        { "position": 14, "text": "عَمُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 67,
+      "words": [
+        { "position": 1, "text": "وَقَالَ", "root": null },
+        { "position": 2, "text": "ٱلَّذِينَ", "root": null },
+        { "position": 3, "text": "كَفَرُوٓا۟", "root": null },
+        { "position": 4, "text": "أَءِذَا", "root": null },
+        { "position": 5, "text": "كُنَّا", "root": null },
+        { "position": 6, "text": "تُرَٰبًا", "root": null },
+        { "position": 7, "text": "وَءَابَآؤُنَآ", "root": null },
+        { "position": 8, "text": "أَئِنَّا", "root": null },
+        { "position": 9, "text": "لَمُخْرَجُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 68,
+      "words": [
+        { "position": 1, "text": "لَقَدْ", "root": null },
+        { "position": 2, "text": "وُعِدْنَا", "root": null },
+        { "position": 3, "text": "هَـٰذَا", "root": null },
+        { "position": 4, "text": "نَحْنُ", "root": null },
+        { "position": 5, "text": "وَءَابَآؤُنَا", "root": null },
+        { "position": 6, "text": "مِن", "root": null },
+        { "position": 7, "text": "قَبْلُ", "root": null },
+        { "position": 8, "text": "إِنْ", "root": null },
+        { "position": 9, "text": "هَـٰذَآ", "root": null },
+        { "position": 10, "text": "إِلَّآ", "root": null },
+        { "position": 11, "text": "أَسَـٰطِيرُ", "root": null },
+        { "position": 12, "text": "ٱلْأَوَّلِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 69,
+      "words": [
+        { "position": 1, "text": "قُلْ", "root": null },
+        { "position": 2, "text": "سِيرُوا۟", "root": null },
+        { "position": 3, "text": "فِى", "root": null },
+        { "position": 4, "text": "ٱلْأَرْضِ", "root": null },
+        { "position": 5, "text": "فَٱنظُرُوا۟", "root": null },
+        { "position": 6, "text": "كَيْفَ", "root": null },
+        { "position": 7, "text": "كَانَ", "root": null },
+        { "position": 8, "text": "عَـٰقِبَةُ", "root": null },
+        { "position": 9, "text": "ٱلْمُجْرِمِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 70,
+      "words": [
+        { "position": 1, "text": "وَلَا", "root": null },
+        { "position": 2, "text": "تَحْزَنْ", "root": null },
+        { "position": 3, "text": "عَلَيْهِمْ", "root": null },
+        { "position": 4, "text": "وَلَا", "root": null },
+        { "position": 5, "text": "تَكُن", "root": null },
+        { "position": 6, "text": "فِى", "root": null },
+        { "position": 7, "text": "ضَيْقٍ", "root": null },
+        { "position": 8, "text": "مِّمَّا", "root": null },
+        { "position": 9, "text": "يَمْكُرُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 71,
+      "words": [
+        { "position": 1, "text": "وَيَقُولُونَ", "root": null },
+        { "position": 2, "text": "مَتَىٰ", "root": null },
+        { "position": 3, "text": "هَـٰذَا", "root": null },
+        { "position": 4, "text": "ٱلْوَعْدُ", "root": null },
+        { "position": 5, "text": "إِن", "root": null },
+        { "position": 6, "text": "كُنتُمْ", "root": null },
+        { "position": 7, "text": "صَـٰدِقِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 72,
+      "words": [
+        { "position": 1, "text": "قُلْ", "root": null },
+        { "position": 2, "text": "عَسَىٰٓ", "root": null },
+        { "position": 3, "text": "أَن", "root": null },
+        { "position": 4, "text": "يَكُونَ", "root": null },
+        { "position": 5, "text": "رَدِفَ", "root": null },
+        { "position": 6, "text": "لَكُم", "root": null },
+        { "position": 7, "text": "بَعْضُ", "root": null },
+        { "position": 8, "text": "ٱلَّذِى", "root": null },
+        { "position": 9, "text": "تَسْتَعْجِلُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 73,
+      "words": [
+        { "position": 1, "text": "وَإِنَّ", "root": null },
+        { "position": 2, "text": "رَبَّكَ", "root": null },
+        { "position": 3, "text": "لَذُو", "root": null },
+        { "position": 4, "text": "فَضْلٍ", "root": null },
+        { "position": 5, "text": "عَلَى", "root": null },
+        { "position": 6, "text": "ٱلنَّاسِ", "root": null },
+        { "position": 7, "text": "وَلَـٰكِنَّ", "root": null },
+        { "position": 8, "text": "أَكْثَرَهُمْ", "root": null },
+        { "position": 9, "text": "لَا", "root": null },
+        { "position": 10, "text": "يَشْكُرُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 74,
+      "words": [
+        { "position": 1, "text": "وَإِنَّ", "root": null },
+        { "position": 2, "text": "رَبَّكَ", "root": null },
+        { "position": 3, "text": "لَيَعْلَمُ", "root": null },
+        { "position": 4, "text": "مَا", "root": null },
+        { "position": 5, "text": "تُكِنُّ", "root": null },
+        { "position": 6, "text": "صُدُورُهُمْ", "root": null },
+        { "position": 7, "text": "وَمَا", "root": null },
+        { "position": 8, "text": "يُعْلِنُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 75,
+      "words": [
+        { "position": 1, "text": "وَمَا", "root": null },
+        { "position": 2, "text": "مِنْ", "root": null },
+        { "position": 3, "text": "غَآئِبَةٍ", "root": null },
+        { "position": 4, "text": "فِى", "root": null },
+        { "position": 5, "text": "ٱلسَّمَآءِ", "root": null },
+        { "position": 6, "text": "وَٱلْأَرْضِ", "root": null },
+        { "position": 7, "text": "إِلَّا", "root": null },
+        { "position": 8, "text": "فِى", "root": null },
+        { "position": 9, "text": "كِتَـٰبٍ", "root": null },
+        { "position": 10, "text": "مُّبِينٍ", "root": null }
+      ]
+    },
+    {
+      "ayah": 76,
+      "words": [
+        { "position": 1, "text": "إِنَّ", "root": null },
+        { "position": 2, "text": "هَـٰذَا", "root": null },
+        { "position": 3, "text": "ٱلْقُرْءَانَ", "root": null },
+        { "position": 4, "text": "يَقُصُّ", "root": null },
+        { "position": 5, "text": "عَلَىٰ", "root": null },
+        { "position": 6, "text": "بَنِىٓ", "root": null },
+        { "position": 7, "text": "إِسْرَٰٓءِيلَ", "root": null },
+        { "position": 8, "text": "أَكْثَرَ", "root": null },
+        { "position": 9, "text": "ٱلَّذِى", "root": null },
+        { "position": 10, "text": "هُمْ", "root": null },
+        { "position": 11, "text": "فِيهِ", "root": null },
+        { "position": 12, "text": "يَخْتَلِفُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 77,
+      "words": [
+        { "position": 1, "text": "وَإِنَّهُۥ", "root": null },
+        { "position": 2, "text": "لَهُدًى", "root": null },
+        { "position": 3, "text": "وَرَحْمَةٌ", "root": null },
+        { "position": 4, "text": "لِّلْمُؤْمِنِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 78,
+      "words": [
+        { "position": 1, "text": "إِنَّ", "root": null },
+        { "position": 2, "text": "رَبَّكَ", "root": null },
+        { "position": 3, "text": "يَقْضِى", "root": null },
+        { "position": 4, "text": "بَيْنَهُم", "root": null },
+        { "position": 5, "text": "بِحُكْمِهِۦ", "root": null },
+        { "position": 6, "text": "وَهُوَ", "root": null },
+        { "position": 7, "text": "ٱلْعَزِيزُ", "root": null },
+        { "position": 8, "text": "ٱلْعَلِيمُ", "root": null }
+      ]
+    },
+    {
+      "ayah": 79,
+      "words": [
+        { "position": 1, "text": "فَتَوَكَّلْ", "root": null },
+        { "position": 2, "text": "عَلَى", "root": null },
+        { "position": 3, "text": "ٱللَّهِ", "root": null },
+        { "position": 4, "text": "إِنَّكَ", "root": null },
+        { "position": 5, "text": "عَلَى", "root": null },
+        { "position": 6, "text": "ٱلْحَقِّ", "root": null },
+        { "position": 7, "text": "ٱلْمُبِينِ", "root": null }
+      ]
+    },
+    {
+      "ayah": 80,
+      "words": [
+        { "position": 1, "text": "إِنَّكَ", "root": null },
+        { "position": 2, "text": "لَا", "root": null },
+        { "position": 3, "text": "تُسْمِعُ", "root": null },
+        { "position": 4, "text": "ٱلْمَوْتَىٰ", "root": null },
+        { "position": 5, "text": "وَلَا", "root": null },
+        { "position": 6, "text": "تُسْمِعُ", "root": null },
+        { "position": 7, "text": "ٱلصُّمَّ", "root": null },
+        { "position": 8, "text": "ٱلدُّعَآءَ", "root": null },
+        { "position": 9, "text": "إِذَا", "root": null },
+        { "position": 10, "text": "وَلَّوْا۟", "root": null },
+        { "position": 11, "text": "مُدْبِرِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 81,
+      "words": [
+        { "position": 1, "text": "وَمَآ", "root": null },
+        { "position": 2, "text": "أَنتَ", "root": null },
+        { "position": 3, "text": "بِهَـٰدِى", "root": null },
+        { "position": 4, "text": "ٱلْعُمْىِ", "root": null },
+        { "position": 5, "text": "عَن", "root": null },
+        { "position": 6, "text": "ضَلَـٰلَتِهِمْ", "root": null },
+        { "position": 7, "text": "إِن", "root": null },
+        { "position": 8, "text": "تُسْمِعُ", "root": null },
+        { "position": 9, "text": "إِلَّا", "root": null },
+        { "position": 10, "text": "مَن", "root": null },
+        { "position": 11, "text": "يُؤْمِنُ", "root": null },
+        { "position": 12, "text": "بِـَٔايَـٰتِنَا", "root": null },
+        { "position": 13, "text": "فَهُم", "root": null },
+        { "position": 14, "text": "مُّسْلِمُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 82,
+      "words": [
+        { "position": 1, "text": "وَإِذَا", "root": null },
+        { "position": 2, "text": "وَقَعَ", "root": null },
+        { "position": 3, "text": "ٱلْقَوْلُ", "root": null },
+        { "position": 4, "text": "عَلَيْهِمْ", "root": null },
+        { "position": 5, "text": "أَخْرَجْنَا", "root": null },
+        { "position": 6, "text": "لَهُمْ", "root": null },
+        { "position": 7, "text": "دَآبَّةً", "root": null },
+        { "position": 8, "text": "مِّنَ", "root": null },
+        { "position": 9, "text": "ٱلْأَرْضِ", "root": null },
+        { "position": 10, "text": "تُكَلِّمُهُمْ", "root": null },
+        { "position": 11, "text": "أَنَّ", "root": null },
+        { "position": 12, "text": "ٱلنَّاسَ", "root": null },
+        { "position": 13, "text": "كَانُوا۟", "root": null },
+        { "position": 14, "text": "بِـَٔايَـٰتِنَا", "root": null },
+        { "position": 15, "text": "لَا", "root": null },
+        { "position": 16, "text": "يُوقِنُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 83,
+      "words": [
+        { "position": 1, "text": "وَيَوْمَ", "root": null },
+        { "position": 2, "text": "نَحْشُرُ", "root": null },
+        { "position": 3, "text": "مِن", "root": null },
+        { "position": 4, "text": "كُلِّ", "root": null },
+        { "position": 5, "text": "أُمَّةٍ", "root": null },
+        { "position": 6, "text": "فَوْجًا", "root": null },
+        { "position": 7, "text": "مِّمَّن", "root": null },
+        { "position": 8, "text": "يُكَذِّبُ", "root": null },
+        { "position": 9, "text": "بِـَٔايَـٰتِنَا", "root": null },
+        { "position": 10, "text": "فَهُمْ", "root": null },
+        { "position": 11, "text": "يُوزَعُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 84,
+      "words": [
+        { "position": 1, "text": "حَتَّىٰٓ", "root": null },
+        { "position": 2, "text": "إِذَا", "root": null },
+        { "position": 3, "text": "جَآءُو", "root": null },
+        { "position": 4, "text": "قَالَ", "root": null },
+        { "position": 5, "text": "أَكَذَّبْتُم", "root": null },
+        { "position": 6, "text": "بِـَٔايَـٰتِى", "root": null },
+        { "position": 7, "text": "وَلَمْ", "root": null },
+        { "position": 8, "text": "تُحِيطُوا۟", "root": null },
+        { "position": 9, "text": "بِهَا", "root": null },
+        { "position": 10, "text": "عِلْمًا", "root": null },
+        { "position": 11, "text": "أَمَّاذَا", "root": null },
+        { "position": 12, "text": "كُنتُمْ", "root": null },
+        { "position": 13, "text": "تَعْمَلُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 85,
+      "words": [
+        { "position": 1, "text": "وَوَقَعَ", "root": null },
+        { "position": 2, "text": "ٱلْقَوْلُ", "root": null },
+        { "position": 3, "text": "عَلَيْهِم", "root": null },
+        { "position": 4, "text": "بِمَا", "root": null },
+        { "position": 5, "text": "ظَلَمُوا۟", "root": null },
+        { "position": 6, "text": "فَهُمْ", "root": null },
+        { "position": 7, "text": "لَا", "root": null },
+        { "position": 8, "text": "يَنطِقُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 86,
+      "words": [
+        { "position": 1, "text": "أَلَمْ", "root": null },
+        { "position": 2, "text": "يَرَوْا۟", "root": null },
+        { "position": 3, "text": "أَنَّا", "root": null },
+        { "position": 4, "text": "جَعَلْنَا", "root": null },
+        { "position": 5, "text": "ٱلَّيْلَ", "root": null },
+        { "position": 6, "text": "لِيَسْكُنُوا۟", "root": null },
+        { "position": 7, "text": "فِيهِ", "root": null },
+        { "position": 8, "text": "وَٱلنَّهَارَ", "root": null },
+        { "position": 9, "text": "مُبْصِرًا", "root": null },
+        { "position": 10, "text": "إِنَّ", "root": null },
+        { "position": 11, "text": "فِى", "root": null },
+        { "position": 12, "text": "ذَٰلِكَ", "root": null },
+        { "position": 13, "text": "لَـَٔايَـٰتٍ", "root": null },
+        { "position": 14, "text": "لِّقَوْمٍ", "root": null },
+        { "position": 15, "text": "يُؤْمِنُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 87,
+      "words": [
+        { "position": 1, "text": "وَيَوْمَ", "root": null },
+        { "position": 2, "text": "يُنفَخُ", "root": null },
+        { "position": 3, "text": "فِى", "root": null },
+        { "position": 4, "text": "ٱلصُّورِ", "root": null },
+        { "position": 5, "text": "فَفَزِعَ", "root": null },
+        { "position": 6, "text": "مَن", "root": null },
+        { "position": 7, "text": "فِى", "root": null },
+        { "position": 8, "text": "ٱلسَّمَـٰوَٰتِ", "root": null },
+        { "position": 9, "text": "وَمَن", "root": null },
+        { "position": 10, "text": "فِى", "root": null },
+        { "position": 11, "text": "ٱلْأَرْضِ", "root": null },
+        { "position": 12, "text": "إِلَّا", "root": null },
+        { "position": 13, "text": "مَن", "root": null },
+        { "position": 14, "text": "شَآءَ", "root": null },
+        { "position": 15, "text": "ٱللَّهُ", "root": null },
+        { "position": 16, "text": "وَكُلٌّ", "root": null },
+        { "position": 17, "text": "أَتَوْهُ", "root": null },
+        { "position": 18, "text": "دَٰخِرِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 88,
+      "words": [
+        { "position": 1, "text": "وَتَرَى", "root": null },
+        { "position": 2, "text": "ٱلْجِبَالَ", "root": null },
+        { "position": 3, "text": "تَحْسَبُهَا", "root": null },
+        { "position": 4, "text": "جَامِدَةً", "root": null },
+        { "position": 5, "text": "وَهِىَ", "root": null },
+        { "position": 6, "text": "تَمُرُّ", "root": null },
+        { "position": 7, "text": "مَرَّ", "root": null },
+        { "position": 8, "text": "ٱلسَّحَابِ", "root": null },
+        { "position": 9, "text": "صُنْعَ", "root": null },
+        { "position": 10, "text": "ٱللَّهِ", "root": null },
+        { "position": 11, "text": "ٱلَّذِىٓ", "root": null },
+        { "position": 12, "text": "أَتْقَنَ", "root": null },
+        { "position": 13, "text": "كُلَّ", "root": null },
+        { "position": 14, "text": "شَىْءٍ", "root": null },
+        { "position": 15, "text": "إِنَّهُۥ", "root": null },
+        { "position": 16, "text": "خَبِيرٌۢ", "root": null },
+        { "position": 17, "text": "بِمَا", "root": null },
+        { "position": 18, "text": "تَفْعَلُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 89,
+      "words": [
+        { "position": 1, "text": "مَن", "root": null },
+        { "position": 2, "text": "جَآءَ", "root": null },
+        { "position": 3, "text": "بِٱلْحَسَنَةِ", "root": null },
+        { "position": 4, "text": "فَلَهُۥ", "root": null },
+        { "position": 5, "text": "خَيْرٌ", "root": null },
+        { "position": 6, "text": "مِّنْهَا", "root": null },
+        { "position": 7, "text": "وَهُم", "root": null },
+        { "position": 8, "text": "مِّن", "root": null },
+        { "position": 9, "text": "فَزَعٍ", "root": null },
+        { "position": 10, "text": "يَوْمَئِذٍ", "root": null },
+        { "position": 11, "text": "ءَامِنُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 90,
+      "words": [
+        { "position": 1, "text": "وَمَن", "root": null },
+        { "position": 2, "text": "جَآءَ", "root": null },
+        { "position": 3, "text": "بِٱلسَّيِّئَةِ", "root": null },
+        { "position": 4, "text": "فَكُبَّتْ", "root": null },
+        { "position": 5, "text": "وُجُوهُهُمْ", "root": null },
+        { "position": 6, "text": "فِى", "root": null },
+        { "position": 7, "text": "ٱلنَّارِ", "root": null },
+        { "position": 8, "text": "هَلْ", "root": null },
+        { "position": 9, "text": "تُجْزَوْنَ", "root": null },
+        { "position": 10, "text": "إِلَّا", "root": null },
+        { "position": 11, "text": "مَا", "root": null },
+        { "position": 12, "text": "كُنتُمْ", "root": null },
+        { "position": 13, "text": "تَعْمَلُونَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 91,
+      "words": [
+        { "position": 1, "text": "إِنَّمَآ", "root": null },
+        { "position": 2, "text": "أُمِرْتُ", "root": null },
+        { "position": 3, "text": "أَنْ", "root": null },
+        { "position": 4, "text": "أَعْبُدَ", "root": null },
+        { "position": 5, "text": "رَبَّ", "root": null },
+        { "position": 6, "text": "هَـٰذِهِ", "root": null },
+        { "position": 7, "text": "ٱلْبَلْدَةِ", "root": null },
+        { "position": 8, "text": "ٱلَّذِى", "root": null },
+        { "position": 9, "text": "حَرَّمَهَا", "root": null },
+        { "position": 10, "text": "وَلَهُۥ", "root": null },
+        { "position": 11, "text": "كُلُّ", "root": null },
+        { "position": 12, "text": "شَىْءٍ", "root": null },
+        { "position": 13, "text": "وَأُمِرْتُ", "root": null },
+        { "position": 14, "text": "أَنْ", "root": null },
+        { "position": 15, "text": "أَكُونَ", "root": null },
+        { "position": 16, "text": "مِنَ", "root": null },
+        { "position": 17, "text": "ٱلْمُسْلِمِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 92,
+      "words": [
+        { "position": 1, "text": "وَأَنْ", "root": null },
+        { "position": 2, "text": "أَتْلُوَا۟", "root": null },
+        { "position": 3, "text": "ٱلْقُرْءَانَ", "root": null },
+        { "position": 4, "text": "فَمَنِ", "root": null },
+        { "position": 5, "text": "ٱهْتَدَىٰ", "root": null },
+        { "position": 6, "text": "فَإِنَّمَا", "root": null },
+        { "position": 7, "text": "يَهْتَدِى", "root": null },
+        { "position": 8, "text": "لِنَفْسِهِۦ", "root": null },
+        { "position": 9, "text": "وَمَن", "root": null },
+        { "position": 10, "text": "ضَلَّ", "root": null },
+        { "position": 11, "text": "فَقُلْ", "root": null },
+        { "position": 12, "text": "إِنَّمَآ", "root": null },
+        { "position": 13, "text": "أَنَا۠", "root": null },
+        { "position": 14, "text": "مِنَ", "root": null },
+        { "position": 15, "text": "ٱلْمُنذِرِينَ", "root": null }
+      ]
+    },
+    {
+      "ayah": 93,
+      "words": [
+        { "position": 1, "text": "وَقُلِ", "root": null },
+        { "position": 2, "text": "ٱلْحَمْدُ", "root": null },
+        { "position": 3, "text": "لِلَّهِ", "root": null },
+        { "position": 4, "text": "سَيُرِيكُمْ", "root": null },
+        { "position": 5, "text": "ءَايَـٰتِهِۦ", "root": null },
+        { "position": 6, "text": "فَتَعْرِفُونَهَا", "root": null },
+        { "position": 7, "text": "وَمَا", "root": null },
+        { "position": 8, "text": "رَبُّكَ", "root": null },
+        { "position": 9, "text": "بِغَـٰفِلٍ", "root": null },
+        { "position": 10, "text": "عَمَّا", "root": null },
+        { "position": 11, "text": "تَعْمَلُونَ", "root": null }
+      ]
+    }
+  ]
+}

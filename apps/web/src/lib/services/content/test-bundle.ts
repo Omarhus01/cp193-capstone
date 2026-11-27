@@ -1,7 +1,7 @@
 import type { ReviewStatus } from "@/lib/domain/content";
 import type { ReviewEntry } from "@/lib/services/review";
 import type { ContentBundle, SurahFiles } from "./load";
-import type { SurahMetadata } from "./schema";
+import type { PageStart, SurahMetadata } from "./schema";
 import type {
   ExplanationEntry,
   ItemEntry,
@@ -162,6 +162,21 @@ export function testMetadata(surahs: readonly SurahFiles[]): SurahMetadata[] {
 }
 
 /**
+ * Mushaf pages for the test metadata: one page starting at verse 1 of every surah, and pages
+ * starting inside a surah at `breaks` (by default 1:3), so a surah can have a page break inside it.
+ */
+export function testPages(breaks: readonly string[] = ["1:3"]): PageStart[] {
+  const starts = [
+    ...Array.from({ length: 114 }, (_, i) => ({ surah: i + 1, ayah: 1 })),
+    ...breaks.map((ref) => {
+      const [surah, ayah] = ref.split(":").map(Number);
+      return { surah, ayah };
+    }),
+  ].sort((a, b) => a.surah - b.surah || a.ayah - b.ayah);
+  return starts.map((start, i) => ({ page: i + 1, ...start }));
+}
+
+/**
  * Surah 1 with 4 verses and surah 2 with 3, one source with two passages, two reading sections
  * covering surah 1, a phrase note with a context link into surah 2, a published word meaning,
  * a published brief, a draft verse explanation, transliterations of 1:1 (published in both
@@ -222,6 +237,7 @@ export function testBundle(): ContentBundle {
   };
   return {
     metadata: testMetadata([first, second, partialSurah()]),
+    pages: testPages(),
     surahs: [first, second],
     sources: [
       {

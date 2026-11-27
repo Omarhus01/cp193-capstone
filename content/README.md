@@ -9,7 +9,8 @@ The project owner provides and validates all religious content. Never add explan
 ```
 content/
   schema/                  JSON Schema of each file (generated, see "Changing the schema")
-  quran-metadata.json      every surah's name, revelation place and verse count, from Tanzil. Generated.
+  quran-metadata.json      every surah's name, revelation place and verse count, and where each mushaf page
+                           starts, from Tanzil. Generated.
   surahs/001/
     text.json              Quran text from Tanzil: the whole surah or only some verses. Generated; never edit it.
     words.json             the words of each verse. Generated; the owner fills in `root`.
@@ -45,7 +46,9 @@ To import surahs, download the text as XML and the metadata from Tanzil into a f
 npm run content:import-tanzil -- <path>/quran-uthmani.xml <path>/quran-data.xml 2 3
 ```
 
-The importer writes `text.json` and `words.json`, keeps any roots already filled in for words whose text is unchanged, and creates `surah.json` with empty names if it doesn't exist.
+The importer writes `text.json` and `words.json`, and keeps any roots already filled in for words whose text is unchanged. If `surah.json` doesn't exist, it creates one with Tanzil's transliterated name as the English name (such as "Al-Baqara") and no Korean name; the owner adds the Korean name. An existing `surah.json` is never changed.
+
+All 114 surahs are imported ([ADR 0025](../docs/decisions/0025-every-verse-shows-grouped-by-mushaf-page.md)). To import them again after Tanzil updates its text, list every surah (`1 2 3 … 114`).
 
 ### Only some verses of a surah
 
@@ -75,13 +78,15 @@ A ref without a word position means the whole verse at that end.
 
 - A `phrase_note` runs from word to word inside one verse.
 - A `verse_explanation` covers one or more whole verses.
-- A `reading_section` covers whole verses. The sections listed in `reading.json` must cover the surah from its first verse to its last, in order, with no gaps or overlaps. In a surah that holds only some verses, they cover exactly those verses: each included verse in one section, and no section over a verse that isn't included.
+- A `reading_section` covers whole verses. The sections listed in `reading.json` go in order, without overlaps, and never over a verse that isn't included. They cover only the stretches that are explained: a verse may be in no section ([ADR 0025](../docs/decisions/0025-every-verse-shows-grouped-by-mushaf-page.md)).
 - A span over several verses can't run over a verse that isn't in `content/surahs/`.
 - `contextLinks` name other spans a reader needs to understand an explanation, with the reason in English and Korean.
 
 An explanation goes in the folder of the surah where its span starts.
 
 Where reading sections start and end is public: the surah page lists every section, and shows "Explanation coming soon" for one whose explanation isn't published yet ([ADR 0013](../docs/decisions/0013-public-reading-structure-and-transliteration.md)). The explanation itself stays hidden until it is published.
+
+Verses that no section covers still show. The page groups them by the page of the Madani mushaf they are on, such as "Page 3 · 2:6–16", each group with a one-line "Explanation coming soon". A group ends where the mushaf page ends, where a reading section starts, and before a verse the folder doesn't hold ([ADR 0025](../docs/decisions/0025-every-verse-shows-grouped-by-mushaf-page.md)).
 
 ## Explanations
 
@@ -120,7 +125,7 @@ The four parts follow the proposal: word meanings, historical background, contex
 
 Related verses, and the "Elsewhere" notes of word meanings, name a verse as `"surah:ayah"`. The verse doesn't have to be imported: validation checks it against `quran-metadata.json`, Tanzil's verse counts for all 114 surahs. The page shows the reference as text, and as a link once that surah is imported.
 
-`quran-metadata.json` is generated from Tanzil's metadata and keeps its license notice. To write it again:
+`quran-metadata.json` is generated from Tanzil's metadata and keeps its license notice. Besides the surahs, it lists where each of the mushaf's 604 pages starts (`pages`); the seed gives every verse its page from it. To write it again:
 
 ```bash
 npm run content:import-tanzil-metadata -- <path>/quran-data.xml

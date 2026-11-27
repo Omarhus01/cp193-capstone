@@ -23,6 +23,33 @@ describe("content/", () => {
     expect(metadata.reduce((total, surah) => total + surah.verseCount, 0)).toBe(6236);
   });
 
+  it("holds every verse of all 114 surahs, each surah named in English (ADR 0025)", () => {
+    const { surahs } = loadContent().bundle;
+    expect(surahs.map((s) => s.number)).toEqual(Array.from({ length: 114 }, (_, i) => i + 1));
+    for (const surah of surahs) {
+      expect(surah.text.verses.map((v) => v.ayah)).toEqual(
+        Array.from({ length: surah.text.surah.verseCount }, (_, i) => i + 1),
+      );
+      expect(surah.surah.names.en).toBeTruthy();
+    }
+    expect(surahs.reduce((total, s) => total + s.text.verses.length, 0)).toBe(6236);
+  });
+
+  it("has where each of the mushaf's 604 pages starts", () => {
+    const { pages } = loadContent().bundle;
+    expect(pages).toHaveLength(604);
+    expect(pages[0]).toEqual({ page: 1, surah: 1, ayah: 1 });
+    expect(pages[1]).toEqual({ page: 2, surah: 2, ayah: 1 });
+  });
+
+  it("keeps 4:34 as An-Nisa's one reading section, inside the whole surah", () => {
+    const nisa = loadContent().bundle.surahs.find((s) => s.number === 4);
+    expect(nisa?.text.verses).toHaveLength(176);
+    expect(nisa?.readingSections).toHaveLength(1);
+    const section = nisa?.explanations.find((e) => e.id === nisa.readingSections[0]);
+    expect(section?.span).toEqual({ from: "4:34", to: "4:34" });
+  });
+
   it("keeps Al-Fatiha's Basmala as verse 1:1, as in Tanzil", () => {
     const fatiha = loadContent().bundle.surahs.find((s) => s.number === 1);
     expect(fatiha?.text.surah).toMatchObject({ verseCount: 7, basmala: null });
@@ -93,34 +120,55 @@ describe("validateContent", () => {
     });
   });
 
+  describe("mushaf pages", () => {
+    it("rejects a page that starts at no verse, out of order, or misnumbered", () => {
+      const errors = messages(
+        errorsAfter((b) => {
+          b.pages[3] = { page: 4, surah: 3, ayah: 11 };
+          b.pages[5] = { page: 6, surah: 4, ayah: 1 };
+          b.pages[7].page = 70;
+        }),
+      );
+      expect(errors).toContainEqual(
+        expect.stringContaining("pages[3]: starts at 3:11; surah 3 has 10 verses"),
+      );
+      expect(errors).toContainEqual(expect.stringContaining("pages[5]: starts before page 5"));
+      expect(errors).toContainEqual(expect.stringContaining("pages[7].page: is 70; expected 8"));
+    });
+  });
+
   describe("reading sections", () => {
-    it("rejects a gap between sections", () => {
-      const errors = errorsAfter((b) => {
-        b.surahs[0].explanations[1].span = { from: "1:4", to: "1:4" };
-      });
-      expect(messages(errors)).toContainEqual(expect.stringContaining("leaves a gap"));
+    it("accepts verses that no section covers: before, between and after sections", () => {
+      // Only explained stretches are sections; the page groups the rest by mushaf page (ADR 0025).
+      expect(
+        errorsAfter((b) => {
+          b.surahs[0].explanations[0].span = { from: "1:2", to: "1:2" };
+          b.surahs[0].explanations[1].span = { from: "1:4", to: "1:4" };
+          b.surahs[0].qa = [];
+        }),
+      ).toEqual([]);
+      expect(
+        errorsAfter((b) => {
+          b.surahs[0].explanations[1].span = { from: "1:3", to: "1:3" };
+        }),
+      ).toEqual([]);
     });
 
     it("rejects overlapping sections", () => {
       const errors = errorsAfter((b) => {
         b.surahs[0].explanations[1].span = { from: "1:2", to: "1:4" };
       });
-      expect(messages(errors)).toContainEqual(expect.stringContaining("inside the section before"));
+      expect(messages(errors)).toContainEqual(
+        expect.stringContaining("inside or before the section"),
+      );
     });
 
-    it("rejects sections that stop before the last verse", () => {
+    it("rejects sections out of order", () => {
       const errors = errorsAfter((b) => {
-        b.surahs[0].explanations[1].span = { from: "1:3", to: "1:3" };
-      });
-      expect(messages(errors)).toContainEqual(expect.stringContaining("the surah has 4 verses"));
-    });
-
-    it("rejects sections that don't start at verse 1", () => {
-      const errors = errorsAfter((b) => {
-        b.surahs[0].explanations[0].span = { from: "1:2", to: "1:2" };
+        b.surahs[0].readingSections = ["s1-reading-2", "s1-reading-1"];
       });
       expect(messages(errors)).toContainEqual(
-        expect.stringContaining("verse 1:1 is in no section"),
+        expect.stringContaining("inside or before the section"),
       );
     });
 
@@ -549,21 +597,18 @@ describe("validateContent: a surah holding only some verses", () => {
     const errors = partialErrorsAfter((b) => {
       partial(b).explanations[1].span = { from: "4:35", to: "4:35" };
     });
-    expect(errors).toContainEqual(expect.stringContaining("inside the section before it"));
+    expect(errors).toContainEqual(
+      expect.stringContaining("inside or before the section before it"),
+    );
   });
 
-  it("rejects an included verse that no section covers", () => {
-    expect(
-      partialErrorsAfter((b) => {
-        partial(b).explanations[0].span = { from: "4:35", to: "4:35" };
-      }),
-    ).toContainEqual(expect.stringContaining("leaves a gap: verse 4:34 is in no section"));
+  it("accepts an included verse that no section covers", () => {
     expect(
       partialErrorsAfter((b) => {
         partial(b).explanations = partial(b).explanations.slice(0, 1);
         partial(b).readingSections = ["s4-reading-1"];
       }),
-    ).toContainEqual(expect.stringContaining("end at verse 35; text.json goes on to verse 40"));
+    ).toEqual([]);
   });
 
   it("rejects a verse explanation or question over a verse the folder doesn't hold", () => {

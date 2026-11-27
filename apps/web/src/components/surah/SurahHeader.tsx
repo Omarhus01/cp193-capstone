@@ -21,7 +21,10 @@ type SurahHeaderProps = {
 export function SurahHeader({ surah, shownVerseCount, brief, locale }: SurahHeaderProps) {
   const t = useTranslations("surah");
   const localName = locale === "ko" ? surah.nameKo : surah.nameEn;
-  // On Korean pages the English name follows, as the design shows ("알파티하 Al-Fatiha").
+  const numberTitle = t("title", { number: surah.number });
+  // On Korean pages the English name follows, as the design shows ("알파티하 Al-Fatiha"). Until a
+  // surah has a Korean name, the title is its number and the English name still follows
+  // ("수라 2 Al-Baqara", ADR 0025).
   const secondName = locale === "ko" ? surah.nameEn : null;
 
   return (
@@ -30,8 +33,8 @@ export function SurahHeader({ surah, shownVerseCount, brief, locale }: SurahHead
         {surah.nameAr}
       </ArabicText>
       <h1 className="mt-1 text-2xl font-semibold">
-        {localName ?? t("title", { number: surah.number })}
-        {localName && secondName ? (
+        {localName ?? numberTitle}
+        {secondName ? (
           <span lang="en" className="ml-2 text-lg font-normal text-ink-muted">
             {secondName}
           </span>
@@ -39,7 +42,8 @@ export function SurahHeader({ surah, shownVerseCount, brief, locale }: SurahHead
       </h1>
       <ul className="mt-3 flex flex-wrap gap-2 text-sm">
         {[
-          t("title", { number: surah.number }),
+          // The number is already the title when the surah has no name in this language.
+          ...(localName ? [numberTitle] : []),
           t(surah.revelationPlace),
           t("verseCount", { count: surah.verseCount }),
         ].map((chip) => (

@@ -22,11 +22,12 @@ import {
 
 const MARK = "ۛ"; // a pause mark, which Tanzil writes as its own token
 
-function verse(ayah: number, words: string[], text = words.join(" ")): Verse {
+function verse(ayah: number, words: string[], text = words.join(" "), page = 1): Verse {
   return {
     surah: 1,
     ayah,
     textAr: text,
+    page,
     words: words.map((textAr, i) => ({ position: i + 1, textAr, root: null })),
     transliteration: { en: null, ko: null },
   };
@@ -280,12 +281,12 @@ describe("buildSurahPageView", () => {
   );
 
   it("lists every reading section, published or not, with its verses", () => {
-    expect(view.sections.map((s) => [s.position, s.total, s.label, s.anchor, s.published])).toEqual(
-      [
-        [1, 2, "1:1–2", "section-1", true],
-        [2, 2, "1:3", "section-2", false],
-      ],
-    );
+    expect(
+      view.sections.map((s) => [s.position, s.kind, s.sectionOf, s.label, s.anchor, s.published]),
+    ).toEqual([
+      [1, "section", { number: 1, total: 2 }, "1:1–2", "section-1", true],
+      [2, "section", { number: 2, total: 2 }, "1:3", "section-2", false],
+    ]);
     expect(view.sections[0].verses.map((v) => v.anchor)).toEqual(["verse-1-1", "verse-1-2"]);
     expect(view.sections[0].previewAr).toBe("ابت ثجح");
   });
@@ -341,30 +342,101 @@ describe("buildSurahPageView", () => {
     ]);
   });
 
-  it("gives one block per verse to a surah without reading sections", () => {
-    const withoutSections = { ...content(), readingSections: [] };
-    const blocks = buildSurahPageView(withoutSections, [], []).sections;
-    expect(blocks.map((s) => [s.label, s.published, s.explanation])).toEqual([
-      ["1:1", false, null],
-      ["1:2", false, null],
-      ["1:3", false, null],
-    ]);
-  });
-
   it("shows how many of the surah's verses it holds", () => {
     expect(buildSurahPageView(content(), [], []).shownVerseCount).toBe(3);
   });
+});
 
-  it("numbers the blocks 1, 2, 3 in a surah holding only some verses", () => {
-    // Verses 2 and 3 of a 7-verse surah, without reading sections.
-    const partial = { ...content(), readingSections: [] };
-    partial.surah = { ...partial.surah, verseCount: 7 };
-    partial.verses = partial.verses.slice(1);
-    const view = buildSurahPageView(partial, [], []);
-    expect(view.shownVerseCount).toBe(2);
-    expect(view.sections.map((s) => [s.position, s.total, s.anchor, s.label])).toEqual([
-      [1, 2, "section-1", "1:2"],
-      [2, 2, "section-2", "1:3"],
+describe("page blocks (ADR 0025)", () => {
+  /** Verses 1 to 8 of surah 1, on mushaf pages 1, 1, 1, 2, 2, 2, 3, 3. */
+  function longSurah(): SurahContent {
+    const pages = [1, 1, 1, 2, 2, 2, 3, 3];
+    return {
+      ...content(),
+      surah: { ...content().surah, verseCount: 8 },
+      brief: null,
+      wordMeanings: [],
+      verses: pages.map((page, i) => verse(i + 1, [`ح${i + 1}`, "ب"], undefined, page)),
+      readingSections: [],
+    };
+  }
+  const blocksOf = (surah: SurahContent) =>
+    buildSurahPageView(surah, [], []).sections.map((s) => [
+      s.position,
+      s.kind,
+      s.page,
+      s.label,
+      s.anchor,
+    ]);
+
+  it("groups a surah without reading sections by mushaf page", () => {
+    const view = buildSurahPageView(longSurah(), [], []);
+    expect(blocksOf(longSurah())).toEqual([
+      [1, "page", 1, "1:1–3", "section-1"],
+      [2, "page", 2, "1:4–6", "section-2"],
+      [3, "page", 3, "1:7–8", "section-3"],
+    ]);
+    expect(view.sections.map((s) => [s.published, s.explanation, s.sectionOf])).toEqual([
+      [false, null, null],
+      [false, null, null],
+      [false, null, null],
+    ]);
+    expect(view.sections[1].verses.map((v) => v.anchor)).toEqual([
+      "verse-1-4",
+      "verse-1-5",
+      "verse-1-6",
+    ]);
+    expect(view.sections[1].previewAr).toBe("ح4 ب");
+  });
+
+  it("cuts a page where a reading section starts and ends", () => {
+    // One explained verse, 1:5, in the middle of page 2.
+    const surah = longSurah();
+    surah.readingSections = [
+      { position: 1, span: span(5, 5), explanation: explanation({ span: span(5, 5) }) },
+    ];
+    expect(blocksOf(surah)).toEqual([
+      [1, "page", 1, "1:1–3", "section-1"],
+      [2, "page", 2, "1:4", "section-2"],
+      [3, "section", null, "1:5", "section-3"],
+      [4, "page", 2, "1:6", "section-4"],
+      [5, "page", 3, "1:7–8", "section-5"],
+    ]);
+    const view = buildSurahPageView(surah, [passage("p1")], []);
+    expect(view.sections[2].sectionOf).toEqual({ number: 1, total: 1 });
+    expect(view.sections[2].published).toBe(true);
+  });
+
+  it("keeps a reading section that runs across a page break whole", () => {
+    const surah = longSurah();
+    surah.readingSections = [{ position: 1, span: span(3, 4), explanation: null }];
+    expect(blocksOf(surah)).toEqual([
+      [1, "page", 1, "1:1–2", "section-1"],
+      [2, "section", null, "1:3–4", "section-2"],
+      [3, "page", 2, "1:5–6", "section-3"],
+      [4, "page", 3, "1:7–8", "section-4"],
+    ]);
+  });
+
+  it("starts a new block after a verse the surah doesn't hold", () => {
+    // Verses 2, 3 and 6 of the surah, all on page 1.
+    const partial = longSurah();
+    partial.verses = [2, 3, 6].map((ayah) => verse(ayah, ["ب"], undefined, 1));
+    expect(buildSurahPageView(partial, [], []).shownVerseCount).toBe(3);
+    expect(blocksOf(partial)).toEqual([
+      [1, "page", 1, "1:2–3", "section-1"],
+      [2, "page", 1, "1:6", "section-2"],
+    ]);
+  });
+
+  it("groups verses with no known page by the other breaks only", () => {
+    const unseeded = longSurah();
+    unseeded.verses = unseeded.verses.map((v) => ({ ...v, page: null }));
+    unseeded.readingSections = [{ position: 1, span: span(4, 4), explanation: null }];
+    expect(blocksOf(unseeded)).toEqual([
+      [1, "page", null, "1:1–3", "section-1"],
+      [2, "section", null, "1:4", "section-2"],
+      [3, "page", null, "1:5–8", "section-3"],
     ]);
   });
 });

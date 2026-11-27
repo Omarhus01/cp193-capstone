@@ -5,7 +5,7 @@ import {
   toBrief,
   toFixedQuestion,
   toPassage,
-  toPublishedSurah,
+  toSurahListItem,
   toVerse,
   toWordMeaning,
   type ExplanationRow,
@@ -138,10 +138,10 @@ describe("toExplanation", () => {
   });
 });
 
-describe("toPublishedSurah", () => {
+describe("toSurahListItem", () => {
   it("keeps the surah's names and verse count, and orders its verses", () => {
     expect(
-      toPublishedSurah({
+      toSurahListItem({
         number: 4,
         name_ar: "النساء",
         name_en: "[en]",
@@ -166,6 +166,7 @@ describe("toVerse", () => {
       surah: 1,
       ayah: 1,
       text_ar: "ابت ثجح",
+      page: 3,
       word: [
         { position: 2, text_ar: "ثجح", root: null },
         { position: 1, text_ar: "ابت", root: null },
@@ -173,6 +174,7 @@ describe("toVerse", () => {
       verse_transliteration: [],
     });
     expect(verse.words.map((w) => w.position)).toEqual([1, 2]);
+    expect(verse.page).toBe(3);
     expect(verse.transliteration).toEqual({ en: null, ko: null });
   });
 
@@ -181,6 +183,7 @@ describe("toVerse", () => {
       surah: 1,
       ayah: 1,
       text_ar: "ابت",
+      page: null,
       word: [{ position: 1, text_ar: "ابت", root: null }],
       verse_transliteration: [
         { language: "ko", text: "[ko]", status: "published" },

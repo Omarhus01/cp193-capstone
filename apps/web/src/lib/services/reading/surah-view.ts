@@ -71,17 +71,29 @@ export type ExplanationView = {
   contextLinks: ContextLinkView[];
 };
 
+/**
+ * A block of the surah page: a reading section, or verses that no reading section covers yet,
+ * grouped by the page of the mushaf they are on (ADR 0025).
+ */
 export type SectionView = {
+  /** Order on the page, 1, 2, 3…, across both kinds. Keys the section list and the questions. */
   position: number;
-  total: number;
-  /** The id of the section's element: "section-2". */
+  kind: "section" | "page";
+  /** A reading section's number among the surah's reading sections; null for a page block. */
+  sectionOf: { number: number; total: number } | null;
+  /** A page block's mushaf page; null for a reading section, or when the page isn't known. */
+  page: number | null;
+  /** The id of the block's element: "section-2". */
   anchor: string;
   /** "1:2–4" */
   label: string;
   /** The first words of the section, for the section list. */
   previewAr: string;
   verses: VerseView[];
-  /** Whether its explanation is published. When false, the section list says it is in review. */
+  /**
+   * Whether its explanation is published. When a reading section's isn't, the section list says it
+   * is in review. Always false for a page block.
+   */
   published: boolean;
   /** The section's words that have a published meaning, for their popovers. */
   words: Record<string, WordDetail>;
@@ -248,22 +260,58 @@ export function briefView(
     .map(({ text, citations }) => ({ text, sources: sources(citations) }));
 }
 
+/** A block of the page before it becomes a SectionView: its verses, and its section if any. */
+type Block = {
+  kind: SectionView["kind"];
+  page: number | null;
+  verses: Verse[];
+  section: ReadingSectionSummary | null;
+};
+
+const covers = (section: ReadingSectionSummary, verse: Verse) =>
+  verse.surah === section.span.start.surah &&
+  verse.ayah >= section.span.start.ayah &&
+  verse.ayah <= section.span.end.ayah;
+
 /**
- * A surah without reading sections still shows every verse it holds: one block per verse,
- * numbered 1, 2, 3 (not by verse number, since a surah may hold only some verses).
+ * Every verse the surah holds, in blocks (ADR 0025): a verse in a reading section is in that
+ * section's block; the verses that no section covers are grouped by mushaf page. A page block ends
+ * where the page ends, where a reading section starts, and before a verse the surah doesn't hold,
+ * so a page cut by a reading section becomes two blocks. Verses with no known page group by these
+ * other breaks only.
  */
-function sectionsOf(content: SurahContent): ReadingSectionSummary[] {
-  if (content.readingSections.length > 0) {
-    return content.readingSections;
+function pageBlocks(content: SurahContent): Block[] {
+  const blocks: Block[] = [];
+  for (const verse of content.verses) {
+    const section = content.readingSections.find((s) => covers(s, verse)) ?? null;
+    const last = blocks[blocks.length - 1];
+    const lastVerse = last?.verses[last.verses.length - 1];
+    if (section) {
+      if (last?.section === section) {
+        last.verses.push(verse);
+      } else {
+        blocks.push({ kind: "section", page: null, verses: [verse], section });
+      }
+    } else if (
+      last?.kind === "page" &&
+      last.page === verse.page &&
+      lastVerse?.ayah === verse.ayah - 1
+    ) {
+      last.verses.push(verse);
+    } else {
+      blocks.push({ kind: "page", page: verse.page, verses: [verse], section: null });
+    }
   }
-  return content.verses.map((verse, i) => ({
-    position: i + 1,
-    span: {
-      start: { surah: verse.surah, ayah: verse.ayah, word: null },
-      end: { surah: verse.surah, ayah: verse.ayah, word: null },
-    },
-    explanation: null,
-  }));
+  return blocks;
+}
+
+/** The span from the first of these verses to the last. */
+function spanOf(verses: readonly Verse[]): Span {
+  const [first, last] = [verses[0], verses[verses.length - 1]];
+  return {
+    start: { surah: first.surah, ayah: first.ayah, word: null },
+    end: { surah: last.surah, ayah: last.ayah, word: null },
+  };
 }
 
 /**
@@ -280,17 +328,19 @@ export function buildSurahPageView(
   const available = new Set(arabic.keys());
   const meanings = new Map(content.wordMeanings.map((meaning) => [wordKey(meaning.word), meaning]));
 
-  const sections = sectionsOf(content);
-  const sectionViews = sections.map((section): SectionView => {
-    const verses = content.verses.filter(
-      (verse) => verse.ayah >= section.span.start.ayah && verse.ayah <= section.span.end.ayah,
-    );
+  const blocks = pageBlocks(content);
+  const sectionTotal = blocks.filter((block) => block.section).length;
+  let sectionNumber = 0;
+  const sectionViews = blocks.map((block, i): SectionView => {
+    const { verses, section } = block;
     return {
-      position: section.position,
-      total: sections.length,
-      anchor: `section-${section.position}`,
-      label: formatRange(section.span),
-      previewAr: (verses[0]?.words ?? [])
+      position: i + 1,
+      kind: block.kind,
+      sectionOf: section ? { number: ++sectionNumber, total: sectionTotal } : null,
+      page: block.page,
+      anchor: `section-${i + 1}`,
+      label: formatRange(section?.span ?? spanOf(verses)),
+      previewAr: verses[0].words
         .slice(0, 2)
         .map((word) => word.textAr)
         .join(" "),
@@ -303,9 +353,9 @@ export function buildSurahPageView(
         ),
         transliteration: verse.transliteration,
       })),
-      published: section.explanation !== null,
+      published: section?.explanation != null,
       words: {},
-      explanation: section.explanation
+      explanation: section?.explanation
         ? explanationView(section.explanation, passagesById, available)
         : null,
     };

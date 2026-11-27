@@ -29,6 +29,28 @@ export function validateContent(bundle: ContentBundle): ContentError[] {
       report("quran-metadata.json", `surahs[${i}].number`, `is ${surah.number}; expected ${i + 1}`);
     }
   });
+  // The mushaf's pages: numbered 1, 2, 3, each starting at a verse that exists, in text order.
+  bundle.pages.forEach((start, i) => {
+    const path = `pages[${i}]`;
+    const before = bundle.pages[i - 1];
+    const verseCount = metadata.get(start.surah)?.verseCount ?? 0;
+    if (start.page !== i + 1) {
+      report("quran-metadata.json", `${path}.page`, `is ${start.page}; expected ${i + 1}`);
+    }
+    if (start.ayah > verseCount) {
+      report(
+        "quran-metadata.json",
+        path,
+        `starts at ${start.surah}:${start.ayah}; surah ${start.surah} has ${verseCount} verses`,
+      );
+    }
+    if (
+      before &&
+      (start.surah < before.surah || (start.surah === before.surah && start.ayah <= before.ayah))
+    ) {
+      report("quran-metadata.json", path, `starts before page ${before.page}`);
+    }
+  });
 
   // Word count of every verse, keyed "surah:ayah".
   const wordCounts = new Map<string, number>();
@@ -368,10 +390,10 @@ export function validateContent(bundle: ContentBundle): ContentError[] {
       checkPublishedSources(file, path, explanation.status, items);
     });
 
-    // Reading sections run from the first imported verse to the last, in order, with no gaps or
-    // overlaps. In a surah that holds only some verses, they cover only those (ADR 0022).
+    // Reading sections go in order with no overlaps, and cover only imported verses (ADR 0022).
+    // They cover only the stretches that are explained: verses between them, before them or after
+    // them belong to no section, and the page groups them by mushaf page (ADR 0025).
     const readingFile = `${dir}/reading.json`;
-    const included = surah.text.verses.map((verse) => verse.ayah);
     let coveredTo = 0;
     surah.readingSections.forEach((id, i) => {
       const path = `sections[${i}]`;
@@ -394,38 +416,16 @@ export function validateContent(bundle: ContentBundle): ContentError[] {
         report(readingFile, path, `"${id}" runs past the end of surah ${number}`);
         return;
       }
-      // Imported verses before this section that no section covers. Verses the folder doesn't
-      // hold are no gap (ADR 0022); checkSpan rejects a section that covers one.
-      const skipped = included.filter((ayah) => ayah > coveredTo && ayah < span.start.ayah);
-      if (skipped.length > 0) {
-        const [first, last] = [skipped[0], skipped[skipped.length - 1]];
+      // checkSpan rejects a section over a verse the folder doesn't hold.
+      if (span.start.ayah <= coveredTo) {
         report(
           readingFile,
           path,
-          first === last
-            ? `leaves a gap: verse ${number}:${first} is in no section`
-            : `leaves a gap: verses ${number}:${first} to ${number}:${last} are in no section`,
-        );
-      } else if (span.start.ayah <= coveredTo) {
-        report(
-          readingFile,
-          path,
-          `"${id}" starts at ${number}:${span.start.ayah}, inside the section before it`,
+          `"${id}" starts at ${number}:${span.start.ayah}, inside or before the section before it`,
         );
       }
       coveredTo = Math.max(coveredTo, span.end.ayah);
     });
-    const lastIncluded = included[included.length - 1] ?? 0;
-    if (surah.readingSections.length > 0 && coveredTo < lastIncluded) {
-      const verseCount = verseCounts.get(number) ?? 0;
-      report(
-        readingFile,
-        "sections",
-        lastIncluded === verseCount
-          ? `end at verse ${coveredTo}; the surah has ${verseCount} verses`
-          : `end at verse ${coveredTo}; text.json goes on to verse ${lastIncluded}`,
-      );
-    }
     surah.explanations.forEach((explanation, i) => {
       if (
         explanation.kind === "reading_section" &&

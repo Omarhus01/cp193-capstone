@@ -157,3 +157,11 @@ app/ (routes, pages, server actions) → components/ → lib/services/ → lib/d
 - **Secrets:** the deployed site holds only public values: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and the optional `NEXT_PUBLIC_FEEDBACK_URL`. The service role key is never read by app code (`src/deploy.test.ts`) and never goes to Vercel or GitHub. The keep-alive workflow uses only the `SUPABASE_URL` and `SUPABASE_ANON_KEY` repository secrets.
 - **Test data stays local:** helpers that write data (`e2e/local-supabase.ts`) refuse a non-local Supabase URL, and before signing up or logging in through the app they check the server's `/health` (`assertLocalTestServer`). Use them in any new script that writes test data; never sign up test accounts through a server you haven't checked.
 - **Code style:** keep components small and clearly named. Other people read this code. Put pure logic in `src/lib/services/`, with a colocated `*.test.ts`.
+
+## Safety rules
+
+- Stay inside the approved plan. Anything outside it, ask first.
+- Never use git worktrees, junctions or symlinks in this repo.
+- Never run rm, git clean, git worktree remove, git reset --hard or any forced delete without asking me first.
+- Commit on the branch after each finished step, so work is never only on disk.
+- Known failing tests are listed in the Sprint 2 issues. Check there before investigating a failure on main.

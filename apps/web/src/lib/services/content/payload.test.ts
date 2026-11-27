@@ -16,6 +16,18 @@ describe("toSeedPayload", () => {
     ]);
   });
 
+  it("gives each verse its mushaf page from the metadata", () => {
+    // testPages: page 1 starts at 1:1, page 2 at 1:3, page 3 at 2:1, and so on.
+    const payload = toSeedPayload(withPartialSurah());
+    expect(payload.verses.filter((v) => v.surah === 1).map((v) => [v.ayah, v.page])).toEqual([
+      [1, 1],
+      [2, 1],
+      [3, 2],
+      [4, 2],
+    ]);
+    expect(payload.verses.find((v) => v.surah === 4 && v.ayah === 34)?.page).toBe(5);
+  });
+
   it("gives the same payload for the same content, whatever the file order", () => {
     const reordered = testBundle();
     reordered.surahs.reverse();
