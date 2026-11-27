@@ -41,7 +41,14 @@ describe("verseRanges", () => {
 describe("surahLinks", () => {
   it("names each surah in the page's language, with the verses it holds", () => {
     expect(surahLinks([surah()], "en")).toEqual([
-      { number: 4, name: "[surah 4 en]", nameAr: "النساء", verses: "4:34" },
+      {
+        number: 4,
+        name: "[surah 4 en]",
+        nameAr: "النساء",
+        nameEn: "[surah 4 en]",
+        nameKo: "[surah 4 ko]",
+        verses: "4:34",
+      },
     ]);
     expect(surahLinks([surah()], "ko")[0].name).toBe("[surah 4 ko]");
   });
@@ -63,7 +70,14 @@ describe("loadSurahLinks", () => {
   it("lists every surah in the database", async () => {
     contentData.getSurahList.mockResolvedValue([surah()]);
     expect(await loadSurahLinks("en")).toEqual([
-      { number: 4, name: "[surah 4 en]", nameAr: "النساء", verses: "4:34" },
+      {
+        number: 4,
+        name: "[surah 4 en]",
+        nameAr: "النساء",
+        nameEn: "[surah 4 en]",
+        nameKo: "[surah 4 ko]",
+        verses: "4:34",
+      },
     ]);
   });
 
