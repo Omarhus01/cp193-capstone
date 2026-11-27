@@ -292,11 +292,23 @@ The history is seeded into private tables; readers never see reviewer names or n
 ## Checking and seeding
 
 ```bash
-npm test               # validates every file here (src/lib/services/content/content.test.ts)
-npm run content:seed   # loads content/ into Supabase
+npm test                      # validates every file here (src/lib/services/content/content.test.ts)
+npm run content:seed          # loads all of content/ into Supabase
+npm run content:seed -- 2 4   # loads only surahs 2 and 4, plus the sources and passages
 ```
 
-The seed refuses to run if validation finds any problem. It is a full sync in one transaction: rows that left `content/` are deleted, the rest are inserted or updated, and running it twice gives the same database. If it fails, nothing changes.
+The seed refuses to run if validation finds any problem in `content/`, even when it loads only some surahs. It sends one short request at a time, so none runs into the database's time limit ([ADR 0027](../docs/decisions/0027-seed-one-surah-per-request.md)):
+
+1. the Quran text of each surah (verses and words);
+2. the sources and passages;
+3. the content of each surah: explanations, reading sections, brief, word meanings, transliterations and fixed questions, with their citations and review history;
+4. a last step that removes what nothing uses any more.
+
+It prints a line for each request and the total time. Rows that left `content/` are deleted, the rest are inserted or updated, and running it twice gives the same database. A verse range (span) is deleted as soon as no explanation, link, section or question uses it. A source or passage is deleted once it has left `content/` and nothing cites it.
+
+Each request is one transaction. If one fails, the seed says which surah and step, and stops: that request changed nothing, everything before it stays loaded, and nothing after it is sent. Fix the problem and run it again.
+
+When it loads only some surahs, the other surahs stay as they are in the database.
 
 It needs the project's service role key (Supabase dashboard: **Project Settings → API**). The key bypasses row level security, so pass it in the shell, never in a file. The URL comes from `NEXT_PUBLIC_SUPABASE_URL` in the shell, or else from `apps/web/.env.local`.
 

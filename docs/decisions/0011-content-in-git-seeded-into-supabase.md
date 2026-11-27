@@ -28,4 +28,5 @@ Every explanation, word meaning and surah brief has to pass an Arabic review of 
 - The review steps are enforced by a test, not by the database: setting `"published"` without the steps in between fails CI. Editing the text of an approved item doesn't reset its status automatically. The reviewer sees the change in the pull request diff and sends the item back.
 - Every merged content change needs a seed (`npm run content:seed`), run by the owner with the service role key. Until it runs, the site shows the previous content.
 - The seed sends all content in one request. That is fine for a sample of surahs; the whole Quran with its words may need seeding surah by surah.
+- Update: with the whole Quran imported, the single request ran past the hosted database's time limit. The seed now sends one surah per request, each its own transaction ([0027](0027-seed-one-surah-per-request.md)). That replaces "one transaction, a failed seed changes nothing" under Loading.
 - `zod` and `tsx` are development dependencies. Nothing in the site's bundle depends on them.

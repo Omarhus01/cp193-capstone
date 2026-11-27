@@ -108,6 +108,8 @@ SUPABASE_SERVICE_ROLE_KEY=... npm run content:seed                       # bash
 $env:SUPABASE_SERVICE_ROLE_KEY="..."; npm run content:seed               # PowerShell
 ```
 
+It loads one surah per request and prints its progress. `npm run content:seed -- 2 4` loads only surahs 2 and 4 (plus the sources and passages).
+
 [`content/README.md`](content/README.md) explains the files, the review steps, and how to try migrations and the seed on a local Supabase in Docker first.
 
 ### Auth settings (Supabase dashboard)
