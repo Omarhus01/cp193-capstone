@@ -22,7 +22,9 @@ type WordPopoverProps = {
 
 /**
  * What a word means in this verse, what its root means elsewhere, and the sources. A non-modal
- * dialog shown below the section's verses; Escape or the close button closes it.
+ * dialog shown below the section's verses; Escape or the close button closes it. It is never
+ * wider than the section: the word beside the close button may shrink, and long text wraps, even
+ * on a narrow phone with large text.
  */
 export function WordPopover({
   id,
@@ -46,10 +48,10 @@ export function WordPopover({
       onPointerEnter={onPointerEnter}
       onPointerLeave={onPointerLeave}
       onFocus={onFocus}
-      className="mt-4 rounded-xl border border-line bg-white p-5 shadow-lg sm:ml-auto sm:max-w-md"
+      className="mt-4 max-w-full min-w-0 rounded-xl border border-line bg-white p-5 break-words shadow-lg sm:ml-auto sm:max-w-md"
     >
       <div className="flex items-start justify-between gap-3">
-        <div>
+        <div className="min-w-0">
           <div id={titleId}>
             <ArabicText size="lg" className="text-brand">
               {word.textAr}
@@ -73,7 +75,7 @@ export function WordPopover({
           type="button"
           aria-label={t("word.close")}
           onClick={onClose}
-          className="rounded-md bg-page p-2 text-ink hover:bg-line"
+          className="shrink-0 rounded-md bg-page p-2 text-ink hover:bg-line"
         >
           <CloseIcon className="size-4" />
         </button>

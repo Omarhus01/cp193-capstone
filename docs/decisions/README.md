@@ -31,6 +31,7 @@ Records are not rewritten when a decision changes. Add a new record and set the 
 | [0023](0023-modern-studies-as-a-source-type.md) | Modern studies as a kind of source | Accepted |
 | [0024](0024-passage-finder-reads-the-athars-export.md) | A passage finder that reads the Athars export outside the repository | Accepted |
 | [0025](0025-every-verse-shows-grouped-by-mushaf-page.md) | Every verse shows; verses without an explanation are grouped by mushaf page | Accepted |
+| [0026](0026-surah-switcher-in-the-header.md) | Switching surah from the surah page header | Accepted |
 
 ## Template
 

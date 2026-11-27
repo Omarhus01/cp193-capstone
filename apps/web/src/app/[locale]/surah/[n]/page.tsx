@@ -10,6 +10,7 @@ import { ReadingSectionCard } from "@/components/surah/ReadingSectionCard";
 import { ReadingSectionNav } from "@/components/surah/ReadingSectionNav";
 import { ReviewNote } from "@/components/surah/ReviewNote";
 import { SurahHeader } from "@/components/surah/SurahHeader";
+import { SurahPager } from "@/components/surah/SurahPager";
 import { SurahReader } from "@/components/surah/SurahReader";
 import type { Locale } from "@/i18n/locale";
 import { requireUserId } from "@/lib/services/auth/require-user";
@@ -18,6 +19,8 @@ import { questionsForSection } from "@/lib/services/qa";
 import { parsePreferences } from "@/lib/services/reading/preferences";
 import { loadSurahPage } from "@/lib/services/reading/surah-page";
 import { parseSurahNumber } from "@/lib/services/surah";
+import { loadSurahLinks } from "@/lib/services/surah-list";
+import { adjacentSurahs } from "@/lib/services/surah-search";
 
 type SurahPageProps = PageProps<"/[locale]/surah/[n]">;
 
@@ -41,8 +44,9 @@ async function SurahContent({ params }: Pick<SurahPageProps, "params">) {
   }
   await requireUserId(locale, `/${locale}/surah/${n}`);
 
-  const [view, cookieStore, t] = await Promise.all([
+  const [view, surahs, cookieStore, t] = await Promise.all([
     loadSurahPage(surahNumber),
+    loadSurahLinks(locale),
     cookies(),
     getTranslations("surah"),
   ]);
@@ -57,6 +61,7 @@ async function SurahContent({ params }: Pick<SurahPageProps, "params">) {
 
   const { sections } = view;
   const feedbackUrl = feedbackFormUrl();
+  const neighbours = adjacentSurahs(surahs, surahNumber);
   return (
     <SurahReader
       locale={locale}
@@ -97,6 +102,8 @@ async function SurahContent({ params }: Pick<SurahPageProps, "params">) {
             shownVerseCount={view.shownVerseCount}
             brief={view.brief}
             locale={locale}
+            surahs={surahs}
+            neighbours={neighbours}
           />
           <ReadingControls hasWordMeanings={Object.keys(view.words).length > 0} />
           {sections.map((section) => (
@@ -107,6 +114,12 @@ async function SurahContent({ params }: Pick<SurahPageProps, "params">) {
               locale={locale}
             />
           ))}
+          {/* A reader who has finished the surah can go on to the next one. */}
+          <SurahPager
+            previous={neighbours.previous}
+            next={neighbours.next}
+            label={t("pager.labelEnd")}
+          />
           {/* On phones the right column is hidden, so the feedback form comes at the end. */}
           <div className="lg:hidden">
             <FeedbackButton url={feedbackUrl} />

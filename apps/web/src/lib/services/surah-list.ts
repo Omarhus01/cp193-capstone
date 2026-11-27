@@ -2,13 +2,16 @@ import type { Locale } from "@/i18n/locale";
 import { getSurahList } from "@/lib/data/content";
 import type { SurahListItem } from "@/lib/domain/content";
 
-/** A surah readers can open, as the home page lists it. */
+/** A surah readers can open, as the home page and the surah switcher list it. */
 export type SurahLink = {
   number: number;
   /** The name in the page's language, else English, else Arabic. */
   name: string;
   /** The Arabic name, shown beside it. */
   nameAr: string;
+  /** The English and Korean names when the surah has them, so a search finds it by either. */
+  nameEn: string | null;
+  nameKo: string | null;
   /** The verses the surah holds when that is only some, such as "4:34"; null when complete. */
   verses: string | null;
 };
@@ -46,6 +49,8 @@ export function surahLinks(surahs: readonly SurahListItem[], locale: Locale): Su
     number: surah.number,
     name: (locale === "ko" ? surah.nameKo : surah.nameEn) ?? surah.nameEn ?? surah.nameAr,
     nameAr: surah.nameAr,
+    nameEn: surah.nameEn,
+    nameKo: surah.nameKo,
     verses: verseRanges(surah.number, surah.ayahs, surah.verseCount),
   }));
 }

@@ -25,9 +25,10 @@ export function ReadingSectionCard({ section, questions, locale }: ReadingSectio
 
   return (
     <SectionFrame position={section.position} anchor={section.anchor} label={label}>
-      <div className="flex items-center justify-between gap-3">
+      {/* Wraps on a narrow phone with large text, rather than pushing past the card's edge. */}
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
         <h2 className="text-sm font-semibold text-brand">{label}</h2>
-        <div className="flex items-center gap-3 text-sm text-ink-muted">
+        <div className="flex flex-wrap items-center gap-3 text-sm text-ink-muted">
           {/* Recitation audio comes with its own issue. */}
           <button
             type="button"
