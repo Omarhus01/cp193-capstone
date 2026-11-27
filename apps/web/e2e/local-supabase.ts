@@ -6,7 +6,8 @@ import {
   isLocalUrl,
 } from "../src/lib/supabase/local-guard";
 import type { ContentBundle } from "../src/lib/services/content/load";
-import { toSeedPayload } from "../src/lib/services/content/payload";
+import { toSeedPlan } from "../src/lib/services/content/payload";
+import { runSeed } from "../src/lib/services/content/seed-run";
 import { validateContent } from "../src/lib/services/content/validate";
 
 // Tests that need content run against a local Supabase (npx supabase start), because they replace
@@ -49,11 +50,14 @@ export async function seedContent(bundle: ContentBundle) {
   if (problems.length > 0) {
     throw new Error(`Fixture content is invalid: ${JSON.stringify(problems, null, 2)}`);
   }
-  const { error } = await serviceClient("seed fixture content").rpc("seed_content", {
-    payload: toSeedPayload(bundle),
-  });
-  if (error) {
-    throw new Error(`Seeding failed: ${error.message}`);
+  const client = serviceClient("seed fixture content");
+  const result = await runSeed(
+    toSeedPlan(bundle),
+    (fn, payload) => client.rpc(fn, { payload }),
+    () => {},
+  );
+  if (!result.ok) {
+    throw new Error(`Seeding failed at ${result.step} ${result.surah ?? ""}: ${result.message}`);
   }
 }
 

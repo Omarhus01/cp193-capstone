@@ -1,23 +1,30 @@
 import type { Span } from "@/lib/domain/content";
 import type { ReviewEntry } from "@/lib/services/review";
-import type { ContentBundle } from "./load";
+import type { ContentBundle, SurahFiles } from "./load";
 import { pageLookup } from "./pages";
 import { readCitation, type CitationEntry, type ItemEntry } from "./schema";
 import { parseRef, parseSpan, spanId, type SpanRefs } from "./spans";
 
-// The argument of the seed_content database function (supabase/migrations/, last replaced in
-// …_fixed_qa.sql).
-// Keys are table names and rows use the column names, so the function can read them with
-// jsonb_populate_recordset. Rows are sorted, so the same content always gives the same payload.
+// The arguments of the seed functions (supabase/migrations/…_seed_content_per_surah.sql, ADR 0027).
+// The seed sends one request per step, so no request is large enough to run into the database's
+// statement timeout:
+//
+//   1. seed_surah_text      for each surah: the surah, its verses and words
+//   2. seed_shared_content  once: sources and passages (a passage may point to a verse)
+//   3. seed_surah_content   for each surah: everything that belongs to it
+//   4. seed_content_finish  once: removes what no content uses any more
+//
+// Keys are table names and rows use the column names, so the functions can read them with
+// jsonb_populate_recordset. Rows are sorted, so the same content always gives the same plan.
 
 type Row = Record<string, string | number | null>;
 
-export type SeedPayload = {
-  surahs: Row[];
-  verses: Row[];
-  words: Row[];
-  sources: Row[];
-  passages: Row[];
+export type SurahTextPayload = { surah: Row; verses: Row[]; words: Row[] };
+
+export type SharedPayload = { sources: Row[]; passages: Row[] };
+
+export type SurahContentPayload = {
+  surah: number;
   spans: Row[];
   explanations: Row[];
   explanation_citations: Row[];
@@ -39,7 +46,21 @@ export type SeedPayload = {
   qa_questions: Row[];
   qa_question_citations: Row[];
   qa_question_reviews: Row[];
+  /** The surah's verses and words in the content, by key only: the rest are deleted. */
+  verses: Row[];
+  words: Row[];
 };
+
+export type FinishPayload = {
+  sources: string[];
+  passages: string[];
+  /** Every surah in the content on a full seed; null when seeding only some, to keep the rest. */
+  surahs: number[] | null;
+};
+
+export type SurahSeed = { number: number; text: SurahTextPayload; content: SurahContentPayload };
+
+export type SeedPlan = { surahs: SurahSeed[]; shared: SharedPayload; finish: FinishPayload };
 
 /** The database's name for each part of an explanation (enum explanation_part). */
 const PARTS = {
@@ -81,51 +102,8 @@ function byKeys(...keys: string[]) {
   };
 }
 
-/**
- * Builds the seed payload from content that has passed validateContent. Throws on a broken span or
- * ref, which validation would have reported.
- */
-export function toSeedPayload(bundle: ContentBundle): SeedPayload {
-  const payload: SeedPayload = {
-    surahs: [],
-    verses: [],
-    words: [],
-    sources: [],
-    passages: [],
-    spans: [],
-    explanations: [],
-    explanation_citations: [],
-    context_links: [],
-    reading_sections: [],
-    explanation_reviews: [],
-    surah_briefs: [],
-    surah_brief_reviews: [],
-    word_meanings: [],
-    word_meaning_citations: [],
-    word_meaning_reviews: [],
-    verse_transliterations: [],
-    verse_transliteration_reviews: [],
-    explanation_items: [],
-    explanation_item_citations: [],
-    surah_brief_items: [],
-    surah_brief_item_citations: [],
-    word_meaning_elsewhere: [],
-    qa_questions: [],
-    qa_question_citations: [],
-    qa_question_reviews: [],
-  };
-
-  const spans = new Map<string, Span>();
-  function addSpan(refs: SpanRefs): string {
-    const span = parseSpan(refs);
-    if (!span) {
-      throw new Error(`Invalid span ${refs.from}-${refs.to}; run the content validation first.`);
-    }
-    const id = spanId(span);
-    spans.set(id, span);
-    return id;
-  }
-
+function sharedPayload(bundle: ContentBundle): SharedPayload {
+  const payload: SharedPayload = { sources: [], passages: [] };
   for (const { source, passages } of bundle.sources) {
     payload.sources.push({
       id: source.id,
@@ -151,11 +129,18 @@ export function toSeedPayload(bundle: ContentBundle): SeedPayload {
       });
     }
   }
+  payload.sources.sort(byKeys("id"));
+  payload.passages.sort(byKeys("id"));
+  return payload;
+}
 
-  const pageOf = pageLookup(bundle.pages);
-  for (const surah of bundle.surahs) {
-    const { number, text, words } = surah;
-    payload.surahs.push({
+function surahTextPayload(
+  surah: SurahFiles,
+  pageOf: ReturnType<typeof pageLookup>,
+): SurahTextPayload {
+  const { number, text, words } = surah;
+  return {
+    surah: {
       number,
       name_ar: text.surah.nameAr,
       name_en: surah.surah.names.en,
@@ -163,158 +148,200 @@ export function toSeedPayload(bundle: ContentBundle): SeedPayload {
       revelation_place: text.surah.revelationPlace,
       verse_count: text.surah.verseCount,
       basmala_ar: text.surah.basmala,
-    });
-    for (const verse of text.verses) {
-      payload.verses.push({
+    },
+    verses: text.verses
+      .map((verse) => ({
         surah: number,
         ayah: verse.ayah,
         text_ar: verse.text,
         page: pageOf({ surah: number, ayah: verse.ayah }),
-      });
-    }
-    for (const verse of words.verses) {
-      for (const word of verse.words) {
-        payload.words.push({
+      }))
+      .sort(byKeys("ayah")),
+    words: words.verses
+      .flatMap((verse) =>
+        verse.words.map((word) => ({
           surah: number,
           ayah: verse.ayah,
           position: word.position,
           text_ar: word.text,
           root: word.root,
-        });
-      }
-    }
+        })),
+      )
+      .sort(byKeys("ayah", "position")),
+  };
+}
 
-    for (const explanation of surah.explanations) {
-      const { id, parts } = explanation;
-      payload.explanations.push({
-        id,
-        span_id: addSpan(explanation.span),
-        kind: explanation.kind,
-        status: explanation.status,
-      });
-      // The explanation's passages, each once, in the order its parts first cite them.
-      const passages = new Set<string>();
-      for (const [part, dbPart] of Object.entries(PARTS) as [keyof typeof PARTS, string][]) {
-        parts[part].forEach((item: ItemEntry & { verse?: string }, i) => {
-          const verse = item.verse ? parseRef(item.verse) : null;
-          payload.explanation_items.push({
-            explanation_id: id,
-            part: dbPart,
-            sort_order: i,
-            text_en: item.en,
-            text_ko: item.ko,
-            verse_surah: verse?.surah ?? null,
-            verse_ayah: verse?.ayah ?? null,
-          });
-          const key = { explanation_id: id, part: dbPart, item_order: i };
-          payload.explanation_item_citations.push(...citationRows(key, item.citations));
-          item.citations.forEach((citation) => passages.add(readCitation(citation).passage));
-        });
-      }
-      [...passages].forEach((passageId, sortOrder) =>
-        payload.explanation_citations.push({
-          explanation_id: id,
-          passage_id: passageId,
-          sort_order: sortOrder,
-        }),
-      );
-      explanation.contextLinks.forEach((link, sortOrder) =>
-        payload.context_links.push({
-          explanation_id: id,
-          sort_order: sortOrder,
-          span_id: addSpan(link.span),
-          reason_en: link.reason.en,
-          reason_ko: link.reason.ko,
-        }),
-      );
-      payload.explanation_reviews.push(...reviewRows({ explanation_id: id }, explanation.review));
-    }
+/** Throws on a broken span or ref, which validateContent would have reported. */
+function surahContentPayload(surah: SurahFiles, text: SurahTextPayload): SurahContentPayload {
+  const { number } = surah;
+  const payload: SurahContentPayload = {
+    surah: number,
+    spans: [],
+    explanations: [],
+    explanation_citations: [],
+    context_links: [],
+    reading_sections: [],
+    explanation_reviews: [],
+    surah_briefs: [],
+    surah_brief_reviews: [],
+    word_meanings: [],
+    word_meaning_citations: [],
+    word_meaning_reviews: [],
+    verse_transliterations: [],
+    verse_transliteration_reviews: [],
+    explanation_items: [],
+    explanation_item_citations: [],
+    surah_brief_items: [],
+    surah_brief_item_citations: [],
+    word_meaning_elsewhere: [],
+    qa_questions: [],
+    qa_question_citations: [],
+    qa_question_reviews: [],
+    verses: text.verses.map(({ ayah }) => ({ ayah })),
+    words: text.words.map(({ ayah, position }) => ({ ayah, position })),
+  };
 
-    surah.readingSections.forEach((explanationId, i) => {
-      const explanation = surah.explanations.find(({ id }) => id === explanationId);
-      if (!explanation) {
-        throw new Error(
-          `Unknown reading section ${explanationId}; run the content validation first.`,
-        );
-      }
-      payload.reading_sections.push({
-        surah: number,
-        position: i + 1,
-        explanation_id: explanationId,
-        span_id: addSpan(explanation.span),
-      });
+  // The spans this surah's rows use. A context link's span may lie in another surah; a span used
+  // by two surahs is sent with both, and the database keeps one.
+  const spans = new Map<string, Span>();
+  function addSpan(refs: SpanRefs): string {
+    const span = parseSpan(refs);
+    if (!span) {
+      throw new Error(`Invalid span ${refs.from}-${refs.to}; run the content validation first.`);
+    }
+    const id = spanId(span);
+    spans.set(id, span);
+    return id;
+  }
+
+  for (const explanation of surah.explanations) {
+    const { id, parts } = explanation;
+    payload.explanations.push({
+      id,
+      span_id: addSpan(explanation.span),
+      kind: explanation.kind,
+      status: explanation.status,
     });
-
-    for (const meaning of surah.wordMeanings) {
-      const ref = parseRef(meaning.word);
-      if (!ref || ref.word === null) {
-        throw new Error(`Invalid word ref ${meaning.word}; run the content validation first.`);
-      }
-      const key = { surah: ref.surah, ayah: ref.ayah, position: ref.word };
-      payload.word_meanings.push({
-        ...key,
-        meaning_en: meaning.meaning.en,
-        meaning_ko: meaning.meaning.ko,
-        status: meaning.status,
-      });
-      payload.word_meaning_citations.push(...citationRows(key, meaning.citations));
-      meaning.elsewhere.forEach((other, sortOrder) => {
-        const verse = other.verse ? parseRef(other.verse) : null;
-        payload.word_meaning_elsewhere.push({
-          ...key,
-          sort_order: sortOrder,
-          verse_surah: verse?.surah ?? null,
-          verse_ayah: verse?.ayah ?? null,
-          text_en: other.en,
-          text_ko: other.ko,
-        });
-      });
-      payload.word_meaning_reviews.push(...reviewRows(key, meaning.review));
-    }
-
-    for (const item of surah.transliterations) {
-      const ref = parseRef(item.verse);
-      if (!ref) {
-        throw new Error(`Invalid verse ref ${item.verse}; run the content validation first.`);
-      }
-      const key = { surah: ref.surah, ayah: ref.ayah, language: item.language };
-      payload.verse_transliterations.push({ ...key, text: item.text, status: item.status });
-      payload.verse_transliteration_reviews.push(...reviewRows(key, item.review));
-    }
-
-    surah.qa.forEach((entry, sortOrder) => {
-      payload.qa_questions.push({
-        id: entry.id,
-        span_id: addSpan(entry.span),
-        sort_order: sortOrder,
-        question_en: entry.question.en,
-        question_ko: entry.question.ko,
-        answer_en: entry.answer.en,
-        answer_ko: entry.answer.ko,
-        status: entry.status,
-      });
-      payload.qa_question_citations.push(
-        ...citationRows({ question_id: entry.id }, entry.citations),
-      );
-      payload.qa_question_reviews.push(...reviewRows({ question_id: entry.id }, entry.review));
-    });
-
-    const brief = surah.surah.brief;
-    if (brief) {
-      payload.surah_briefs.push({ surah: number, status: brief.status });
-      brief.items.forEach((item, i) => {
-        payload.surah_brief_items.push({
-          surah: number,
+    // The explanation's passages, each once, in the order its parts first cite them.
+    const passages = new Set<string>();
+    for (const [part, dbPart] of Object.entries(PARTS) as [keyof typeof PARTS, string][]) {
+      parts[part].forEach((item: ItemEntry & { verse?: string }, i) => {
+        const verse = item.verse ? parseRef(item.verse) : null;
+        payload.explanation_items.push({
+          explanation_id: id,
+          part: dbPart,
           sort_order: i,
           text_en: item.en,
           text_ko: item.ko,
+          verse_surah: verse?.surah ?? null,
+          verse_ayah: verse?.ayah ?? null,
         });
-        payload.surah_brief_item_citations.push(
-          ...citationRows({ surah: number, item_order: i }, item.citations),
-        );
+        const key = { explanation_id: id, part: dbPart, item_order: i };
+        payload.explanation_item_citations.push(...citationRows(key, item.citations));
+        item.citations.forEach((citation) => passages.add(readCitation(citation).passage));
       });
-      payload.surah_brief_reviews.push(...reviewRows({ surah: number }, brief.review));
     }
+    [...passages].forEach((passageId, sortOrder) =>
+      payload.explanation_citations.push({
+        explanation_id: id,
+        passage_id: passageId,
+        sort_order: sortOrder,
+      }),
+    );
+    explanation.contextLinks.forEach((link, sortOrder) =>
+      payload.context_links.push({
+        explanation_id: id,
+        sort_order: sortOrder,
+        span_id: addSpan(link.span),
+        reason_en: link.reason.en,
+        reason_ko: link.reason.ko,
+      }),
+    );
+    payload.explanation_reviews.push(...reviewRows({ explanation_id: id }, explanation.review));
+  }
+
+  surah.readingSections.forEach((explanationId, i) => {
+    const explanation = surah.explanations.find(({ id }) => id === explanationId);
+    if (!explanation) {
+      throw new Error(
+        `Unknown reading section ${explanationId}; run the content validation first.`,
+      );
+    }
+    payload.reading_sections.push({
+      surah: number,
+      position: i + 1,
+      explanation_id: explanationId,
+      span_id: addSpan(explanation.span),
+    });
+  });
+
+  for (const meaning of surah.wordMeanings) {
+    const ref = parseRef(meaning.word);
+    if (!ref || ref.word === null) {
+      throw new Error(`Invalid word ref ${meaning.word}; run the content validation first.`);
+    }
+    const key = { surah: ref.surah, ayah: ref.ayah, position: ref.word };
+    payload.word_meanings.push({
+      ...key,
+      meaning_en: meaning.meaning.en,
+      meaning_ko: meaning.meaning.ko,
+      status: meaning.status,
+    });
+    payload.word_meaning_citations.push(...citationRows(key, meaning.citations));
+    meaning.elsewhere.forEach((other, sortOrder) => {
+      const verse = other.verse ? parseRef(other.verse) : null;
+      payload.word_meaning_elsewhere.push({
+        ...key,
+        sort_order: sortOrder,
+        verse_surah: verse?.surah ?? null,
+        verse_ayah: verse?.ayah ?? null,
+        text_en: other.en,
+        text_ko: other.ko,
+      });
+    });
+    payload.word_meaning_reviews.push(...reviewRows(key, meaning.review));
+  }
+
+  for (const item of surah.transliterations) {
+    const ref = parseRef(item.verse);
+    if (!ref) {
+      throw new Error(`Invalid verse ref ${item.verse}; run the content validation first.`);
+    }
+    const key = { surah: ref.surah, ayah: ref.ayah, language: item.language };
+    payload.verse_transliterations.push({ ...key, text: item.text, status: item.status });
+    payload.verse_transliteration_reviews.push(...reviewRows(key, item.review));
+  }
+
+  surah.qa.forEach((entry, sortOrder) => {
+    payload.qa_questions.push({
+      id: entry.id,
+      span_id: addSpan(entry.span),
+      sort_order: sortOrder,
+      question_en: entry.question.en,
+      question_ko: entry.question.ko,
+      answer_en: entry.answer.en,
+      answer_ko: entry.answer.ko,
+      status: entry.status,
+    });
+    payload.qa_question_citations.push(...citationRows({ question_id: entry.id }, entry.citations));
+    payload.qa_question_reviews.push(...reviewRows({ question_id: entry.id }, entry.review));
+  });
+
+  const brief = surah.surah.brief;
+  if (brief) {
+    payload.surah_briefs.push({ surah: number, status: brief.status });
+    brief.items.forEach((item, i) => {
+      payload.surah_brief_items.push({
+        surah: number,
+        sort_order: i,
+        text_en: item.en,
+        text_ko: item.ko,
+      });
+      payload.surah_brief_item_citations.push(
+        ...citationRows({ surah: number, item_order: i }, item.citations),
+      );
+    });
+    payload.surah_brief_reviews.push(...reviewRows({ surah: number }, brief.review));
   }
 
   for (const [id, { start, end }] of spans) {
@@ -329,33 +356,53 @@ export function toSeedPayload(bundle: ContentBundle): SeedPayload {
     });
   }
 
-  payload.surahs.sort(byKeys("number"));
-  payload.verses.sort(byKeys("surah", "ayah"));
-  payload.words.sort(byKeys("surah", "ayah", "position"));
-  payload.sources.sort(byKeys("id"));
-  payload.passages.sort(byKeys("id"));
   payload.spans.sort(byKeys("id"));
   payload.explanations.sort(byKeys("id"));
   payload.explanation_citations.sort(byKeys("explanation_id", "sort_order"));
   payload.context_links.sort(byKeys("explanation_id", "sort_order"));
-  payload.reading_sections.sort(byKeys("surah", "position"));
+  payload.reading_sections.sort(byKeys("position"));
   payload.explanation_reviews.sort(byKeys("explanation_id", "step"));
-  payload.surah_briefs.sort(byKeys("surah"));
-  payload.surah_brief_reviews.sort(byKeys("surah", "step"));
-  payload.word_meanings.sort(byKeys("surah", "ayah", "position"));
-  payload.word_meaning_citations.sort(byKeys("surah", "ayah", "position", "sort_order"));
-  payload.word_meaning_reviews.sort(byKeys("surah", "ayah", "position", "step"));
-  payload.verse_transliterations.sort(byKeys("surah", "ayah", "language"));
+  payload.surah_brief_reviews.sort(byKeys("step"));
+  payload.word_meanings.sort(byKeys("ayah", "position"));
+  payload.word_meaning_citations.sort(byKeys("ayah", "position", "sort_order"));
+  payload.word_meaning_reviews.sort(byKeys("ayah", "position", "step"));
+  payload.verse_transliterations.sort(byKeys("ayah", "language"));
+  payload.verse_transliteration_reviews.sort(byKeys("ayah", "language", "step"));
   payload.explanation_items.sort(byKeys("explanation_id", "part", "sort_order"));
   payload.explanation_item_citations.sort(
     byKeys("explanation_id", "part", "item_order", "sort_order"),
   );
-  payload.surah_brief_items.sort(byKeys("surah", "sort_order"));
-  payload.surah_brief_item_citations.sort(byKeys("surah", "item_order", "sort_order"));
-  payload.word_meaning_elsewhere.sort(byKeys("surah", "ayah", "position", "sort_order"));
-  payload.verse_transliteration_reviews.sort(byKeys("surah", "ayah", "language", "step"));
+  payload.surah_brief_items.sort(byKeys("sort_order"));
+  payload.surah_brief_item_citations.sort(byKeys("item_order", "sort_order"));
+  payload.word_meaning_elsewhere.sort(byKeys("ayah", "position", "sort_order"));
   payload.qa_questions.sort(byKeys("id"));
   payload.qa_question_citations.sort(byKeys("question_id", "sort_order"));
   payload.qa_question_reviews.sort(byKeys("question_id", "step"));
   return payload;
+}
+
+/**
+ * Builds the seed plan from content that has passed validateContent. With `only`, the plan holds
+ * just those surahs (and the shared sources and passages), and the finish step keeps every other
+ * surah as it is in the database.
+ */
+export function toSeedPlan(bundle: ContentBundle, only?: readonly number[]): SeedPlan {
+  const pageOf = pageLookup(bundle.pages);
+  const shared = sharedPayload(bundle);
+  const surahs = [...bundle.surahs]
+    .sort((a, b) => a.number - b.number)
+    .filter(({ number }) => !only || only.includes(number))
+    .map((surah) => {
+      const text = surahTextPayload(surah, pageOf);
+      return { number: surah.number, text, content: surahContentPayload(surah, text) };
+    });
+  return {
+    surahs,
+    shared,
+    finish: {
+      sources: shared.sources.map(({ id }) => String(id)),
+      passages: shared.passages.map(({ id }) => String(id)),
+      surahs: only ? null : surahs.map(({ number }) => number),
+    },
+  };
 }
