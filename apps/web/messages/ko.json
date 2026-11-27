@@ -57,6 +57,18 @@
   "surah": {
     "title": "수라 {number}",
     "unavailable": "이 수라는 아직 준비되지 않았습니다.",
+    "switcher": {
+      "open": "수라 목록",
+      "searchLabel": "수라 찾기",
+      "searchPlaceholder": "번호나 이름",
+      "matches": "{count, plural, =0 {맞는 수라가 없습니다} other {수라 #개}}"
+    },
+    "pager": {
+      "label": "앞뒤 수라",
+      "labelEnd": "앞뒤 수라 (페이지 끝)",
+      "previous": "이전 수라",
+      "next": "다음 수라"
+    },
     "meccan": "메카 계시",
     "medinan": "메디나 계시",
     "verseCount": "{count}절",

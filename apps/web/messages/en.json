@@ -57,6 +57,18 @@
   "surah": {
     "title": "Surah {number}",
     "unavailable": "This surah isn't available yet.",
+    "switcher": {
+      "open": "All surahs",
+      "searchLabel": "Find a surah",
+      "searchPlaceholder": "Number or name",
+      "matches": "{count, plural, =0 {No surah matches} one {# surah} other {# surahs}}"
+    },
+    "pager": {
+      "label": "Surahs before and after",
+      "labelEnd": "Surahs before and after, at the end of the page",
+      "previous": "Previous surah",
+      "next": "Next surah"
+    },
     "meccan": "Meccan",
     "medinan": "Medinan",
     "verseCount": "{count, plural, one {# verse} other {# verses}}",
