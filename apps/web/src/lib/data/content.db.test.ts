@@ -1,10 +1,12 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
-// The test seeds through the same payload builder as scripts/seed-content.mts.
+// The test seeds through the same plan and runner as scripts/seed-content.mts.
 // eslint-disable-next-line no-restricted-imports
-import { loadContent } from "@/lib/services/content/load";
+import { loadContent, type ContentBundle } from "@/lib/services/content/load";
 // eslint-disable-next-line no-restricted-imports
-import { toSeedPayload } from "@/lib/services/content/payload";
+import { toSeedPlan, type SeedPlan } from "@/lib/services/content/payload";
+// eslint-disable-next-line no-restricted-imports
+import { runSeed, type SeedCall, type SeedFunction } from "@/lib/services/content/seed-run";
 // eslint-disable-next-line no-restricted-imports
 import {
   explanation,
@@ -104,9 +106,15 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
   let anon: SupabaseClient;
   let user: SupabaseClient;
 
-  async function seed(payload: unknown) {
-    const { error } = await service.rpc("seed_content", { payload });
-    expect(error).toBeNull();
+  const call: SeedCall = (fn, payload) => service.rpc(fn, { payload });
+
+  async function run(plan: SeedPlan, through: SeedCall = call) {
+    return runSeed(plan, through, () => {});
+  }
+
+  async function seed(bundle: ContentBundle, only?: number[]) {
+    const result = await run(toSeedPlan(bundle, only));
+    expect(result).toMatchObject({ ok: true });
   }
 
   async function snapshot(): Promise<Record<string, unknown[]>> {
@@ -130,29 +138,29 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
       password: "content-test-password",
     });
     expect(error).toBeNull();
-    await seed(toSeedPayload(dbBundle()));
+    await seed(dbBundle());
   });
 
   afterAll(async () => {
     // Put the real content back.
     if (service) {
-      await seed(toSeedPayload(loadContent().bundle));
+      await seed(loadContent().bundle);
     }
   });
 
   it("gives the same database when seeded twice", async () => {
     const before = await snapshot();
-    await seed(toSeedPayload(dbBundle()));
+    await seed(dbBundle());
     expect(await snapshot()).toEqual(before);
   });
 
   it("deletes rows that left the content", async () => {
     const smaller = testBundle();
     smaller.surahs[0].explanations.pop();
-    await seed(toSeedPayload(smaller));
+    await seed(smaller);
     const { data } = await service.from("explanation").select("id").eq("id", "s1-draft");
     expect(data).toEqual([]);
-    await seed(toSeedPayload(dbBundle()));
+    await seed(dbBundle());
   });
 
   it("moves sections to new verse ranges on a re-seed, and deletes the old spans", async () => {
@@ -161,7 +169,7 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
     const [first] = moved.surahs;
     first.explanations.find((e) => e.id === "s1-reading-1")!.span = { from: "1:1", to: "1:1" };
     first.explanations.find((e) => e.id === "s1-reading-2")!.span = { from: "1:2", to: "1:4" };
-    await seed(toSeedPayload(moved));
+    await seed(moved);
 
     const sections = await service
       .from("reading_section")
@@ -183,29 +191,86 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
     expect(oldSpans.data).toEqual([{ id: "1:1-1:2" }]);
 
     // And back again.
-    await seed(toSeedPayload(dbBundle()));
+    await seed(dbBundle());
     const restored = await service.from("explanation").select("span_id").eq("id", "s1-reading-1");
     expect(restored.data).toEqual([{ span_id: "1:1-1:2" }]);
   });
 
-  it("refuses a payload with a missing table, and changes nothing", async () => {
+  it("refuses a payload with a missing part, and changes nothing", async () => {
     const before = await snapshot();
-    const broken = Object.fromEntries(
-      Object.entries(toSeedPayload(dbBundle())).filter(([table]) => table !== "explanations"),
-    );
-    const { error } = await service.rpc("seed_content", { payload: broken });
-    expect(error?.message).toContain("payload.explanations");
+    const plan = toSeedPlan(dbBundle());
+    const [first] = plan.surahs;
+    const cases: [SeedFunction, object, string][] = [
+      ["seed_surah_text", first.text, "words"],
+      ["seed_shared_content", plan.shared, "passages"],
+      ["seed_surah_content", first.content, "explanations"],
+      ["seed_content_finish", plan.finish, "surahs"],
+    ];
+    for (const [fn, payload, missing] of cases) {
+      const broken = Object.fromEntries(Object.entries(payload).filter(([key]) => key !== missing));
+      const { error } = await service.rpc(fn, { payload: broken });
+      expect(error?.message, fn).toContain(`payload.${missing}`);
+    }
     expect(await snapshot()).toEqual(before);
   });
 
-  it("still seeds a payload without fixed questions, as the seed on main sends", async () => {
-    const withoutQa = Object.fromEntries(
-      Object.entries(toSeedPayload(dbBundle())).filter(([table]) => !table.startsWith("qa_")),
+  it("refuses a surah's content holding a row of another surah, and changes nothing", async () => {
+    const before = await snapshot();
+    const { content } = toSeedPlan(dbBundle()).surahs[1];
+    const meaning = { surah: 1, ayah: 1, position: 3, meaning_en: "x", meaning_ko: "x" };
+    const { error } = await service.rpc("seed_surah_content", {
+      payload: { ...content, word_meanings: [{ ...meaning, status: "draft" }] },
+    });
+    expect(error?.message).toContain("must belong to surah 2");
+    expect(await snapshot()).toEqual(before);
+  });
+
+  it("seeds only the surahs asked for, and leaves the others as they are", async () => {
+    const changed = dbBundle();
+    changed.surahs[0].explanations = changed.surahs[0].explanations.filter(
+      (e) => e.id !== "s1-draft",
     );
-    await seed(withoutQa);
-    expect((await service.from("qa_question").select("id")).data).toEqual([]);
-    await seed(toSeedPayload(dbBundle()));
-    expect((await service.from("qa_question").select("id")).data).toHaveLength(3);
+    changed.surahs[1].surah.names.en = "Renamed";
+    const surahTwo = async () =>
+      (await service.from("surah").select("name_en").eq("number", 2)).data;
+    const before = await surahTwo();
+    try {
+      await seed(changed, [1]);
+      const draft = await service.from("explanation").select("id").eq("id", "s1-draft");
+      expect(draft.data).toEqual([]);
+      expect(await surahTwo()).toEqual(before);
+    } finally {
+      await seed(dbBundle());
+    }
+  });
+
+  it("keeps the surahs loaded before a failing one, and rolls the failing one back", async () => {
+    // Surah 1 loses its draft; surah 2 gains an explanation whose point cites a passage that
+    // doesn't exist, so its request fails after it has written the explanation.
+    const bundle = dbBundle();
+    bundle.surahs[0].explanations = bundle.surahs[0].explanations.filter(
+      (e) => e.id !== "s1-draft",
+    );
+    const broken = explanation("s2-broken", "verse_explanation", "2:1", "2:2", "draft");
+    broken.parts.context = [item("cites nothing real", ["no-such-passage"])];
+    bundle.surahs[1].explanations = [broken];
+    const sent: SeedFunction[] = [];
+    try {
+      const result = await run(toSeedPlan(bundle), (fn, payload) => {
+        sent.push(fn);
+        return call(fn, payload);
+      });
+      expect(result).toMatchObject({ ok: false, step: "content", surah: 2 });
+      expect(sent.at(-1)).toBe("seed_surah_content");
+      expect(sent).not.toContain("seed_content_finish");
+      const left = await service
+        .from("explanation")
+        .select("id")
+        .in("id", ["s1-draft", "s2-broken"]);
+      expect(left.data).toEqual([]);
+    } finally {
+      await seed(dbBundle());
+    }
   });
 
   describe("lib/data returns only published content", () => {
@@ -409,10 +474,20 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
     });
 
     it("can't run the seed", async () => {
-      const { error } = await client().rpc("seed_content", {
-        payload: toSeedPayload(dbBundle()),
-      });
-      expect(error).not.toBeNull();
+      const plan = toSeedPlan(dbBundle());
+      const [first] = plan.surahs;
+      const calls: [string, object | undefined][] = [
+        ["seed_content", { payload: {} }],
+        ["seed_surah_text", { payload: first.text }],
+        ["seed_shared_content", { payload: plan.shared }],
+        ["seed_surah_content", { payload: first.content }],
+        ["seed_content_finish", { payload: plan.finish }],
+        ["seed_delete_unused_spans", undefined],
+      ];
+      for (const [fn, args] of calls) {
+        const { error } = await client().rpc(fn, args);
+        expect(error, fn).not.toBeNull();
+      }
     });
   });
 
@@ -436,14 +511,14 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
         explanation("s4-reading-1", "reading_section", "4:34", "4:35", "draft"),
         explanation("s4-reading-2", "reading_section", "4:40", "4:40", "draft"),
       ];
-      await seed(toSeedPayload(drafts));
+      await seed(drafts);
       expect(await listed()).toEqual([
         { number: 1, ayahs: [1, 2, 3, 4] },
         { number: 2, ayahs: [1, 2, 3] },
         { number: 4, ayahs: [34, 35, 40] },
       ]);
     } finally {
-      await seed(toSeedPayload(dbBundle()));
+      await seed(dbBundle());
     }
   });
 
@@ -451,18 +526,27 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
     // The real content: 114 surahs and 6,236 verses. PostgREST caps a response at 1,000 rows
     // (max_rows); that cap is on the top-level rows, so a surah's words come back whole.
     const { bundle } = loadContent();
+    const plan = toSeedPlan(bundle);
     const timed = async () => {
+      let slowest = { ms: 0, fn: "" };
       const started = performance.now();
-      await seed(toSeedPayload(bundle));
-      return Math.round(performance.now() - started);
+      const result = await run(plan, async (fn, payload) => {
+        const callStarted = performance.now();
+        const answer = await call(fn, payload);
+        const ms = Math.round(performance.now() - callStarted);
+        if (ms > slowest.ms) {
+          slowest = { ms, fn };
+        }
+        return answer;
+      });
+      expect(result).toMatchObject({ ok: true });
+      const total = Math.round(performance.now() - started);
+      return `${total} ms (slowest request ${slowest.ms} ms, ${slowest.fn})`;
     };
     try {
       const first = await timed();
       const again = await timed();
-      console.log(
-        `Seeding the whole Quran: ${first} ms, then ${again} ms with nothing changed; ` +
-          `payload ${(JSON.stringify(toSeedPayload(bundle)).length / 1e6).toFixed(1)} MB`,
-      );
+      console.log(`Seeding the whole Quran: ${first}, then ${again} with nothing changed`);
       const surahs = await getSurahList();
       expect(surahs).toHaveLength(114);
       expect(surahs.reduce((total, surah) => total + surah.ayahs.length, 0)).toBe(6236);
@@ -474,7 +558,7 @@ describe.skipIf(!enabled)("content in the database (local Supabase)", () => {
       expect(baqara?.verses[0].page).toBe(2);
       expect(baqara?.verses[285].page).toBe(49);
     } finally {
-      await seed(toSeedPayload(dbBundle()));
+      await seed(dbBundle());
     }
   }, 120_000);
 

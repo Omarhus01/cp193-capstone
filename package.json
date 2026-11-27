@@ -21,7 +21,7 @@
     "content:schema": "npm run content:schema -w apps/web",
     "content:import-tanzil": "npm run content:import-tanzil -w apps/web --",
     "content:import-tanzil-metadata": "npm run content:import-tanzil-metadata -w apps/web --",
-    "content:seed": "npm run content:seed -w apps/web",
+    "content:seed": "npm run content:seed -w apps/web --",
     "content:find-passages": "npm run content:find-passages -w apps/web --"
   },
   "devDependencies": {
