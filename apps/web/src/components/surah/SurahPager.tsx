@@ -54,7 +54,8 @@ function PagerLink({ surah, direction, heading }: PagerLinkProps) {
       <Arrow className="size-4 shrink-0 text-brand" />
       <span className={`flex min-w-0 flex-col break-words ${isNext ? "items-end" : "items-start"}`}>
         <span className="text-xs text-ink-muted">{heading}</span>
-        <span className="font-medium">
+        {/* Korean wraps between words, not inside a name. */}
+        <span className="font-medium break-keep">
           {surah.number}. {surah.name}
         </span>
         <ArabicText as="span" size="sm" className="text-ink-muted">
